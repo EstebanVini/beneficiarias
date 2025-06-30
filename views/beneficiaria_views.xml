@@ -1,0 +1,52 @@
+<odoo>
+    <!-- Acción para abrir el modelo -->
+    <record id="action_beneficiarias_beneficiaria" model="ir.actions.act_window">
+        <field name="name">Beneficiarias</field>
+        <field name="res_model">beneficiarias.beneficiaria</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Crea y gestiona las beneficiarias.</p>
+        </field>
+    </record>
+
+    <!-- Vista en árbol -->
+    <record id="view_tree_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.tree</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <tree string="Beneficiarias">
+                <field name="name"/>
+                <field name="edad"/>
+                <field name="direccion"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista en formulario -->
+    <record id="view_form_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.form</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <form string="Beneficiaria">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="edad"/>
+                        <field name="direccion"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menú principal -->
+    <menuitem id="menu_beneficiarias_root"
+              name="Beneficiarias"
+              sequence="10"/>
+
+    <!-- Submenú con acción -->
+    <menuitem id="menu_beneficiarias_beneficiaria"
+              name="Registro de Beneficiarias"
+              parent="menu_beneficiarias_root"
+              action="action_beneficiarias_beneficiaria"/>
+</odoo>
