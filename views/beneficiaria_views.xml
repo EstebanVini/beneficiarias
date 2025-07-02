@@ -32,14 +32,15 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="nombre" placeholder="Nombre"/>
-                            <field name="apellido_paterno" placeholder="Apellido Paterno"/>
-                            <field name="apellido_materno" placeholder="Apellido Materno"/>
+                            <field name="nombre_completo" placeholder="Nombre Completo"/>
                         </h1>
                     </div>
 
                     <group>
                         <group string="Datos Personales">
+                            <field name="nombre"/>
+                            <field name="apellido_paterno"/>
+                            <field name="apellido_materno"/>
                             <field name="curp"/>
                             <field name="rfc"/>
                             <field name="fecha_nacimiento"/>
