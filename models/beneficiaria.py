@@ -487,19 +487,6 @@ class Beneficiaria(models.Model):
     autorizado_por = fields.Char(string="Autorizado por", help="Nombre de la persona que autoriza el alta de la beneficiaria")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     # === RELACIONES ===
     # hijo_ids = fields.One2many('vifac.hijo', 'beneficiaria_id')
     #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
