@@ -1,0 +1,335 @@
+<odoo>
+    <record id="view_form_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.form</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <form string="Beneficiaria">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="nombre_completo"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="nombre"/>
+                            <field name="apellido_paterno"/>
+                            <field name="apellido_materno"/>
+                            <field name="curp"/>
+                            <field name="rfc"/>
+                            <field name="fecha_nacimiento"/>
+                            <field name="fecha_ingreso"/>
+                            <field name="edad_ingreso" readonly="1"/>
+                            <field name="rango"/>
+                            <field name="atention_center"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- === DESCRIPCIÓN === -->
+                        <page string="Descripción">
+                            <field name="descripcion"/>
+                        </page>
+
+                        <!-- === INFORMACIÓN PARTICULAR DETALLADA === -->
+                        <page string="Información Particular Detallada">
+                            <group>
+                                <field name="correo"/>
+                                <field name="telefono"/>
+                                <field name="telefono_celular"/>
+                                <field name="tiene_red_social"/>
+                                <field name="pais_nacimiento"/>
+                                <field name="ciudad_nacimiento"/>
+                                <field name="lugar_de_registro"/>
+                                <field name="calle"/>
+                                <field name="numero_exterior"/>
+                                <field name="numero_interior"/>
+                                <field name="colonia"/>
+                                <field name="municipio"/>
+                                <field name="estado"/>
+                                <field name="referencia_domicilio"/>
+                                <field name="codigo_postal"/>
+                                <field name="grado_estudios"/>
+                                <field name="estado_civil"/>
+                                <field name="ocupacion"/>
+                                <field name="nivel_economico"/>
+                                <field name="tipo_poblacion"/>
+                                <field name="religion"/>
+                                <field name="migrante"/>
+                                <field name="pais_de_origen"/>
+                                <field name="motivo_migracion"/>
+                                <field name="deseo_de_migrar"/>
+                                <field name="pertenece_a_una_comunidad"/>
+                                <field name="comunidad_indigena"/>
+                                <field name="dialecto"/>
+                                <field name="especifique_dialecto"/>
+                                <field name="lengua_materna"/>
+                                <field name="discapacidad"/>
+                                <field name="tipo_discapacidad"/>
+                                <field name="cantidad_embarazos"/>
+                                <field name="cantidad_hijos_nacidos_vivos"/>
+                                <field name="cantidad_hijos_nacidos_muertos"/>
+                                <field name="cantidad_abortos"/>
+                            </group>
+                        </page>
+
+                        <!-- === EMBARAZO === -->
+                        <page string="Embarazo">
+                            <group>
+                                <field name="embarazo"/>
+                                <field name="fum_time">
+                                    <visibility><expr>embarazo</expr></visibility>
+                                </field>
+                                <field name="meses_embarazo">
+                                    <visibility><expr>embarazo</expr></visibility>
+                                </field>
+                                <field name="semanas_gestacion">
+                                    <visibility><expr>embarazo</expr></visibility>
+                                </field>
+                                <field name="fecha_probable_de_parto">
+                                    <visibility><expr>embarazo</expr></visibility>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- === EGRESO === -->
+                        <page string="Egreso">
+                            <group string="Durante el embarazo">
+                                <field name="motivo_de_egreso"/>
+                                <field name="motivo_de_egreso_otro">
+                                    <visibility><expr>motivo_de_egreso == '09'</expr></visibility>
+                                </field>
+                            </group>
+                            <group string="Post parto">
+                                <field name="motivo_de_egreso_parto"/>
+                                <field name="motivo_de_egreso_otro_post_parto">
+                                    <visibility><expr>motivo_de_egreso_parto == '07'</expr></visibility>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- === ACOMPAÑANTE Y REFERENCIAS === -->
+                        <page string="Acompañante y Referencias">
+                            <group>
+                                <field name="acompanante"/>
+                                <field name="acompanante_nombre"/>
+                                <field name="direccion_acompanante"/>
+                                <field name="acompanante_telefono"/>
+                                <field name="acompanante_parentesco"/>
+                            </group>
+                            <group>
+                                <field name="nombre_referencia1"/>
+                                <field name="telefono_referencia1"/>
+                                <field name="parentesco_referencia1"/>
+                                <field name="nombre_referencia2"/>
+                                <field name="telefono_referencia2"/>
+                                <field name="parentesco_referencia2"/>
+                            </group>
+                        </page>
+
+                        <!-- === CANALIZACIÓN Y LEGAL === -->
+                        <page string="Canalización y Legal">
+                            <group string="Canalización">
+                                <field name="ingreso_por"/>
+                                <field name="canalizacion"/>
+                                <field name="canalizacion_otro"/>
+                                <field name="nombre_canalizador"/>
+                                <field name="cargo_canalizador"/>
+                                <field name="numero_oficio_canalizacion"/>
+                            </group>
+                            <group string="Seguimiento Legal">
+                                <field name="tiene_carpeta_investigacion"/>
+                                <field name="NIC"/>
+                                <field name="NUC"/>
+                                <field name="fecha_investigacion"/>
+                                <field name="lugar"/>
+                                <field name="delito"/>
+                                <field name="numero_oficio"/>
+                                <field name="estatus_situacion_juridica"/>
+                                <field name="persona_seguimiento_legal"/>
+                                <field name="telefono_seguimiento_legal"/>
+                                <field name="telefono2_seguimiento_legal"/>
+                                <field name="correo_seguimiento_legal"/>
+                                <field name="notas_seguimiento_legal"/>
+                            </group>
+                        </page>
+
+                        <!-- === SERVICIOS RECIBIDOS === -->
+                        <page string="Detalle del Servicio">
+                            <group>
+                                <field name="atencion_integral_embarazo"/>
+                                <field name="atencion_medica"/>
+                                <field name="atencion_psicologica"/>
+                                <field name="atencion_nutricional"/>
+                                <field name="apoyo_emocional"/>
+                                <field name="apoyo_especie"/>
+                                <field name="aistencia_legal_adopcion"/>
+                                <field name="centro_capacitacion_formacion"/>
+                                <field name="otro"/>
+                                <field name="otro_detalle_servicio"/>
+                            </group>
+                        </page>
+
+                        <!-- === FAMILIARES === -->
+                        <page string="Familiares">
+                            <group string="Padre">
+                                <field name="padre_nombre"/>
+                                <field name="direccion_padre"/>
+                                <field name="telefono_padre"/>
+                                <field name="esta_vivo_padre"/>
+                            </group>
+                            <group string="Madre">
+                                <field name="madre_nombre"/>
+                                <field name="direccion_madre"/>
+                                <field name="telefono_madre"/>
+                                <field name="esta_vivo_madre"/>
+                            </group>
+                            <group string="Tutor">
+                                <field name="tutor_nombre"/>
+                                <field name="tutor_direccion"/>
+                                <field name="tutor_telefono"/>
+                                <field name="tutor_parentesco"/>
+                                <field name="tutor_esta_vivo"/>
+                            </group>
+                            <group>
+                                <field name="tiene_hermanos"/>
+                            </group>
+                        </page>
+
+                        <!-- === RELACIÓN CON EL PADRE === -->
+                        <page string="Relación con el Padre del Bebé">
+                            <group>
+                                <field name="nombre_padre"/>
+                                <field name="edad_padre"/>
+                                <field name="relacion_con_padre"/>
+                                <field name="relacion_con_padre_otro">
+                                    <visibility><expr>relacion_con_padre == 'otro'</expr></visibility>
+                                </field>
+                                <field name="padre_sabe_de_su_embarazo"/>
+                                <field name="padre_sera_notificado"/>
+                                <field name="padre_ha_dado_apoyo"/>
+                                <field name="estado_civil_padre"/>
+                                <field name="padre_ocupacion"/>
+                                <field name="padre_grado_maximo_estudios"/>
+                                <field name="padre_tiene_adiccion"/>
+                                <field name="padre_tiene_adiccion_detalle">
+                                    <visibility><expr>padre_tiene_adiccion</expr></visibility>
+                                </field>
+                                <field name="estatura_padre"/>
+                                <field name="complexion_padre"/>
+                                <field name="numero_hijos_padre"/>
+                                <field name="numero_hijos_padre_con_beneficiaria"/>
+                                <field name="padre_vive_con_beneficiaria"/>
+                                <field name="origen_padre"/>
+                                <field name="antecendentes_medicos_padre"/>
+                                <field name="en_caso_de_haber_migrado_padre"/>
+                                <field name="padre_pais_migracion"/>
+                                <field name="lugar_residencia_padre"/>
+                            </group>
+                        </page>
+
+                        <!-- === VIOLENCIA Y EDUCACIÓN SEXUAL === -->
+                        <page string="Violencia y Educación Sexual">
+                            <group>
+                                <field name="violacion"/>
+                                <field name="violencia_intrafamiliar"/>
+                                <field name="quien_fue_el_agresor"/>
+                                <field name="tipo_violencia"/>
+                                <field name="educacion_sexual"/>
+                                <field name="educacion_sexual_detalle"/>
+                                <field name="embarazo_actual_consecuencia_de_violacion"/>
+                                <field name="ha_iniciado_carpeta_investigacion"/>
+                                <field name="carpeta_investigacion_numero"/>
+                                <field name="carpeta_investigacion_fecha"/>
+                                <field name="carpeta_investigacion_lugar"/>
+                            </group>
+                        </page>
+
+                        <!-- === MEDIOS DE COMUNICACIÓN === -->
+                        <page string="Medios de Comunicación">
+                            <group>
+                                <field name="television"/>
+                                <field name="television_canal"/>
+                                <field name="radio"/>
+                                <field name="radio_estacion"/>
+                                <field name="volante"/>
+                                <field name="volante_detalle"/>
+                                <field name="poster"/>
+                                <field name="poster_detalle"/>
+                                <field name="periodico"/>
+                                <field name="periodico_detalle"/>
+                                <field name="espectacular"/>
+                                <field name="espectacular_detalle"/>
+                                <field name="iglesia"/>
+                                <field name="iglesia_detalle"/>
+                                <field name="institucion"/>
+                                <field name="institucion_detalle"/>
+                                <field name="internet"/>
+                                <field name="internet_detalle"/>
+                                <field name="red_social"/>
+                                <field name="red_social_detalle"/>
+                                <field name="recomendacion"/>
+                                <field name="recomendacion_detalle"/>
+                                <field name="ex_beneficiaria"/>
+                                <field name="ex_beneficiaria_fecha"/>
+                                <field name="otro_medio"/>
+                                <field name="otro_medio_detalle"/>
+                                <field name="contacto_vifac"/>
+                                <field name="nombre_contacto_institucion"/>
+                                <field name="contacto_institucion"/>
+                            </group>
+                        </page>
+
+                        <!-- === PROYECTO DE VIDA === -->
+                        <page string="Proyecto de Vida">
+                            <field name="reaccion_confirmacion_embarazo"/>
+                            <field name="intento_aborto"/>
+                            <field name="medio_intento_aborto"/>
+                            <field name="recibe_apoyo"/>
+                            <field name="especifique_apoyo"/>
+                            <field name="sabe_que_es_adocion"/>
+                            <field name="conoce_adopcion"/>
+                            <field name="desea_dar_a_adopcion"/>
+                        </page>
+
+                        <!-- === DATOS DEL PARTO === -->
+                        <page string="Datos del Parto">
+                            <field name="fecha_egreso_hospital"/>
+                            <field name="hospital_parto"/>
+                            <field name="parto_multiple"/>
+                        </page>
+
+                        <!-- === ALTA === -->
+                        <page string="Alta">
+                            <field name="fecha_alta"/>
+                            <field name="persona_recoge"/>
+                            <field name="relacion_persona_recoge"/>
+                            <field name="telefono_persona_recoge"/>
+                            <field name="domicilio_persona_recoge"/>
+                            <field name="se_retiro_despues_de_dar_a_luz"/>
+                            <field name="se_retiro_con_bebe"/>
+                            <field name="se_retira_con_permiso_regreso_entrega_voluntaria"/>
+                            <field name="fecha_conclusion_entrega_voluntaria"/>
+                            <field name="nombre_testigo1"/>
+                            <field name="nombre_testigo2"/>
+                            <field name="autorizado_por"/>
+                        </page>
+
+                        <!-- === DOCUMENTOS === -->
+                        <page string="Documentos">
+                            <field name="documentos_ids">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="descripcion"/>
+                                    <field name="attachment_id"/>
+                                    <field name="url" widget="url"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

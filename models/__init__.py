@@ -1,3 +1,5 @@
 # beneficiarias/models/__init__.py
 from . import beneficiaria
-#from . import bebe
+from . import hijos
+from . import documento
+from . import bebe

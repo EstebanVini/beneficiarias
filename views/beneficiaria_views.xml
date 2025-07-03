@@ -1,4 +1,20 @@
 <odoo>
+    <!-- Vista en árbol -->
+    <record id="view_tree_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.tree</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <tree string="Beneficiarias">
+                <field name="nombre_completo"/>
+                <field name="curp"/>
+                <field name="rfc"/>
+                <field name="fecha_nacimiento"/>
+                <field name="fecha_ingreso"/>
+                <field name="edad_ingreso"/>
+            </tree>
+        </field>
+    </record>
+
     <!-- Acción para abrir el modelo -->
     <record id="action_beneficiarias_beneficiaria" model="ir.actions.act_window">
         <field name="name">Beneficiarias</field>
@@ -6,105 +22,6 @@
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p>Crea y gestiona las beneficiarias.</p>
-        </field>
-    </record>
-
-    <!-- Vista en árbol -->
-    <record id="view_tree_beneficiaria" model="ir.ui.view">
-        <field name="name">beneficiarias.beneficiaria.tree</field>
-        <field name="model">beneficiarias.beneficiaria</field>
-        <field name="arch" type="xml">
-            <tree string="Beneficiarias">
-                <field name="nombre" placeholder="Nombre"/>
-                <field name="curp"/>
-                <field name="rfc"/>
-                <field name="fecha_nacimiento"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Vista en formulario -->
-    <record id="view_form_beneficiaria" model="ir.ui.view">
-        <field name="name">beneficiarias.beneficiaria.form</field>
-        <field name="model">beneficiarias.beneficiaria</field>
-        <field name="arch" type="xml">
-            <form string="Beneficiaria">
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="nombre_completo" placeholder="Nombre Completo"/>
-                        </h1>
-                    </div>
-
-                    <group>
-                        <group string="Datos Personales">
-                            <field name="nombre"/>
-                            <field name="apellido_paterno"/>
-                            <field name="apellido_materno"/>
-                            <field name="curp"/>
-                            <field name="rfc"/>
-                            <field name="fecha_nacimiento"/>
-                            <field name="fecha_ingreso"/>
-                            <field name="edad_ingreso"/>
-                            <field name="rango"/>
-                            <field name="nacionalidad"/>
-                            <field name="estado_civil"/>
-                            <field name="ocupacion"/>
-                            <field name="escolaridad"/>
-                            <field name="religion"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page string="Embarazo">
-                            <group>
-                                <field name="embarazo"/>
-                                <field name="fum_time">
-                                    <attribute name="invisible">embarazo == False</attribute>
-                                </field>
-                                <field name="meses_embarazo">
-                                    <attribute name="invisible">embarazo == False</attribute>
-                                </field>
-                                <field name="semanas_gestacion">
-                                    <attribute name="invisible">embarazo == False</attribute>
-                                </field>
-                                <field name="fecha_probable_de_parto">
-                                    <attribute name="invisible">embarazo == False</attribute>
-                                </field>
-                            </group>
-                        </page>
-
-                        <page string="Acompañante">
-                            <group>
-                                <field name="acompanante"/>
-                                <field name="acompanante_nombre">
-                                    <attribute name="invisible">acompanante == False</attribute>
-                                    <attribute name="required">acompanante == True</attribute>
-                                </field>
-                                <field name="acompanante_parentesco">
-                                    <attribute name="invisible">acompanante == False</attribute>
-                                </field>
-                            </group>
-                        </page>
-
-                        <page string="Egreso">
-                            <group string="Motivo de Egreso (Embarazada)">
-                                <field name="motivo_de_egreso"/>
-                                <field name="motivo_de_egreso_otro">
-                                    <attribute name="invisible">motivo_de_egreso != '09'</attribute>
-                                </field>
-                            </group>
-
-                            <group string="Motivo de Egreso (Post Parto)">
-                                <field name="motivo_de_egreso_parto"/>
-                                <field name="motivo_de_egreso_otro_post_parto">
-                                    <attribute name="invisible">motivo_de_egreso_parto != '07'</attribute>
-                                </field>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
         </field>
     </record>
 

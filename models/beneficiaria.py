@@ -8,7 +8,7 @@ class Beneficiaria(models.Model):
     _name = 'beneficiarias.beneficiaria'
     _description = 'Beneficiaria'
 
-    # === DATOS PERSONALES ===
+    # === FORMULARIO PRINCIPAL ===
     nombre_completo = fields.Char(string="Nombre Completo", required=True)
     nombre = fields.Char(string="Nombre", required=True)
     apellido_paterno = fields.Char(string="Apellido Paterno", required=True)
@@ -53,14 +53,14 @@ class Beneficiaria(models.Model):
     escolaridad = fields.Char(string="Escolaridad")
     religion = fields.Char(string="Religión")
 
-    # === EMBARAZO ===
+    # datos embarazo en formulario principal
     embarazo = fields.Boolean(string="¿Está embarazada?")
     fum_time = fields.Date(string="FUM")
     meses_embarazo = fields.Integer(string="Meses de embarazo")
     semanas_gestacion = fields.Integer(string="Semanas de gestación")
     fecha_probable_de_parto = fields.Date(string="Fecha probable de parto")
 
-    # === EGRESO ===
+    # datos de egreso en formulario principal
     motivo_de_egreso = fields.Selection([
         ('01', 'Arregló su situación personal'),
         ('02', 'No se adaptó a la casa hogar'),
@@ -85,26 +85,8 @@ class Beneficiaria(models.Model):
     ], string="Motivo de egreso (post parto)")
     motivo_de_egreso_otro_post_parto = fields.Char(string="Especifique (post parto)")
 
-    # === REFERENCIAS Y UBICACIÓN ===
+    # Referencias en formulario principal
     ref_auto = fields.Char(string="Referida por autoridad")
-    atention_center = fields.Selection([
-        ('aguascalientes', 'Aguascalientes'), ('brownsville', 'Brownsville'),
-        ('cancun', 'Cancún'), ('cdmx', 'Ciudad de México'),
-        ('chihuaha', 'Chihuaha'), ('ciudadjuarez', 'Ciudad Juárez'),
-        ('ciudadsatelite', 'Ciudad Satélite'),
-        ('ciudadsateliteeducadores', 'Ciudad Satélite (Educadores)'),
-        ('ciudadsatelitecasaazul', 'Ciudad Satélite (Casa Azul)'),
-        ('cuernavaca', 'Cuernavaca'), ('culiacan', 'Culiacán'),
-        ('delicias', 'Delicias'), ('guadalajara', 'Guadalajara'),
-        ('hermosillo', 'Hermosillo'), ('leon', 'León'),
-        ('loscabos', 'Los Cabos'), ('merida', 'Mérida'),
-        ('mexicali', 'Mexicali'), ('monterrey', 'Monterrey'),
-        ('morelia', 'Morelia'), ('oaxaca', 'Oaxaca'),
-        ('puebla', 'Puebla'), ('queretaro', 'Querétaro'),
-        ('tehuacan', 'Tehuacán'), ('tequisquiapan', 'Tequisquiapan'),
-        ('tuxtlagutierrez', 'Tuxtla Gutiérrez'), ('veracruz', 'Veracruz'),
-        ('zacatecas', 'Zacatecas')
-    ], string="Centro de atención VIFAC")
 
     #proyecto_id = fields.Many2one('project.project', string='Proyecto')
     #asignado_a_id = fields.Many2one('res.users', string='Asignado a')
@@ -231,7 +213,7 @@ class Beneficiaria(models.Model):
     canalizacion_otro = fields.Char(string="Especifique canalización", help="Si eligió 'Otro', especifique cómo llegó a VIFAC")
     nombre_canalizador = fields.Char(string="Nombre del canalizador", help="Nombre de la persona que canalizó a la beneficiaria")
     cargo_canalizador = fields.Char(string="Cargo del canalizador", help="Cargo de la persona que canalizó a la beneficiaria")
-    numero_oficio_canalización = fields.Char(string="Número de oficio de canalización", help="Número de oficio de la autoridad que canalizó a la beneficiaria")
+    numero_oficio_canalizacion = fields.Char(string="Número de oficio de canalización", help="Número de oficio de la autoridad que canalizó a la beneficiaria")
 
     # ==== sección seguimiento legal pestaña "canalización" ====
     tiene_carpeta_investigacion = fields.Boolean(string="¿Tiene carpeta de investigación?")
@@ -315,7 +297,7 @@ class Beneficiaria(models.Model):
         ('buena', 'Buena'),
         ('regular', 'Regular'),
         ('mala', 'Mala'),
-        ('no_aplica', 'No Aplica')
+        ('no_aplica', 'No Aplica'),
         ('otro', 'Otro')
     ], string="Relación con el padre")
     relacion_con_padre_otro = fields.Char(string="Especifique relación con el padre")
@@ -430,12 +412,14 @@ class Beneficiaria(models.Model):
     # === PESTAÑA "DOCUMENTACIÓN" ===
     # PENDIENTE PESTAÑA DOCUMENTACIÓN
 
+
+
     # === PESTAÑA "TRASLADOS" ===
     # PENDIENTE PESTAÑA TRASLADOS
 
 
     # === PESTAÑA "PROYECTO DE VIDA" ===
-    reaccion_confirmacion_embarazo = fields.selection([
+    reaccion_confirmacion_embarazo = fields.Selection([
         ('Quise abortar', 'Quise abortar'),
         ('Quise tener al bebé', 'Quise tener al bebé'),
         ('No sabía qué hacer', 'No sabía qué hacer'),
@@ -490,7 +474,10 @@ class Beneficiaria(models.Model):
     # === RELACIONES ===
     # hijo_ids = fields.One2many('vifac.hijo', 'beneficiaria_id')
     #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
-    #documento_ids = fields.One2many('vifac.documento', 'beneficiaria_id')
+    documentos_ids = fields.One2many(
+        'documento', 'beneficiaria_id', string='Documentos',
+        domain=[('tipo_relacion', '=', 'beneficiaria')]
+    )
     #red_social_ids = fields.One2many('vifac.redsocial', 'beneficiaria_id')
     #valoracion_ids = fields.One2many('vifac.valoracion', 'beneficiaria_id')
     #encuesta_ids = fields.One2many('vifac.encuesta', 'beneficiaria_id')

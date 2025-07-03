@@ -10,8 +10,9 @@
     'depends': ['base'],
     'data': [
         'security/beneficiarias_security.xml',
-        'views/beneficiaria_views.xml',
         'security/ir.model.access.csv', 
+        'views/beneficiaria_views.xml',
+        'views/beneficiaria_form.xml',
     ],
     'icon': 'beneficiarias/static/description/icon.svg',
     'installable': True,
