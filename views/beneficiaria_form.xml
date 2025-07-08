@@ -4,14 +4,6 @@
         <field name="model">beneficiarias.beneficiaria</field>
         <field name="arch" type="xml">
             <form string="Beneficiaria">
-                <div>
-                    <style type="text/css">
-                        .o_notebook > ul.nav.nav-tabs {
-                            flex-wrap: wrap !important;
-                        }
-                    </style>
-                </div>
-
                 <sheet>
                     <div class="oe_title">
                         <h1>
