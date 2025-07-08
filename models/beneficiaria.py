@@ -493,14 +493,4 @@ class Beneficiaria(models.Model):
             else:
                 record.edad_ingreso = 0
 
-    @api.constrains('curp')
-    def _check_curp_format(self):
-        for record in self:
-            if record.curp and not re.match(r'^[A-Z]{4}\d{6}[HM][A-Z]{5}\d{2}$', record.curp):
-                raise ValidationError("CURP no tiene un formato válido.")
 
-    @api.constrains('rfc')
-    def _check_rfc_format(self):
-        for record in self:
-            if record.rfc and not re.match(r'^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$', record.rfc):
-                raise ValidationError("RFC no tiene un formato válido.")
