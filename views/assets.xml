@@ -1,0 +1,8 @@
+<odoo>
+  <template id="assets_backend" name="Beneficiarias Assets" inherit_id="web.assets_backend">
+    <xpath expr="." position="inside">
+      <link rel="stylesheet" href="/beneficiarias/static/src/css/beneficiaria_notebook.css"/>
+    </xpath>
+  </template>
+</odoo>
+

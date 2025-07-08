@@ -1,0 +1,3 @@
+.o_notebook > ul.nav.nav-tabs {
+    flex-wrap: wrap !important;
+}
