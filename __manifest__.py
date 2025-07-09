@@ -7,13 +7,18 @@
     'author': 'Esteban Viniegra Pérez Olagaray | Pridecta',
     'website': 'https://pridecta.com',
     'license': 'LGPL-3',
-    'depends': ['base'],
+    'depends': ['base' , 'web'],
     'data': [
         'security/beneficiarias_security.xml',
         'security/ir.model.access.csv', 
         'views/beneficiaria_views.xml',
         'views/beneficiaria_form.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'beneficiarias/static/src/css/beneficiarias_tabs.css',
+        ],
+    },
     'icon': 'beneficiarias/static/description/icon.svg',
     'installable': True,
     'application': True,  

@@ -26,7 +26,7 @@
                         </group>
                     </group>
 
-                    <notebook>
+                    <notebook class="multi-line-tabs">
                         <!-- === DESCRIPCIÓN === -->
                         <page string="Descripción">
                             <field name="descripcion"/>
@@ -283,37 +283,43 @@
 
                         <!-- === PROYECTO DE VIDA === -->
                         <page string="Proyecto de Vida">
-                            <field name="reaccion_confirmacion_embarazo"/>
-                            <field name="intento_aborto"/>
-                            <field name="medio_intento_aborto"/>
-                            <field name="recibe_apoyo"/>
-                            <field name="especifique_apoyo"/>
-                            <field name="sabe_que_es_adocion"/>
-                            <field name="conoce_adopcion"/>
-                            <field name="desea_dar_a_adopcion"/>
+                            <group>
+                                <field name="reaccion_confirmacion_embarazo"/>
+                                <field name="intento_aborto"/>
+                                <field name="medio_intento_aborto"/>
+                                <field name="recibe_apoyo"/>
+                                <field name="especifique_apoyo"/>
+                                <field name="sabe_que_es_adocion"/>
+                                <field name="conoce_adopcion"/>
+                                <field name="desea_dar_a_adopcion"/>
+                            </group>
                         </page>
 
                         <!-- === DATOS DEL PARTO === -->
                         <page string="Datos del Parto">
-                            <field name="fecha_egreso_hospital"/>
-                            <field name="hospital_parto"/>
-                            <field name="parto_multiple"/>
+                            <group>
+                                <field name="fecha_egreso_hospital"/>
+                                <field name="hospital_parto"/>
+                                <field name="parto_multiple"/>
+                            </group>
                         </page>
 
                         <!-- === ALTA === -->
                         <page string="Alta">
-                            <field name="fecha_alta"/>
-                            <field name="persona_recoge"/>
-                            <field name="relacion_persona_recoge"/>
-                            <field name="telefono_persona_recoge"/>
-                            <field name="domicilio_persona_recoge"/>
-                            <field name="se_retiro_despues_de_dar_a_luz"/>
-                            <field name="se_retiro_con_bebe"/>
-                            <field name="se_retira_con_permiso_regreso_entrega_voluntaria"/>
-                            <field name="fecha_conclusion_entrega_voluntaria"/>
-                            <field name="nombre_testigo1"/>
-                            <field name="nombre_testigo2"/>
-                            <field name="autorizado_por"/>
+                            <group>
+                                <field name="fecha_alta"/>
+                                <field name="persona_recoge"/>
+                                <field name="relacion_persona_recoge"/>
+                                <field name="telefono_persona_recoge"/>
+                                <field name="domicilio_persona_recoge"/>
+                                <field name="se_retiro_despues_de_dar_a_luz"/>
+                                <field name="se_retiro_con_bebe"/>
+                                <field name="se_retira_con_permiso_regreso_entrega_voluntaria"/>
+                                <field name="fecha_conclusion_entrega_voluntaria"/>
+                                <field name="nombre_testigo1"/>
+                                <field name="nombre_testigo2"/>
+                                <field name="autorizado_por"/>
+                            </group>
                         </page>
 
                         <!-- === DOCUMENTOS === -->

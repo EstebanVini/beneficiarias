@@ -1,7 +1,7 @@
 from odoo import models, fields, api # type: ignore[import-untyped]
 
 class Documento(models.Model):
-    _name = 'documento'
+    _name = 'beneficiarias.documento'
     _description = 'Documento adjunto personalizado'
 
     name = fields.Char(string='Nombre del documento', required=True)

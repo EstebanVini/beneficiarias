@@ -17,7 +17,7 @@ class Hijo(models.Model):
     # === RELACIONES ===
     beneficiaria_id = fields.Many2one('beneficiarias.beneficiaria', string="Beneficiaria", required=False)
     documento_ids = fields.One2many(
-        'documento',
+        'beneficiarias.documento',
         'hijo_id',
         string='Documentos adjuntos',
         domain=[('tipo_relacion', '=', 'hijo')]
