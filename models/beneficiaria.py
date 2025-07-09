@@ -100,7 +100,8 @@ class Beneficiaria(models.Model):
 
     # ======== PESTAÑA DESCRIPCIÓN ==========
 
-    descripcion = fields.Text(string="Descripción de la beneficiaria")
+    descripcion = fields.Html(string='Descripción')
+
 
     # ======= PESTAÑA "INFORMACIÓN PARTICULAR DETALLADA" ========
 

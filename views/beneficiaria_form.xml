@@ -29,7 +29,7 @@
                     <notebook class="multi-line-tabs">
                         <!-- === DESCRIPCIÓN === -->
                         <page string="Descripción">
-                            <field name="descripcion"/>
+                            <field name="descripcion" widget="html" options="{'toolbar': true}" style="min-height: 200px;"/>
                         </page>
 
                         <!-- === INFORMACIÓN PARTICULAR DETALLADA === -->
@@ -227,8 +227,6 @@
                                     <field name="nivel_estudios"/>
                                     <field name="vive_con_ella"/>
                                     <field name="la_acompaña"/>
-                                    <field name="responsable"/>
-                                    <field name="escuela"/>
                                 </tree>
                                 <form>
                                     <group>
@@ -342,13 +340,22 @@
                                     <field name="name"/>
                                     <field name="descripcion"/>
                                     <field name="nombre_archivo"/>
-                                    <field name="url" widget="url"/>
+                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
+                                            attrs="{'invisible': [('url_ver', '=', False)]}" />
+                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
+                                            attrs="{'invisible': [('url_descargar', '=', False)]}" />
                                 </tree>
                                 <form>
                                     <group>
                                         <field name="name"/>
                                         <field name="descripcion"/>
                                         <field name="archivo" filename="nombre_archivo"/>
+                                        <field name="nombre_archivo"/>
+                                        <separator string="Acciones"/>
+                                        <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
+                                                attrs="{'invisible': [('url_ver', '=', False)]}" class="btn-primary"/>
+                                        <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
+                                                attrs="{'invisible': [('url_descargar', '=', False)]}" class="btn-secondary"/>
                                     </group>
                                 </form>
                             </field>
