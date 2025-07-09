@@ -19,7 +19,7 @@
     <record id="action_beneficiarias_beneficiaria" model="ir.actions.act_window">
         <field name="name">Beneficiarias</field>
         <field name="res_model">beneficiarias.beneficiaria</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="help" type="html">
             <p>Crea y gestiona las beneficiarias.</p>
         </field>
@@ -35,4 +35,42 @@
               name="Registro de Beneficiarias"
               parent="menu_beneficiarias_root"
               action="action_beneficiarias_beneficiaria"/>
+
+    <!-- Vista de etapas -->
+    <record id="view_stage_tree" model="ir.ui.view">
+        <field name="name">beneficiarias.stage.tree</field>
+        <field name="model">beneficiarias.stage</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="fold"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_stage_form" model="ir.ui.view">
+        <field name="name">beneficiarias.stage.form</field>
+        <field name="model">beneficiarias.stage</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name"/>
+                <field name="sequence"/>
+                <field name="fold"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_beneficiarias_stages" model="ir.actions.act_window">
+        <field name="name">Etapas de Seguimiento</field>
+        <field name="res_model">beneficiarias.stage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_beneficiarias_stages"
+            name="Etapas"
+            parent="menu_beneficiarias_root"
+            action="action_beneficiarias_stages"
+            sequence="20"/>
+
 </odoo>

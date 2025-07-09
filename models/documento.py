@@ -1,4 +1,4 @@
-from odoo import models, fields, api # type: ignore[import-untyped]
+from odoo import models, fields, api
 
 class Documento(models.Model):
     _name = 'beneficiarias.documento'
@@ -7,8 +7,8 @@ class Documento(models.Model):
     name = fields.Char(string='Nombre del documento', required=True)
     descripcion = fields.Text(string='Descripción')
 
-    attachment_id = fields.Many2one('ir.attachment', string='Archivo', required=True)
-    file_name = fields.Char(related='attachment_id.name', string='Nombre del archivo', store=False)
+    archivo = fields.Binary(string='Archivo', required=True)
+    nombre_archivo = fields.Char(string='Nombre del archivo')
 
     tipo_relacion = fields.Selection([
         ('beneficiaria', 'Beneficiaria'),
@@ -20,16 +20,16 @@ class Documento(models.Model):
     bebe_id = fields.Many2one('beneficiarias.bebe', string='Bebé')
     hijo_id = fields.Many2one('beneficiarias.hijo', string='Hijo')
 
-
     url = fields.Char(string='Descargar', compute='_compute_url', store=False)
 
-    @api.depends('attachment_id')
+    @api.depends('archivo', 'nombre_archivo')
     def _compute_url(self):
         for record in self:
-            if record.attachment_id:
-                record.url = f"/web/content/{record.attachment_id.id}?download=true"
+            if record.archivo:
+                record.url = f"/web/content/beneficiarias.documento/{record.id}/archivo/{record.nombre_archivo}?download=true"
             else:
                 record.url = False
+
     @api.model
     def create(self, vals):
         if vals.get('beneficiaria_id'):
@@ -39,4 +39,3 @@ class Documento(models.Model):
         elif vals.get('bebe_id'):
             vals['tipo_relacion'] = 'bebe'
         return super().create(vals)
-

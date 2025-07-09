@@ -1,0 +1,25 @@
+<odoo>
+    <record id="stage_pre_ingreso" model="beneficiarias.stage">
+        <field name="name">Pre-Ingreso</field>
+        <field name="sequence">1</field>
+        <field name="fold">False</field>
+    </record>
+
+    <record id="stage_en_atencion" model="beneficiarias.stage">
+        <field name="name">En Atención</field>
+        <field name="sequence">2</field>
+        <field name="fold">False</field>
+    </record>
+
+    <record id="stage_post_atencion" model="beneficiarias.stage">
+        <field name="name">Seguimiento Post Atención</field>
+        <field name="sequence">3</field>
+        <field name="fold">False</field>
+    </record>
+
+    <record id="stage_conclusion" model="beneficiarias.stage">
+        <field name="name">Conclusión del servicio</field>
+        <field name="sequence">4</field>
+        <field name="fold">True</field>
+    </record>
+</odoo>

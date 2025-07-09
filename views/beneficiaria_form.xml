@@ -74,6 +74,64 @@
                             </group>
                         </page>
 
+                        <!-- === RESIDENCIA === -->
+                        <page string="Residencia">
+                            <group>
+                            </group>
+                        </page>
+
+                        
+                        <!-- === CANALIZACIÓN Y LEGAL === -->
+                        <page string="Canalización y Legal">
+                            <group string="Canalización">
+                                <field name="ingreso_por"/>
+                                <field name="canalizacion"/>
+                                <field name="canalizacion_otro"/>
+                                <field name="nombre_canalizador"/>
+                                <field name="cargo_canalizador"/>
+                                <field name="numero_oficio_canalizacion"/>
+                            </group>
+                            <group string="Seguimiento Legal">
+                                <field name="tiene_carpeta_investigacion"/>
+                                <field name="NIC"/>
+                                <field name="NUC"/>
+                                <field name="fecha_investigacion"/>
+                                <field name="lugar"/>
+                                <field name="delito"/>
+                                <field name="numero_oficio"/>
+                                <field name="estatus_situacion_juridica"/>
+                                <field name="persona_seguimiento_legal"/>
+                                <field name="telefono_seguimiento_legal"/>
+                                <field name="telefono2_seguimiento_legal"/>
+                                <field name="correo_seguimiento_legal"/>
+                                <field name="notas_seguimiento_legal"/>
+                            </group>
+                        </page>
+
+                        <!-- === FOTOS === -->
+                        <page string="Fotos">
+                            <group>
+
+                            </group>
+                        </page>
+
+                        <!-- === SERVICIOS RECIBIDOS === -->
+                        <page string="Detalle del Servicio">
+                            <group>
+                                <field name="atencion_integral_embarazo"/>
+                                <field name="atencion_medica"/>
+                                <field name="atencion_psicologica"/>
+                                <field name="atencion_nutricional"/>
+                                <field name="apoyo_emocional"/>
+                                <field name="apoyo_especie"/>
+                                <field name="aistencia_legal_adopcion"/>
+                                <field name="centro_capacitacion_formacion"/>
+                                <field name="otro"/>
+                                <field name="otro_detalle_servicio"/>
+                            </group>
+                        </page>
+
+
                         <!-- === EMBARAZO === -->
                         <page string="Embarazo">
                             <group>
@@ -128,51 +186,14 @@
                             </group>
                         </page>
 
-                        <!-- === CANALIZACIÓN Y LEGAL === -->
-                        <page string="Canalización y Legal">
-                            <group string="Canalización">
-                                <field name="ingreso_por"/>
-                                <field name="canalizacion"/>
-                                <field name="canalizacion_otro"/>
-                                <field name="nombre_canalizador"/>
-                                <field name="cargo_canalizador"/>
-                                <field name="numero_oficio_canalizacion"/>
-                            </group>
-                            <group string="Seguimiento Legal">
-                                <field name="tiene_carpeta_investigacion"/>
-                                <field name="NIC"/>
-                                <field name="NUC"/>
-                                <field name="fecha_investigacion"/>
-                                <field name="lugar"/>
-                                <field name="delito"/>
-                                <field name="numero_oficio"/>
-                                <field name="estatus_situacion_juridica"/>
-                                <field name="persona_seguimiento_legal"/>
-                                <field name="telefono_seguimiento_legal"/>
-                                <field name="telefono2_seguimiento_legal"/>
-                                <field name="correo_seguimiento_legal"/>
-                                <field name="notas_seguimiento_legal"/>
-                            </group>
-                        </page>
-
-                        <!-- === SERVICIOS RECIBIDOS === -->
-                        <page string="Detalle del Servicio">
+                        <!-- === ESCOLARIDAD === -->
+                        <page string="Escolaridad">
                             <group>
-                                <field name="atencion_integral_embarazo"/>
-                                <field name="atencion_medica"/>
-                                <field name="atencion_psicologica"/>
-                                <field name="atencion_nutricional"/>
-                                <field name="apoyo_emocional"/>
-                                <field name="apoyo_especie"/>
-                                <field name="aistencia_legal_adopcion"/>
-                                <field name="centro_capacitacion_formacion"/>
-                                <field name="otro"/>
-                                <field name="otro_detalle_servicio"/>
                             </group>
                         </page>
 
                         <!-- === FAMILIARES === -->
-                        <page string="Familiares">
+                        <page string="A. Familiares">
                             <group string="Padre">
                                 <field name="padre_nombre"/>
                                 <field name="direccion_padre"/>
@@ -196,6 +217,33 @@
                                 <field name="tiene_hermanos"/>
                             </group>
                         </page>
+
+                        <!-- === HIJOS === -->
+                        <page string="Hijos">
+                            <field name="hijos_ids">
+                                <tree editable="bottom">
+                                    <field name="nombre"/>
+                                    <field name="edad"/>
+                                    <field name="nivel_estudios"/>
+                                    <field name="vive_con_ella"/>
+                                    <field name="la_acompaña"/>
+                                    <field name="responsable"/>
+                                    <field name="escuela"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="nombre" required="1"/>
+                                        <field name="edad"/>
+                                        <field name="nivel_estudios"/>
+                                        <field name="vive_con_ella"/>
+                                        <field name="la_acompaña"/>
+                                        <field name="responsable"/>
+                                        <field name="escuela"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+
 
                         <!-- === RELACIÓN CON EL PADRE === -->
                         <page string="Relación con el Padre del Bebé">
@@ -230,7 +278,7 @@
                         </page>
 
                         <!-- === VIOLENCIA Y EDUCACIÓN SEXUAL === -->
-                        <page string="Violencia y Educación Sexual">
+                        <page string="Datos de violencia">
                             <group>
                                 <field name="violacion"/>
                                 <field name="violencia_intrafamiliar"/>
@@ -243,6 +291,12 @@
                                 <field name="carpeta_investigacion_numero"/>
                                 <field name="carpeta_investigacion_fecha"/>
                                 <field name="carpeta_investigacion_lugar"/>
+                            </group>
+                        </page>
+
+                        <!-- === ANTECEDENTES MÉDICOS === -->
+                        <page string="A. Médicos">
+                            <group>
                             </group>
                         </page>
 
@@ -279,6 +333,41 @@
                                 <field name="nombre_contacto_institucion"/>
                                 <field name="contacto_institucion"/>
                             </group>
+                        </page>
+                        
+                        <!-- === DOCUMENTOS === -->
+                        <page string="Documentos">
+                            <field name="documentos_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="descripcion"/>
+                                    <field name="nombre_archivo"/>
+                                    <field name="url" widget="url"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="descripcion"/>
+                                        <field name="archivo" filename="nombre_archivo"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+
+
+                        <!-- === TRASLADOS === -->
+                        <page string="Traslados">
+                            <!-- === TRASLADOS === -->
+                            <!--
+                                <field name="traslados_ids">
+                                    <tree editable="bottom">
+                                        <field name="fecha"/>
+                                        <field name="lugar"/>
+                                        <field name="motivo"/>
+                                        <field name="observaciones"/>
+                                    </tree>
+                                </field>
+                            -->
                         </page>
 
                         <!-- === PROYECTO DE VIDA === -->
@@ -320,18 +409,6 @@
                                 <field name="nombre_testigo2"/>
                                 <field name="autorizado_por"/>
                             </group>
-                        </page>
-
-                        <!-- === DOCUMENTOS === -->
-                        <page string="Documentos">
-                            <field name="documentos_ids">
-                                <tree editable="bottom">
-                                    <field name="name"/>
-                                    <field name="descripcion"/>
-                                    <field name="attachment_id"/>
-                                    <field name="url" widget="url"/>
-                                </tree>
-                            </field>
                         </page>
                     </notebook>
                 </sheet>

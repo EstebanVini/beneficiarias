@@ -472,12 +472,19 @@ class Beneficiaria(models.Model):
 
 
     # === RELACIONES ===
-    # hijo_ids = fields.One2many('vifac.hijo', 'beneficiaria_id')
+    hijos_ids = fields.One2many('beneficiarias.hijo', 'beneficiaria_id')
     #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
     documentos_ids = fields.One2many(
         'beneficiarias.documento', 'beneficiaria_id', string='Documentos',
         domain=[('tipo_relacion', '=', 'beneficiaria')]
     )
+    stage_id = fields.Many2one(
+    'beneficiarias.stage',
+    string="Etapa",
+    tracking=True,
+    default=lambda self: self.env['beneficiarias.stage'].search([], limit=1, order='sequence')
+    )
+
     #red_social_ids = fields.One2many('vifac.redsocial', 'beneficiaria_id')
     #valoracion_ids = fields.One2many('vifac.valoracion', 'beneficiaria_id')
     #encuesta_ids = fields.One2many('vifac.encuesta', 'beneficiaria_id')

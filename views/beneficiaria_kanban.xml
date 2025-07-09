@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_kanban_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.kanban</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" group_create="true" class="o_kanban_dashboard">
+                <field name="stage_id" options="{'fold_field': 'fold'}"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <strong><field name="nombre_completo"/></strong>
+                            <div><field name="curp"/></div>
+                            <div><field name="atention_center"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

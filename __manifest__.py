@@ -13,6 +13,9 @@
         'security/ir.model.access.csv', 
         'views/beneficiaria_views.xml',
         'views/beneficiaria_form.xml',
+        'views/stage_views.xml',
+        'views/beneficiaria_kanban.xml',
+        'data/stages.xml',
     ],
     'assets': {
         'web.assets_backend': [
