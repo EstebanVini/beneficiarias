@@ -67,10 +67,4 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_beneficiarias_stages"
-            name="Etapas"
-            parent="menu_beneficiarias_root"
-            action="action_beneficiarias_stages"
-            sequence="20"/>
-
 </odoo>

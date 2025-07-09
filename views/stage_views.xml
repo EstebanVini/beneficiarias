@@ -33,9 +33,4 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_beneficiarias_stages"
-              name="Etapas de Seguimiento"
-              parent="menu_beneficiarias_root"
-              sequence="20"
-              action="action_beneficiarias_stages"/>
 </odoo>
