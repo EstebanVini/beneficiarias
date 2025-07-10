@@ -381,6 +381,57 @@
                             </form>
                         </field>
                         </page>
+                                                <!-- === TALLERES === -->
+                        <page string="Talleres">
+                            <field name="taller_ids">
+                                <tree editable="bottom">
+                                    <field name="name_taller"/>
+                                    <field name="instructor"/>
+                                    <field name="fecha"/>
+                                    <field name="num_horas"/>
+                                    <field name="comentarios"/>
+                                    <field name="certificado_archivo" filename="certificado_nombre_archivo" string="Certificado"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="name_taller" required="1"/>
+                                        <field name="instructor" required="1"/>
+                                        <field name="fecha" required="1"/>
+                                        <field name="num_horas" required="1"/>
+                                        <field name="comentarios"/>
+                                        <field name="certificado_archivo" filename="certificado_nombre_archivo" string="Archivo Certificado"/>
+                                    </group>
+                                    <group string="Certificados del Taller">
+                                        <field name="documentos_ids" context="{'default_tipo_relacion': 'taller'}" nolabel="1">
+                                            <tree editable="bottom">
+                                                <field name="name"/>
+                                                <field name="descripcion"/>
+                                                <field name="nombre_archivo"/>
+                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
+                                                        attrs="{'invisible': [('url_ver', '=', False)]}" />
+                                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
+                                                        attrs="{'invisible': [('url_descargar', '=', False)]}" />
+                                            </tree>
+                                            <form>
+                                                <group>
+                                                    <field name="name"/>
+                                                    <field name="descripcion"/>
+                                                    <field name="archivo" filename="nombre_archivo"/>
+                                                    <field name="nombre_archivo"/>
+                                                    <field name="beneficiaria_id" invisible="1"/>
+                                                    <field name="taller_id" invisible="1"/>
+                                                    <separator string="Acciones"/>
+                                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
+                                                            attrs="{'invisible': [('url_ver', '=', False)]}" class="btn-primary"/>
+                                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
+                                                            attrs="{'invisible': [('url_descargar', '=', False)]}" class="btn-secondary"/>
+                                                </group>
+                                            </form>
+                                        </field>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
 
                         <!-- === PROYECTO DE VIDA === -->
                         <page string="Proyecto de Vida">

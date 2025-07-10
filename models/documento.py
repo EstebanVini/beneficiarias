@@ -1,4 +1,4 @@
-from odoo import models, fields, api # type: ignore[import-untyped]
+from odoo import models, fields, api # type: ignore
 
 class Documento(models.Model):
     _name = 'beneficiarias.documento'
@@ -6,7 +6,6 @@ class Documento(models.Model):
 
     name = fields.Char(string='Nombre del documento', required=True)
     descripcion = fields.Text(string='Descripción')
-
     archivo = fields.Binary(string='Archivo', required=True)
     nombre_archivo = fields.Char(string='Nombre del archivo')
 
@@ -14,11 +13,13 @@ class Documento(models.Model):
         ('beneficiaria', 'Beneficiaria'),
         ('hijo', 'Hijo'),
         ('bebe', 'Bebé'),
+        ('taller', 'Taller'),
     ], string='Relacionado con', required=True)
 
     beneficiaria_id = fields.Many2one('beneficiarias.beneficiaria', string='Beneficiaria')
     bebe_id = fields.Many2one('beneficiarias.bebe', string='Bebé')
     hijo_id = fields.Many2one('beneficiarias.hijo', string='Hijo')
+    taller_id = fields.Many2one('beneficiarias.taller', string='Taller')
 
     url_ver = fields.Char(string='URL Visualización', compute='_compute_urls', store=False)
     url_descargar = fields.Char(string='URL Descarga', compute='_compute_urls', store=False)
@@ -36,8 +37,10 @@ class Documento(models.Model):
 
     @api.model
     def create(self, vals):
-        # Asignar tipo_relacion automáticamente
-        if vals.get('beneficiaria_id'):
+        # Si viene de taller, asegura tipo_relacion correcto
+        if vals.get('taller_id'):
+            vals['tipo_relacion'] = 'taller'
+        elif vals.get('beneficiaria_id'):
             vals['tipo_relacion'] = 'beneficiaria'
         elif vals.get('hijo_id'):
             vals['tipo_relacion'] = 'hijo'
