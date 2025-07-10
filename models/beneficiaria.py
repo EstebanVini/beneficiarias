@@ -264,7 +264,11 @@ class Beneficiaria(models.Model):
     # ], string="Tipo de Documento", help="Tipo de documento relacionado con la beneficiaria")
 
     # ==== PESTAÑA "FOTOS" =====
-    # PENDIENTE!!
+    foto_perfil_izquierdo = fields.Image(string="Foto Perfil Izquierdo", max_width=400, max_height=400)
+    foto_frontal = fields.Image(string="Foto Frontal", max_width=400, max_height=400)
+    foto_perfil_derecho = fields.Image(string="Foto Perfil Derecho", max_width=400, max_height=400)
+    foto_huellas = fields.Image(string="Huellas Digitales", max_width=400, max_height=400)
+
 
     # === PESTAÑA "DETALLE DEL SERVICIO" ===
     atencion_integral_embarazo = fields.Boolean(string="Atención Integral Embarazo")
