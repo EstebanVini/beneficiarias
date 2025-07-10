@@ -1,6 +1,6 @@
 from odoo import models, fields, api # type: ignore
 from odoo.exceptions import ValidationError # type: ignore
-from datetime import date
+from datetime import date, timedelta
 
 import re
 
@@ -47,6 +47,8 @@ class Beneficiaria(models.Model):
         ('zacatecas', 'Zacatecas')
     ], string="Centro de atención VIFAC")
 
+    numero_hijos = fields.Integer(string="Número de hijos que la acompañan", default=0, required=True)
+
     nacionalidad = fields.Char(string="Nacionalidad")
     estado_civil = fields.Char(string="Estado Civil")
     ocupacion = fields.Char(string="Ocupación")
@@ -55,10 +57,21 @@ class Beneficiaria(models.Model):
 
     # datos embarazo en formulario principal
     embarazo = fields.Boolean(string="¿Está embarazada?")
-    fum_time = fields.Date(string="FUM")
-    meses_embarazo = fields.Integer(string="Meses de embarazo")
-    semanas_gestacion = fields.Integer(string="Semanas de gestación")
-    fecha_probable_de_parto = fields.Date(string="Fecha probable de parto")
+    fum_time = fields.Date(string="FUM (Fecha de Última Menstruación)")
+    meses_embarazo = fields.Integer(string="Meses de embarazo", compute='_compute_embarazo_info', store=True)
+    semanas_gestacion = fields.Integer(string="Semanas de gestación", compute='_compute_embarazo_info', store=True)
+    fecha_probable_de_parto = fields.Date(string="Fecha probable de parto", compute='_compute_embarazo_info', store=True)
+
+    tipo_de_ayuda = fields.Selection([
+        ('interna', 'Interna'),
+        ('externa', 'Externa'), 
+        ('extra', 'Apoyo extra'),
+        ('otro', 'Otro')
+    ], string="Tipo de ayuda")
+    tipo_de_ayuda_otro = fields.Char(string="Especifique tipo de ayuda")
+
+
+    ref_auto = fields.Char(string="Referida por autoridad")
 
     # datos de egreso en formulario principal
     motivo_de_egreso = fields.Selection([
@@ -85,16 +98,11 @@ class Beneficiaria(models.Model):
     ], string="Motivo de egreso (post parto)")
     motivo_de_egreso_otro_post_parto = fields.Char(string="Especifique (post parto)")
 
-    # Referencias en formulario principal
-    ref_auto = fields.Char(string="Referida por autoridad")
+
 
     #proyecto_id = fields.Many2one('project.project', string='Proyecto')
     #asignado_a_id = fields.Many2one('res.users', string='Asignado a')
     #recibida_por_id = fields.Many2one('res.users', string='Recibida por')
-
-    # tipo_ayuda_id = fields.Many2one('vifac.tipoayuda', string='Tipo de ayuda', required=True)
-    # need_extra_ayuda = fields.Boolean(string='Otro campo', related='tipo_ayuda_id.extra_field', readonly=True)
-    # especifique_ayuda = fields.Char(string='Especifique')
 
 
 
@@ -473,6 +481,9 @@ class Beneficiaria(models.Model):
 
 
     # === RELACIONES ===
+    # relación con usuario encargado para ser asignada
+    asignado_a_id = fields.Many2one('res.users', string='Asignado a', tracking=True)
+
     hijos_ids = fields.One2many('beneficiarias.hijo', 'beneficiaria_id')
     #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
     traslado_ids = fields.One2many('beneficiarias.traslados', 'beneficiaria_id', string='Traslados')
@@ -503,4 +514,19 @@ class Beneficiaria(models.Model):
             else:
                 record.edad_ingreso = 0
 
+    @api.depends('fum_time')
+    def _compute_embarazo_info(self):
+        for rec in self:
+            if rec.fum_time:
+                # Fecha probable de parto
+                rec.fecha_probable_de_parto = rec.fum_time + timedelta(days=280)
+                # Cálculo de semanas de gestación y meses de embarazo
+                today = fields.Date.context_today(rec)
+                days_pregnant = (today - rec.fum_time).days
+                rec.semanas_gestacion = days_pregnant // 7 if days_pregnant >= 0 else 0
+                rec.meses_embarazo = days_pregnant // 30 if days_pregnant >= 0 else 0
+            else:
+                rec.fecha_probable_de_parto = False
+                rec.semanas_gestacion = 0
+                rec.meses_embarazo = 0
 

@@ -12,7 +12,7 @@
                     </div>
 
                     <group>
-                        <group>
+                        <group string="Datos Generales">
                             <field name="nombre"/>
                             <field name="apellido_paterno"/>
                             <field name="apellido_materno"/>
@@ -23,7 +23,29 @@
                             <field name="edad_ingreso" readonly="1"/>
                             <field name="rango"/>
                             <field name="atention_center"/>
+                            <field name="numero_hijos"/>
+                            <field name="asignado_a_id"/>
+                            <field name="ref_auto"/>
+                            <field name="tipo_de_ayuda"/>
+                            <field name="tipo_de_ayuda_otro">
+                                <visibility><expr>tipo_de_ayuda == 'otro'</expr></visibility>
+                            </field>
                         </group>
+                        <group string="Datos de Embarazo">
+                            <field name="fum_time" placeholder="Fecha de última menstruación (FUM)"/>
+                            <field name="meses_embarazo"
+                                help="Se calcula automáticamente según la FUM"/>
+                            <field name="semanas_gestacion"
+                                help="Se calcula automáticamente según la FUM"/>
+                            <field name="fecha_probable_de_parto"
+                                help="Se calcula automáticamente según la FUM"/>
+                        </group>
+                        <!-- <group string="Egreso">
+                            <field name="motivo_de_egreso_parto"/>
+                            <field name="motivo_de_egreso_otro_post_parto">
+                                <visibility><expr>motivo_de_egreso_parto == '07'</expr></visibility>
+                            </field>
+                        </group> -->
                     </group>
 
                     <notebook class="multi-line-tabs">
@@ -128,26 +150,6 @@
                                 <field name="centro_capacitacion_formacion"/>
                                 <field name="otro"/>
                                 <field name="otro_detalle_servicio"/>
-                            </group>
-                        </page>
-
-
-                        <!-- === EMBARAZO === -->
-                        <page string="Embarazo">
-                            <group>
-                                <field name="embarazo"/>
-                                <field name="fum_time">
-                                    <visibility><expr>embarazo</expr></visibility>
-                                </field>
-                                <field name="meses_embarazo">
-                                    <visibility><expr>embarazo</expr></visibility>
-                                </field>
-                                <field name="semanas_gestacion">
-                                    <visibility><expr>embarazo</expr></visibility>
-                                </field>
-                                <field name="fecha_probable_de_parto">
-                                    <visibility><expr>embarazo</expr></visibility>
-                                </field>
                             </group>
                         </page>
 
