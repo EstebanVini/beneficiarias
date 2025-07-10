@@ -3,4 +3,5 @@ access_beneficiaria,access_beneficiaria,model_beneficiarias_beneficiaria,,1,1,1,
 access_beneficiarias_stage,access_beneficiarias_stage,model_beneficiarias_stage,,1,1,1,1
 access_documento,access_documento,model_beneficiarias_documento,,1,1,1,1
 access_hijo,access_hijo,model_beneficiarias_hijo,,1,1,1,1
+access_traslados,access_traslados,model_beneficiarias_traslados,,1,1,1,1
 

@@ -475,6 +475,7 @@ class Beneficiaria(models.Model):
     # === RELACIONES ===
     hijos_ids = fields.One2many('beneficiarias.hijo', 'beneficiaria_id')
     #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
+    traslado_ids = fields.One2many('beneficiarias.traslados', 'beneficiaria_id', string='Traslados')
     documentos_ids = fields.One2many(
         'beneficiarias.documento', 'beneficiaria_id', string='Documentos',
         domain=[('tipo_relacion', '=', 'beneficiaria')]
