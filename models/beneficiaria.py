@@ -9,10 +9,15 @@ class Beneficiaria(models.Model):
     _description = 'Beneficiaria'
 
     # === FORMULARIO PRINCIPAL ===
-    nombre_completo = fields.Char(string="Nombre Completo", required=True)
-    nombre = fields.Char(string="Nombre", required=True)
+    nombre = fields.Char(string="Nombre(s)", required=True)
     apellido_paterno = fields.Char(string="Apellido Paterno", required=True)
     apellido_materno = fields.Char(string="Apellido Materno", required=True)
+    nombre_completo = fields.Char(
+        string="Nombre Completo", 
+        compute='_compute_nombre_completo', 
+        store=True, 
+        readonly=True
+    )
     curp = fields.Char(string="CURP", required=True)
     rfc = fields.Char(string="RFC")
     fecha_nacimiento = fields.Date(string="Fecha de Nacimiento", required=True)
@@ -26,7 +31,8 @@ class Beneficiaria(models.Model):
         ('23a27','De 23 a 27 años'),
         ('28a31','De 28 a 31 años'),
         ('ma32','Mayores de 32')
-    ], string="Rango de Edad")
+    ], string="Rango de Edad", compute="_compute_rango_edad", store=True)
+
 
     atention_center = fields.Selection([
         ('aguascalientes', 'Aguascalientes'), ('brownsville', 'Brownsville'),
@@ -505,6 +511,13 @@ class Beneficiaria(models.Model):
     #tipo_ayuda_ids = fields.Many2many('vifac.tipoayuda', string='Tipos de ayuda')
 
     # === CÁLCULOS Y VALIDACIONES ===
+
+    @api.depends('nombre', 'apellido_paterno', 'apellido_materno')
+    def _compute_nombre_completo(self):
+        for rec in self:
+            partes = filter(None, [rec.nombre, rec.apellido_paterno, rec.apellido_materno])
+            rec.nombre_completo = ' '.join(partes)
+
     @api.depends('fecha_nacimiento', 'fecha_ingreso')
     def _compute_edad_ingreso(self):
         for record in self:
@@ -529,4 +542,25 @@ class Beneficiaria(models.Model):
                 rec.fecha_probable_de_parto = False
                 rec.semanas_gestacion = 0
                 rec.meses_embarazo = 0
+
+    @api.depends('edad_ingreso')
+    def _compute_rango_edad(self):
+        for rec in self:
+            edad = rec.edad_ingreso or 0
+            if edad < 12:
+                rec.rango = 'm12'
+            elif 12 <= edad <= 14:
+                rec.rango = '12a14'
+            elif 15 <= edad <= 17:
+                rec.rango = '15a17'
+            elif 18 <= edad <= 22:
+                rec.rango = '18a22'
+            elif 23 <= edad <= 27:
+                rec.rango = '23a27'
+            elif 28 <= edad <= 31:
+                rec.rango = '28a31'
+            elif edad >= 32:
+                rec.rango = 'ma32'
+            else:
+                rec.rango = False
 

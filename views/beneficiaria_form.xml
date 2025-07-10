@@ -7,7 +7,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="nombre_completo"/>
+                            <field name="nombre_completo" readonly="1"/>
                         </h1>
                     </div>
 
@@ -21,16 +21,19 @@
                             <field name="fecha_nacimiento"/>
                             <field name="fecha_ingreso"/>
                             <field name="edad_ingreso" readonly="1"/>
-                            <field name="rango"/>
+                            <field name="rango" readonly="1"/>
                             <field name="atention_center"/>
                             <field name="numero_hijos"/>
                             <field name="asignado_a_id"/>
                             <field name="ref_auto"/>
                             <field name="tipo_de_ayuda"/>
                             <field name="tipo_de_ayuda_otro">
-                                <visibility><expr>tipo_de_ayuda == 'otro'</expr></visibility>
+                                <visibility>
+                                    <expr>tipo_de_ayuda == 'Otro'</expr>
+                                </visibility>
                             </field>
-                        </group>
+                            </group>
+                        
                         <group string="Datos de Embarazo">
                             <field name="fum_time" placeholder="Fecha de última menstruación (FUM)"/>
                             <field name="meses_embarazo"
