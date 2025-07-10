@@ -27,8 +27,9 @@
 
     <!-- Menú principal -->
     <menuitem id="menu_beneficiarias_root"
-              name="Beneficiarias"
-              sequence="10"/>
+          name="Beneficiarias"
+          sequence="10"
+          web_icon="beneficiarias,static/description/icon.png"/>
 
     <!-- Submenú con acción -->
     <menuitem id="menu_beneficiarias_beneficiaria"

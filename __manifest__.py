@@ -5,7 +5,7 @@
     'summary': 'Gestión de Beneficiarias',
     'category': 'Custom',
     'author': 'Esteban Viniegra Pérez Olagaray | Pridecta',
-    'website': 'https://pridecta.com',
+    #'website': 'https://pridecta.com',
     'license': 'LGPL-3',
     'depends': ['base' , 'web'],
     'data': [
@@ -22,7 +22,7 @@
             'beneficiarias/static/src/css/beneficiarias_tabs.css',
         ],
     },
-    'icon': 'beneficiarias/static/description/icon.svg',
+    'icon': 'beneficiarias/static/description/icon.png',
     'installable': True,
     'application': True,  
 }
