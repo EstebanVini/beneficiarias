@@ -10,66 +10,46 @@
                             <field name="nombre_completo" readonly="1"/>
                         </h1>
                     </div>
-                    <group>
-                        <!-- Columna Izquierda -->
-                        <group>
-                            <group string="Datos Generales">
-                                <field name="nombre"/>
-                                <field name="apellido_paterno"/>
-                                <field name="apellido_materno"/>
-                                <field name="curp"/>
-                                <field name="rfc"/>
-                                <field name="fecha_nacimiento"/>
-                                <field name="fecha_ingreso"/>
-                                <field name="edad_ingreso" readonly="1"/>
-                                <field name="rango" readonly="1"/>
-                                <field name="atention_center"/>
-                                <field name="numero_hijos"/>
-                                <field name="asignado_a_id"/>
-                                <field name="ref_auto"/>
-                                <field name="tipo_de_ayuda"/>
-                                <field name="tipo_de_ayuda_otro">
-                                    <visibility>
-                                        <expr>tipo_de_ayuda == 'Otro'</expr>
-                                    </visibility>
-                                </field>
-                            </group>
+                    <group col="2">
+                        <!-- Columna 1: Datos Generales -->
+                        <group string="Datos Generales">
+                            <field name="nombre"/>
+                            <field name="apellido_paterno"/>
+                            <field name="apellido_materno"/>
+                            <field name="curp"/>
+                            <field name="rfc"/>
+                            <field name="fecha_nacimiento"/>
+                            <field name="fecha_ingreso"/>
+                            <field name="edad_ingreso" readonly="1"/>
+                            <field name="rango" readonly="1"/>
+                            <field name="atention_center"/>
+                            <field name="numero_hijos"/>
+                            <field name="asignado_a_id"/>
+                            <field name="ref_auto"/>
+                            <field name="tipo_de_ayuda"/>
+                            <field name="tipo_de_ayuda_otro" invisible="tipo_de_ayuda != 'otro'"/>
                         </group>
-
-                        <!-- Columna Derecha (vertical) -->
-                        <group>
-                            <group col="1">
-                                <group string="Datos de Embarazo">
-                                    <field name="fum_time" placeholder="Fecha de última menstruación (FUM)"/>
-                                    <field name="meses_embarazo" help="Se calcula automáticamente según la FUM"/>
-                                    <field name="semanas_gestacion" help="Se calcula automáticamente según la FUM"/>
-                                    <field name="fecha_probable_de_parto" help="Se calcula automáticamente según la FUM"/>
-                                </group>
-                                <group string="Motivo de Egreso">
-                                    <field name="motivo_de_egreso"/>
-                                    <field name="motivo_de_egreso_otro">
-                                        <visibility>
-                                            <expr>motivo_de_egreso == '09'</expr>
-                                        </visibility>
-                                    </field>
-                                    <field name="motivo_de_egreso_parto"/>
-                                    <field name="motivo_de_egreso_otro_post_parto">
-                                        <visibility>
-                                            <expr>motivo_de_egreso_parto == '07'</expr>
-                                        </visibility>
-                                    </field>
-                                </group>
+                        <!-- Columna 2: Datos de Embarazo y Motivo de Egreso uno debajo de otro -->
+                        <group col="1">
+                            <group string="Datos de Embarazo">
+                                <field name="fum_time" placeholder="Fecha de última menstruación (FUM)"/>
+                                <field name="meses_embarazo" help="Se calcula automáticamente según la FUM"/>
+                                <field name="semanas_gestacion" help="Se calcula automáticamente según la FUM"/>
+                                <field name="fecha_probable_de_parto" help="Se calcula automáticamente según la FUM"/>
+                            </group>
+                            <group string="Motivo de Egreso">
+                                <field name="motivo_de_egreso"/>
+                                <field name="motivo_de_egreso_otro" invisible="motivo_de_egreso != '09'"/>
+                                <field name="motivo_de_egreso_parto"/>
+                                <field name="motivo_de_egreso_otro_post_parto" invisible="motivo_de_egreso_parto != '07'"/>
                             </group>
                         </group>
                     </group>
-
-
                     <notebook class="multi-line-tabs">
                         <!-- === DESCRIPCIÓN === -->
                         <page string="Descripción">
                             <field name="descripcion" widget="html" options="{'toolbar': true}" style="min-height: 200px;"/>
                         </page>
-
                         <!-- === INFORMACIÓN PARTICULAR DETALLADA === -->
                         <page string="Información Particular Detallada">
                             <group>
@@ -77,9 +57,44 @@
                                 <field name="telefono"/>
                                 <field name="telefono_celular"/>
                                 <field name="tiene_red_social"/>
+                                <field name="tipo_red_social1" invisible="not tiene_red_social"/>
+                                <!-- <field name="tipo_red_social1_otro" invisible="not tiene_red_social and tipo_red_social1 != 'otro'"/> -->
+                                <field name="red_social1" invisible="not tiene_red_social"/>
+                                <field name="tipo_red_social2" invisible="not tiene_red_social"/>
+                                <!-- <field name="tipo_red_social2_otro" invisible="not tiene_red_social and tipo_red_social2 != 'otro'"/> -->
+                                <field name="red_social2" invisible="not tiene_red_social"/>
+                                
                                 <field name="pais_nacimiento"/>
                                 <field name="ciudad_nacimiento"/>
                                 <field name="lugar_de_registro"/>
+
+                                <field name="grado_estudios"/>
+                                <field name="estado_civil"/>
+                                <field name="ocupacion"/>
+                                <field name="nivel_economico"/>
+                                <field name="tipo_poblacion"/>
+                                <field name="religion"/>
+                                <field name="migrante"/>
+                                <field name="pais_de_origen" invisible="not migrante"/>
+                                <field name="motivo_migracion" invisible="not migrante"/>
+                                <field name="deseo_de_migrar" invisible="not migrante"/>
+                                <field name="pertenece_a_una_comunidad"/>
+                                <field name="comunidad_indigena" invisible="not pertenece_a_una_comunidad"/>
+                                <field name="dialecto" invisible="not pertenece_a_una_comunidad"/>
+                                <field name="especifique_dialecto" invisible="not dialecto"/>
+                                <field name="lengua_materna" invisible="not pertenece_a_una_comunidad"/>
+                                <field name="discapacidad"/>
+                                <field name="tipo_discapacidad" invisible="not discapacidad"/>
+                                <field name="cantidad_embarazos"/>
+                                <field name="cantidad_hijos_nacidos_vivos"/>
+                                <field name="cantidad_hijos_nacidos_muertos"/>
+                                <field name="cantidad_abortos"/>
+                            </group>
+                        </page>
+                        <!-- === RESIDENCIA === -->
+                        <page string="Residencia">
+                            <group>
+                                <field name="pais"/>
                                 <field name="calle"/>
                                 <field name="numero_exterior"/>
                                 <field name="numero_interior"/>
@@ -88,64 +103,34 @@
                                 <field name="estado"/>
                                 <field name="referencia_domicilio"/>
                                 <field name="codigo_postal"/>
-                                <field name="grado_estudios"/>
-                                <field name="estado_civil"/>
-                                <field name="ocupacion"/>
-                                <field name="nivel_economico"/>
-                                <field name="tipo_poblacion"/>
-                                <field name="religion"/>
-                                <field name="migrante"/>
-                                <field name="pais_de_origen"/>
-                                <field name="motivo_migracion"/>
-                                <field name="deseo_de_migrar"/>
-                                <field name="pertenece_a_una_comunidad"/>
-                                <field name="comunidad_indigena"/>
-                                <field name="dialecto"/>
-                                <field name="especifique_dialecto"/>
-                                <field name="lengua_materna"/>
-                                <field name="discapacidad"/>
-                                <field name="tipo_discapacidad"/>
-                                <field name="cantidad_embarazos"/>
-                                <field name="cantidad_hijos_nacidos_vivos"/>
-                                <field name="cantidad_hijos_nacidos_muertos"/>
-                                <field name="cantidad_abortos"/>
                             </group>
                         </page>
-
-                        <!-- === RESIDENCIA === -->
-                        <page string="Residencia">
-                            <group>
-                            </group>
-                        </page>
-
-                        
                         <!-- === CANALIZACIÓN Y LEGAL === -->
                         <page string="Canalización y Legal">
                             <group string="Canalización">
                                 <field name="ingreso_por"/>
                                 <field name="canalizacion"/>
-                                <field name="canalizacion_otro"/>
+                                <field name="canalizacion_otro" invisible="canalizacion != 'otro'"/>
                                 <field name="nombre_canalizador"/>
                                 <field name="cargo_canalizador"/>
                                 <field name="numero_oficio_canalizacion"/>
                             </group>
                             <group string="Seguimiento Legal">
                                 <field name="tiene_carpeta_investigacion"/>
-                                <field name="NIC"/>
-                                <field name="NUC"/>
-                                <field name="fecha_investigacion"/>
-                                <field name="lugar"/>
-                                <field name="delito"/>
-                                <field name="numero_oficio"/>
+                                <field name="NIC" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="NUC" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="fecha_investigacion" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="lugar" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="delito" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="numero_oficio" invisible="not tiene_carpeta_investigacion"/>
                                 <field name="estatus_situacion_juridica"/>
-                                <field name="persona_seguimiento_legal"/>
-                                <field name="telefono_seguimiento_legal"/>
-                                <field name="telefono2_seguimiento_legal"/>
-                                <field name="correo_seguimiento_legal"/>
-                                <field name="notas_seguimiento_legal"/>
+                                <field name="persona_seguimiento_legal" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="telefono_seguimiento_legal" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="telefono2_seguimiento_legal" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="correo_seguimiento_legal" invisible="not tiene_carpeta_investigacion"/>
+                                <field name="notas_seguimiento_legal" invisible="not tiene_carpeta_investigacion"/>
                             </group>
                         </page>
-
                         <!-- === FOTOS === -->
                         <page string="Fotos">
                             <group>
@@ -185,9 +170,6 @@
                                 </table>
                             </group>
                         </page>
-
-
-                        
                         <!-- === SERVICIOS RECIBIDOS === -->
                         <page string="Detalle del Servicio">
                             <group>
@@ -200,23 +182,17 @@
                                 <field name="aistencia_legal_adopcion"/>
                                 <field name="centro_capacitacion_formacion"/>
                                 <field name="otro"/>
-                                <field name="otro_detalle_servicio"/>
+                                <field name="otro_detalle_servicio" invisible="not otro"/>
                             </group>
                         </page>
-
-                        <!-- === EGRESO === -->
-                        <page string="Egreso">
-
-                        </page>
-
                         <!-- === ACOMPAÑANTE Y REFERENCIAS === -->
                         <page string="Acompañante y Referencias">
                             <group>
                                 <field name="acompanante"/>
-                                <field name="acompanante_nombre"/>
-                                <field name="direccion_acompanante"/>
-                                <field name="acompanante_telefono"/>
-                                <field name="acompanante_parentesco"/>
+                                <field name="acompanante_nombre" invisible="not acompanante"/>
+                                <field name="direccion_acompanante" invisible="not acompanante"/>
+                                <field name="acompanante_telefono" invisible="not acompanante"/>
+                                <field name="acompanante_parentesco" invisible="not acompanante"/>
                             </group>
                             <group>
                                 <field name="nombre_referencia1"/>
@@ -228,14 +204,8 @@
                             </group>
                         </page>
 
-                        <!-- === ESCOLARIDAD === -->
-                        <page string="Escolaridad">
-                            <group>
-                            </group>
-                        </page>
-
                         <!-- === FAMILIARES === -->
-                        <page string="A. Familiares">
+                        <page string="Familiares">
                             <group string="Padre">
                                 <field name="padre_nombre"/>
                                 <field name="direccion_padre"/>
@@ -255,11 +225,10 @@
                                 <field name="tutor_parentesco"/>
                                 <field name="tutor_esta_vivo"/>
                             </group>
-                            <group>
+                            <group string="Hermanos">
                                 <field name="tiene_hermanos"/>
                             </group>
                         </page>
-
                         <!-- === HIJOS === -->
                         <page string="Hijos">
                             <field name="hijos_ids">
@@ -283,17 +252,13 @@
                                 </form>
                             </field>
                         </page>
-
-
                         <!-- === RELACIÓN CON EL PADRE === -->
                         <page string="Relación con el Padre del Bebé">
                             <group>
                                 <field name="nombre_padre"/>
                                 <field name="edad_padre"/>
                                 <field name="relacion_con_padre"/>
-                                <field name="relacion_con_padre_otro">
-                                    <visibility><expr>relacion_con_padre == 'otro'</expr></visibility>
-                                </field>
+                                <field name="relacion_con_padre_otro" invisible="relacion_con_padre != 'otro'"/>
                                 <field name="padre_sabe_de_su_embarazo"/>
                                 <field name="padre_sera_notificado"/>
                                 <field name="padre_ha_dado_apoyo"/>
@@ -301,9 +266,7 @@
                                 <field name="padre_ocupacion"/>
                                 <field name="padre_grado_maximo_estudios"/>
                                 <field name="padre_tiene_adiccion"/>
-                                <field name="padre_tiene_adiccion_detalle">
-                                    <visibility><expr>padre_tiene_adiccion</expr></visibility>
-                                </field>
+                                <field name="padre_tiene_adiccion_detalle" invisible="not padre_tiene_adiccion"/>
                                 <field name="estatura_padre"/>
                                 <field name="complexion_padre"/>
                                 <field name="numero_hijos_padre"/>
@@ -312,69 +275,78 @@
                                 <field name="origen_padre"/>
                                 <field name="antecendentes_medicos_padre"/>
                                 <field name="en_caso_de_haber_migrado_padre"/>
-                                <field name="padre_pais_migracion"/>
+                                <field name="padre_pais_migracion" invisible="not en_caso_de_haber_migrado_padre"/>
                                 <field name="lugar_residencia_padre"/>
                             </group>
                         </page>
-
                         <!-- === VIOLENCIA Y EDUCACIÓN SEXUAL === -->
                         <page string="Datos de violencia">
                             <group>
                                 <field name="violacion"/>
                                 <field name="violencia_intrafamiliar"/>
-                                <field name="quien_fue_el_agresor"/>
+                                <field name="quien_fue_el_agresor" invisible="not violencia_intrafamiliar"/>
                                 <field name="tipo_violencia"/>
                                 <field name="educacion_sexual"/>
-                                <field name="educacion_sexual_detalle"/>
+                                <field name="educacion_sexual_detalle" invisible="not educacion_sexual"/>
                                 <field name="embarazo_actual_consecuencia_de_violacion"/>
                                 <field name="ha_iniciado_carpeta_investigacion"/>
-                                <field name="carpeta_investigacion_numero"/>
-                                <field name="carpeta_investigacion_fecha"/>
-                                <field name="carpeta_investigacion_lugar"/>
+                                <field name="carpeta_investigacion_numero" invisible="not ha_iniciado_carpeta_investigacion"/>
+                                <field name="carpeta_investigacion_fecha" invisible="not ha_iniciado_carpeta_investigacion"/>
+                                <field name="carpeta_investigacion_lugar" invisible="not ha_iniciado_carpeta_investigacion"/>
                             </group>
                         </page>
-
                         <!-- === ANTECEDENTES MÉDICOS === -->
                         <page string="A. Médicos">
                             <group>
+                                <field name="antecedentes_medicos"/>
+                                <field name="enfermedades_cronicas"/>
+                                <field name="alergias"/>
+                                <field name="medicamentos_actuales"/>
+                                <field name="cirugias_previas"/>
+                                <field name="vacunas"/>
+                                <field name="tipo_sangre"/>
+                                <field name="enfermedades_familiares"/>
+                                <field name="antecedentes_quirurgicos"/>
+                                <field name="tiene_donador"/>
+                                <field name="donador_nombre" invisible="not tiene_donador"/>
+                                <field name="donador_telefono" invisible="not tiene_donador"/>
+                                <field name="donador_relacion" invisible="not tiene_donador"/>
                             </group>
                         </page>
-
                         <!-- === MEDIOS DE COMUNICACIÓN === -->
                         <page string="Medios de Comunicación">
                             <group>
                                 <field name="television"/>
-                                <field name="television_canal"/>
+                                <field name="television_canal" invisible="not television"/>
                                 <field name="radio"/>
-                                <field name="radio_estacion"/>
+                                <field name="radio_estacion" invisible="not radio"/>
                                 <field name="volante"/>
-                                <field name="volante_detalle"/>
+                                <field name="volante_detalle" invisible="not volante"/>
                                 <field name="poster"/>
-                                <field name="poster_detalle"/>
+                                <field name="poster_detalle" invisible="not poster"/>
                                 <field name="periodico"/>
-                                <field name="periodico_detalle"/>
+                                <field name="periodico_detalle" invisible="not periodico"/>
                                 <field name="espectacular"/>
-                                <field name="espectacular_detalle"/>
+                                <field name="espectacular_detalle" invisible="not espectacular"/>
                                 <field name="iglesia"/>
-                                <field name="iglesia_detalle"/>
+                                <field name="iglesia_detalle" invisible="not iglesia"/>
                                 <field name="institucion"/>
-                                <field name="institucion_detalle"/>
+                                <field name="institucion_detalle" invisible="not institucion"/>
                                 <field name="internet"/>
-                                <field name="internet_detalle"/>
+                                <field name="internet_detalle" invisible="not internet"/>
                                 <field name="red_social"/>
-                                <field name="red_social_detalle"/>
+                                <field name="red_social_detalle" invisible="not red_social"/>
                                 <field name="recomendacion"/>
-                                <field name="recomendacion_detalle"/>
+                                <field name="recomendacion_detalle" invisible="not recomendacion"/>
                                 <field name="ex_beneficiaria"/>
-                                <field name="ex_beneficiaria_fecha"/>
+                                <field name="ex_beneficiaria_fecha" invisible="not ex_beneficiaria"/>
                                 <field name="otro_medio"/>
-                                <field name="otro_medio_detalle"/>
+                                <field name="otro_medio_detalle" invisible="not otro_medio"/>
                                 <field name="contacto_vifac"/>
-                                <field name="nombre_contacto_institucion"/>
-                                <field name="contacto_institucion"/>
+                                <field name="nombre_contacto_institucion" invisible="contacto_vifac != 'otro'"/>
+                                <field name="contacto_institucion" invisible="contacto_vifac != 'otro'"/>
                             </group>
                         </page>
-                        
                         <!-- === DOCUMENTOS === -->
                         <page string="Documentos">
                             <field name="documentos_ids">
@@ -382,10 +354,8 @@
                                     <field name="name"/>
                                     <field name="descripcion"/>
                                     <field name="nombre_archivo"/>
-                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
-                                            attrs="{'invisible': [('url_ver', '=', False)]}" />
-                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
-                                            attrs="{'invisible': [('url_descargar', '=', False)]}" />
+                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
+                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
                                 </tree>
                                 <form>
                                     <group>
@@ -395,33 +365,31 @@
                                         <field name="nombre_archivo"/>
                                         <separator string="Acciones"/>
                                         <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
-                                                attrs="{'invisible': [('url_ver', '=', False)]}" class="btn-primary"/>
+                                                class="btn-primary"/>
                                         <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
-                                                attrs="{'invisible': [('url_descargar', '=', False)]}" class="btn-secondary"/>
+                                                class="btn-secondary"/>
                                     </group>
                                 </form>
                             </field>
                         </page>
-
-
                         <!-- === TRASLADOS === -->
                         <page string="Traslados">
-                        <field name="traslado_ids">
-                            <tree editable="bottom">
-                                <field name="ubicacion_destino"/>
-                                <field name="fecha_traslado"/>
-                                <field name="motivo_traslado"/>
-                                <field name="estado"/>
-                            </tree>
-                            <form>
-                                <group>
-                                    <field name="ubicacion_destino" required="1"/>
-                                    <field name="fecha_traslado" required="1"/>
-                                    <field name="motivo_traslado" required="1"/>
+                            <field name="traslado_ids">
+                                <tree editable="bottom">
+                                    <field name="ubicacion_destino"/>
+                                    <field name="fecha_traslado"/>
+                                    <field name="motivo_traslado"/>
                                     <field name="estado"/>
-                                </group>
-                            </form>
-                        </field>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="ubicacion_destino" required="1"/>
+                                        <field name="fecha_traslado" required="1"/>
+                                        <field name="motivo_traslado" required="1"/>
+                                        <field name="estado"/>
+                                    </group>
+                                </form>
+                            </field>
                         </page>
                         <!-- === TALLERES === -->
                         <page string="Talleres">
@@ -449,10 +417,8 @@
                                                 <field name="name"/>
                                                 <field name="descripcion"/>
                                                 <field name="nombre_archivo"/>
-                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
-                                                        attrs="{'invisible': [('url_ver', '=', False)]}" />
-                                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
-                                                        attrs="{'invisible': [('url_descargar', '=', False)]}" />
+                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
+                                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
                                             </tree>
                                             <form>
                                                 <group>
@@ -464,9 +430,9 @@
                                                     <field name="taller_id" invisible="1"/>
                                                     <separator string="Acciones"/>
                                                     <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
-                                                            attrs="{'invisible': [('url_ver', '=', False)]}" class="btn-primary"/>
+                                                            class="btn-primary"/>
                                                     <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
-                                                            attrs="{'invisible': [('url_descargar', '=', False)]}" class="btn-secondary"/>
+                                                            class="btn-secondary"/>
                                                 </group>
                                             </form>
                                         </field>
@@ -474,21 +440,19 @@
                                 </form>
                             </field>
                         </page>
-
                         <!-- === PROYECTO DE VIDA === -->
                         <page string="Proyecto de Vida">
                             <group>
                                 <field name="reaccion_confirmacion_embarazo"/>
                                 <field name="intento_aborto"/>
-                                <field name="medio_intento_aborto"/>
+                                <field name="medio_intento_aborto" invisible="not intento_aborto"/>
                                 <field name="recibe_apoyo"/>
-                                <field name="especifique_apoyo"/>
+                                <field name="especifique_apoyo" invisible="not recibe_apoyo"/>
                                 <field name="sabe_que_es_adocion"/>
                                 <field name="conoce_adopcion"/>
                                 <field name="desea_dar_a_adopcion"/>
                             </group>
                         </page>
-
                         <!-- === DATOS DEL PARTO === -->
                         <page string="Datos del Parto">
                             <group>
@@ -497,19 +461,19 @@
                                 <field name="parto_multiple"/>
                             </group>
                         </page>
-
                         <!-- === ALTA === -->
                         <page string="Alta">
                             <group>
                                 <field name="fecha_alta"/>
                                 <field name="persona_recoge"/>
+                                <field name="identificacion_persona_recoge" widget="binary" filename="identificacion_persona_recoge_filename"/>
                                 <field name="relacion_persona_recoge"/>
                                 <field name="telefono_persona_recoge"/>
                                 <field name="domicilio_persona_recoge"/>
                                 <field name="se_retiro_despues_de_dar_a_luz"/>
                                 <field name="se_retiro_con_bebe"/>
                                 <field name="se_retira_con_permiso_regreso_entrega_voluntaria"/>
-                                <field name="fecha_conclusion_entrega_voluntaria"/>
+                                <field name="fecha_conclusion_entrega_voluntaria" invisible="not se_retira_con_permiso_regreso_entrega_voluntaria"/>
                                 <field name="nombre_testigo1"/>
                                 <field name="nombre_testigo2"/>
                                 <field name="autorizado_por"/>

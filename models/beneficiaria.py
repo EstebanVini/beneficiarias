@@ -63,7 +63,7 @@ class Beneficiaria(models.Model):
 
     # datos embarazo en formulario principal
     embarazo = fields.Boolean(string="¿Está embarazada?")
-    fum_time = fields.Date(string="FUM (Fecha de Última Menstruación)")
+    fum_time = fields.Date(string="FUM")
     meses_embarazo = fields.Integer(string="Meses de embarazo", compute='_compute_embarazo_info', store=True)
     semanas_gestacion = fields.Integer(string="Semanas de gestación", compute='_compute_embarazo_info', store=True)
     fecha_probable_de_parto = fields.Date(string="Fecha probable de parto", compute='_compute_embarazo_info', store=True)
@@ -123,12 +123,37 @@ class Beneficiaria(models.Model):
     telefono = fields.Char(string="Teléfono")
     telefono_celular = fields.Char(string="Teléfono Celular")
     tiene_red_social = fields.Boolean(string="¿Tiene redes sociales?")
-    #red_social_ids = fields.One2many('beneficiarias.redsocial', 'beneficiaria_id', string="Redes Sociales")
+    tipo_red_social1 = fields.Selection([
+        ('facebook', 'Facebook'),
+        ('instagram', 'Instagram'),
+        ('twitter', 'Twitter'),
+        ('tiktok', 'TikTok'),
+        ('whatsapp', 'WhatsApp'),
+        ('linkedin', 'LinkedIn'),
+        ('otro', 'Otro')
+    ], string="Tipo de Red Social")
+    tipo_red_social1_otro = fields.Char(string="Especifique tipo de Red Social", help="Si eligió 'Otro', especifique el tipo de red social")
+    red_social1 = fields.Char(string="Red Social 1")
+
+    tipo_red_social2 = fields.Selection([
+        ('facebook', 'Facebook'),
+        ('instagram', 'Instagram'),
+        ('twitter', 'Twitter'),
+        ('tiktok', 'TikTok'),
+        ('whatsapp', 'WhatsApp'),
+        ('linkedin', 'LinkedIn'),
+        ('otro', 'Otro')
+    ], string="Tipo de Red Social")
+    tipo_red_social2_otro = fields.Char(string="Especifique tipo de Red Social", help="Si eligió 'Otro', especifique el tipo de red social")
+    red_social2 = fields.Char(string="Red Social 2")
 
     nacionalidad = fields.Char(string="Nacionalidad")
     pais_nacimiento = fields.Char(string="País de Nacimiento")
     ciudad_nacimiento = fields.Char(string="Ciudad de Nacimiento")
     lugar_de_registro = fields.Char(string="Lugar de Registro")
+
+    # DOMICILIO
+    pais = fields.Char(string="País")
     calle = fields.Char(string="Calle")
     numero_exterior = fields.Char(string="Número Exterior")
     numero_interior = fields.Char(string="Número Interior")
@@ -209,12 +234,12 @@ class Beneficiaria(models.Model):
 
     # ===== sección referencias y familiares pestaña "información" =====
 
-    nombre_referencia1 = fields.Char(string="Nombre de Referencia 1")
-    telefono_referencia1 = fields.Char(string="Teléfono de Referencia 1")
-    parentesco_referencia1 = fields.Char(string="Parentesco de Referencia 1")
-    nombre_referencia2 = fields.Char(string="Nombre de Referencia 2")
-    telefono_referencia2 = fields.Char(string="Teléfono de Referencia 2")
-    parentesco_referencia2 = fields.Char(string="Parentesco de Referencia 2")
+    nombre_referencia1 = fields.Char(string="Nombre Referencia 1")
+    telefono_referencia1 = fields.Char(string="Teléfono Referencia 1")
+    parentesco_referencia1 = fields.Char(string="Parentesco Referencia 1")
+    nombre_referencia2 = fields.Char(string="Nombre Referencia 2")
+    telefono_referencia2 = fields.Char(string="Teléfono Referencia 2")
+    parentesco_referencia2 = fields.Char(string="Parentesco Referencia 2")
 
 
     # === PESTAÑA "CANALIZACIÓN" ===
@@ -384,6 +409,31 @@ class Beneficiaria(models.Model):
     carpeta_investigacion_fecha = fields.Date(string="Fecha de la carpeta de investigación")
     carpeta_investigacion_lugar = fields.Char(string="Lugar de la carpeta de investigación")
 
+    # === PESTAÑA "ANTECEDENTES MEDICOS" ===
+    antecedentes_medicos = fields.Text(string="Antecedentes Médicos", help="Antecedentes médicos relevantes de la beneficiaria")
+    enfermedades_cronicas = fields.Text(string="Enfermedades Crónicas", help="Enfermedades crónicas que padece la beneficiaria")
+    alergias = fields.Text(string="Alergias", help="Alergias conocidas de la beneficiaria")
+    medicamentos_actuales = fields.Text(string="Medicamentos Actuales", help="Medicamentos que está tomando actualmente la beneficiaria")
+    cirugias_previas = fields.Text(string="Cirugías Previas", help="Cirugías que ha tenido la beneficiaria en el pasado")
+    vacunas = fields.Text(string="Vacunas", help="Vacunas recibidas por la beneficiaria")
+    tipo_sangre = fields.Selection([
+        ('a+', 'A+'),
+        ('a-', 'A-'),
+        ('b+', 'B+'),
+        ('b-', 'B-'),
+        ('ab+', 'AB+'),
+        ('ab-', 'AB-'),
+        ('o+', 'O+'),
+        ('o-', 'O-')
+    ], string="Tipo de Sangre")
+    enfermedades_familiares = fields.Text(string="Enfermedades Familiares", help="Enfermedades hereditarias o familiares relevantes")
+    antecedentes_quirurgicos = fields.Text(string="Antecedentes Quirúrgicos", help="Antecedentes quirúrgicos relevantes de la beneficiaria")
+    tiene_donador = fields.Boolean(string="¿Tiene donador de sangre?")
+    donador_nombre = fields.Char(string="Nombre del Donador", help="Nombre de la persona que puede donar sangre en caso de emergencia")
+    donador_telefono = fields.Char(string="Teléfono del Donador", help="Teléfono de contacto del donador de sangre")
+    donador_relacion = fields.Char(string="Relación con el Donador", help="Relación de la beneficiaria con el donador de sangre")
+    
+
     # === PESTAÑA "MEDIOS DE COMUNICACIÓN" ===
     # título "¿Cómo te enteraste de VIFAC?"
     # selector de uno o varios medios de comunicación: Televisión, Radio, Volante, Poster, Periódico, Espectacular, Iglesia, Institución, Internet, Red Social, Recomendación, Ex Beneficiaria, Otro medio
@@ -475,6 +525,7 @@ class Beneficiaria(models.Model):
     fecha_alta = fields.Date(string="Fecha de Alta", help="Fecha en que la beneficiaria fue dada de alta de VIFAC")
     persona_recoge = fields.Char(string="Persona que recoge a la beneficiaria", help="Nombre de la persona que recoge a la beneficiaria al momento de su alta")
     # documento_identificacion_persona_recoge = fields.Char(string="Documento de identificación de la persona que recoge", help="Tipo de documento de identificación de la persona que recoge a la beneficiaria")
+    identificacion_persona_recoge = fields.Binary(string="Identificación de la persona que recoge", help="Documento de identificación de la persona que recoge a la beneficiaria al momento de su alta")
     relacion_persona_recoge = fields.Char(string="Relación de la persona que recoge con la beneficiaria", help="Relación de la persona que recoge a la beneficiaria al momento de su alta")
     telefono_persona_recoge = fields.Char(string="Teléfono de la persona que recoge", help="Teléfono de la persona que recoge a la beneficiaria al momento de su alta")
     domicilio_persona_recoge = fields.Char(string="Domicilio de la persona que recoge", help="Domicilio de la persona que recoge a la beneficiaria al momento de su alta")

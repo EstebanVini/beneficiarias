@@ -14,3 +14,9 @@
     border: 1px solid #eee;
 }
 
+.o_form_view .o_form_sheet .o_group .o_td_field > .o_field_widget {
+    min-width: 220px; /* Ajusta según necesites */
+    width: 100%;
+}
+
+
