@@ -5,4 +5,5 @@ access_documento,access_documento,model_beneficiarias_documento,,1,1,1,1
 access_hijo,access_hijo,model_beneficiarias_hijo,,1,1,1,1
 access_traslados,access_traslados,model_beneficiarias_traslados,,1,1,1,1
 access_taller,access_taller,model_beneficiarias_taller,,1,1,1,1
+access_bebe,access_bebe,model_beneficiarias_bebe,,1,1,1,1
 

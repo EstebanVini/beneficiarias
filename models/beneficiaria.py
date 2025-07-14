@@ -545,7 +545,7 @@ class Beneficiaria(models.Model):
     asignado_a_id = fields.Many2one('res.users', string='Asignado a', tracking=True)
 
     hijos_ids = fields.One2many('beneficiarias.hijo', 'beneficiaria_id')
-    #bebe_ids = fields.One2many('vifac.bebe', 'beneficiaria_id')
+    bebe_ids = fields.One2many('beneficiarias.bebe', 'beneficiaria_id')
     traslado_ids = fields.One2many('beneficiarias.traslados', 'beneficiaria_id', string='Traslados')
     taller_ids = fields.One2many('beneficiarias.taller', 'beneficiaria_id', string='Talleres')
     documentos_ids = fields.One2many(
@@ -559,10 +559,6 @@ class Beneficiaria(models.Model):
     default=lambda self: self.env['beneficiarias.stage'].search([], limit=1, order='sequence')
     )
 
-    #red_social_ids = fields.One2many('vifac.redsocial', 'beneficiaria_id')
-    #valoracion_ids = fields.One2many('vifac.valoracion', 'beneficiaria_id')
-    #encuesta_ids = fields.One2many('vifac.encuesta', 'beneficiaria_id')
-    #tipo_ayuda_ids = fields.Many2many('vifac.tipoayuda', string='Tipos de ayuda')
 
     # === CÁLCULOS Y VALIDACIONES ===
 

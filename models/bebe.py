@@ -7,14 +7,16 @@ class Bebe(models.Model):
     # === FORMULARIO PRINCIPAL ===
 
     nombre = fields.Char(required=True)
+    
     sexo = fields.Selection([
         ('masculino', 'Masculino'),
         ('femenino', 'Femenino'),
     ], string='Sexo', required=True)
+
     fecha_y_hora_nacimiento = fields.Datetime(string='Fecha y hora de nacimiento', required=True)
-    lugar_nacimiento = fields.Char(string='Lugar de nacimiento', required=True)
+    lugar_nacimiento = fields.Char(string='Lugar de nacimiento')
     talla_al_nacer = fields.Float(string='Talla al nacer (cm)')
-    peso_al_nacer = fields.Float(string='Peso al nacer (kg)', required=True)
+    peso_al_nacer = fields.Float(string='Peso al nacer (kg)')
 
     caracteristicas_especiales = fields.Text(string='Características especiales')
     tiene_cun = fields.Boolean(string='Certificado Único de Nacimiento (CUN)')
@@ -30,7 +32,7 @@ class Bebe(models.Model):
         ('adopcion', 'Adopción'),
         ('reintegro_familiar', 'Reintegro familiar'),
         ('otra', 'Otra'),
-    ], string='Motivo de egreso', required=True)
+    ], string='Motivo de egreso')
     motivo_egreso_otro = fields.Char(string='Especifique otro motivo de egreso')
 
     numero_cert_nacimiento = fields.Char(string='Número de certificado de nacimiento')
