@@ -1,21 +1,5 @@
 <odoo>
-    <!-- Vista en árbol -->
-    <record id="view_tree_beneficiaria" model="ir.ui.view">
-        <field name="name">beneficiarias.beneficiaria.tree</field>
-        <field name="model">beneficiarias.beneficiaria</field>
-        <field name="arch" type="xml">
-            <tree string="Beneficiarias">
-                <field name="nombre_completo"/>
-                <field name="curp"/>
-                <field name="rfc"/>
-                <field name="fecha_nacimiento"/>
-                <field name="fecha_ingreso"/>
-                <field name="edad_ingreso"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Acción para abrir el modelo -->
+    <!-- Acción para abrir el modelo de beneficiarias -->
     <record id="action_beneficiarias_beneficiaria" model="ir.actions.act_window">
         <field name="name">Beneficiarias</field>
         <field name="res_model">beneficiarias.beneficiaria</field>
@@ -37,7 +21,7 @@
               parent="menu_beneficiarias_root"
               action="action_beneficiarias_beneficiaria"/>
 
-    <!-- Vista de etapas -->
+    <!-- Vista de etapas (tree y form) -->
     <record id="view_stage_tree" model="ir.ui.view">
         <field name="name">beneficiarias.stage.tree</field>
         <field name="model">beneficiarias.stage</field>
@@ -67,5 +51,4 @@
         <field name="res_model">beneficiarias.stage</field>
         <field name="view_mode">tree,form</field>
     </record>
-
 </odoo>

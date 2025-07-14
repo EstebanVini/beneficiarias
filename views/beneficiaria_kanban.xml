@@ -10,7 +10,8 @@
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                                 <div>
                                     <strong><field name="nombre_completo"/></strong>
-                                    <div><field name="curp"/></div>
+                                    <div>Edad: <field name="edad_ingreso"/></div>
+                                    <div>Fecha de Ingreso: <field name="fecha_ingreso"/></div>
                                     <div><field name="atention_center"/></div>
                                 </div>
                         </div>

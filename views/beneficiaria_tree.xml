@@ -1,0 +1,45 @@
+<odoo>
+    <record id="view_tree_beneficiaria" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.tree</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <tree string="Beneficiarias">
+                <!-- Solo estos 6 por defecto -->
+                <field name="nombre_completo"/>
+                <field name="fecha_ingreso"/>
+                <field name="edad_ingreso" optional="show"/>
+                <field name="atention_center" optional="show"/>
+                <field name="stage_id" optional="show"/>
+
+                <!-- TODOS los demás con optional="hide" -->
+                <field name="nombre" optional="hide"/>
+                <field name="apellido_paterno" optional="hide"/>
+                <field name="apellido_materno" optional="hide"/>
+                <field name="fecha_nacimiento" optional="hide"/>
+                <field name="curp" optional="hide"/>
+                <field name="rfc" optional="hide"/>
+                <field name="correo" optional="hide"/>
+                <field name="escolaridad" optional="hide"/>
+                <field name="estado_civil" optional="hide"/>
+                <field name="religion" optional="hide"/>
+                <field name="tipo_de_ayuda" optional="hide"/>
+                <field name="motivo_de_egreso" optional="hide"/>
+                <field name="motivo_de_egreso_parto" optional="hide"/>
+                <field name="municipio" optional="hide"/>
+                <field name="colonia" optional="hide"/>
+                <field name="calle" optional="hide"/>
+                <field name="numero_exterior" optional="hide"/>
+                <field name="codigo_postal" optional="hide"/>
+                <field name="numero_hijos" optional="hide"/>
+                <field name="embarazo" optional="hide"/>
+                <field name="fum_time" optional="hide"/>
+                <field name="meses_embarazo" optional="hide"/>
+                <field name="semanas_gestacion" optional="hide"/>
+                <field name="fecha_probable_de_parto" optional="hide"/>
+                <field name="motivo_de_egreso_otro" optional="hide"/>
+                <field name="ocupacion" optional="hide"/>
+                <field name="asignado_a_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

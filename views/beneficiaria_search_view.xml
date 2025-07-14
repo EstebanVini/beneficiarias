@@ -1,0 +1,70 @@
+<odoo>
+    <record id="view_beneficiaria_search" model="ir.ui.view">
+        <field name="name">beneficiarias.beneficiaria.search</field>
+        <field name="model">beneficiarias.beneficiaria</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Beneficiarias">
+                <!-- Campos clave para búsqueda rápida -->
+                <field name="nombre_completo"/>
+                <field name="curp"/>
+                <field name="rfc"/>
+                <field name="fecha_nacimiento"/>
+                <field name="fecha_ingreso"/>
+                <field name="atention_center"/>
+                <field name="correo"/>
+                <field name="telefono"/>
+                <field name="telefono_celular"/>
+                <field name="escolaridad"/>
+                <field name="estado_civil"/>
+                <field name="religion"/>
+                <field name="nacionalidad"/>
+                <field name="ocupacion"/>
+                <field name="stage_id"/>
+
+                <!-- Puedes agregar filtros rápidos -->
+                <filter string="Embarazada" name="filter_embarazo" domain="[('embarazo','=',True)]"/>
+                <filter string="Con Hijos" name="filter_con_hijos" domain="[('numero_hijos','>',0)]"/>
+                <filter string="Migrante" name="filter_migrante" domain="[('migrante','=',True)]"/>
+                <filter string="Egresada" name="filter_egresada" domain="[('fecha_alta','!=',False)]"/>
+
+                <!-- Puedes agrupar por etapas, centro, estado, etc. -->
+                <group expand="0" string="Agrupar por">
+                    <filter string="Centro de Atención" name="group_atention_center" context="{'group_by':'atention_center'}"/>
+                    <filter string="Etapa" name="group_stage_id" context="{'group_by':'stage_id'}"/>
+                    <filter string="Estado" name="group_estado" context="{'group_by':'estado'}"/>
+                </group>
+
+                <!-- Campos adicionales para búsqueda avanzada -->
+                <field name="apellido_paterno"/>
+                <field name="apellido_materno"/>
+                <field name="edad_ingreso"/>
+                <field name="rango"/>
+                <field name="numero_hijos"/>
+                <field name="pais"/>
+                <field name="municipio"/>
+                <field name="colonia"/>
+                <field name="codigo_postal"/>
+                <field name="canalizacion"/>
+                <field name="religion"/>
+                <field name="nivel_economico"/>
+                <field name="tipo_poblacion"/>
+                <field name="motivo_de_egreso"/>
+                <field name="motivo_de_egreso_parto"/>
+                <field name="tiene_carpeta_investigacion"/>
+                <field name="tiene_documentos"/>
+                <field name="atencion_integral_embarazo"/>
+                <field name="atencion_medica"/>
+                <field name="atencion_psicologica"/>
+                <field name="atencion_nutricional"/>
+                <field name="apoyo_emocional"/>
+                <field name="apoyo_especie"/>
+                <field name="aistencia_legal_adopcion"/>
+                <field name="centro_capacitacion_formacion"/>
+                <field name="otro"/>
+                <field name="fecha_alta"/>
+                <field name="autorizado_por"/>
+                <field name="asignado_a_id"/>
+            </search>
+        </field>
+    </record>
+</odoo>
