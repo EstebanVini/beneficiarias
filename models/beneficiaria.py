@@ -1,7 +1,6 @@
 from odoo import models, fields, api # type: ignore
 from odoo.exceptions import ValidationError # type: ignore
 from datetime import date, timedelta
-
 import re
 
 class Beneficiaria(models.Model):
@@ -619,3 +618,25 @@ class Beneficiaria(models.Model):
             else:
                 rec.rango = False
 
+    @api.constrains('curp')
+    def _check_curp(self):
+        for rec in self:
+            if rec.curp:
+                curp = rec.curp.strip().upper()
+                curp_regex = r'^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$'
+                if not re.fullmatch(curp_regex, curp):
+                    raise ValidationError(
+                        "El CURP '%s' no es válido. "
+                        "Debe cumplir con el formato oficial." % rec.curp
+                    )
+                
+    @api.constrains('rfc')
+    def _check_rfc(self):
+        for rec in self:
+            if rec.rfc:
+                rfc = rec.rfc.strip().upper()
+                rfc_regex = r'^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1])([A-Z]|[0-9]){2}([A]|[0-9]){1})$'
+                if not re.fullmatch(rfc_regex, rfc):
+                    raise ValidationError(
+                        "El RFC '%s' no es válido. Debe cumplir con el formato oficial." % rec.rfc
+                    )
