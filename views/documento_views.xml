@@ -1,0 +1,21 @@
+<odoo>
+    <record id="view_beneficiarias_documento_form_popup" model="ir.ui.view">
+        <field name="name">beneficiarias.documento.form.popup</field>
+        <field name="model">beneficiarias.documento</field>
+        <field name="arch" type="xml">
+            <form string="Documento" readonly="1">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="descripcion"/>
+                        <field name="archivo" filename="nombre_archivo" widget="binary"/>
+                        <field name="nombre_archivo"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Cerrar" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

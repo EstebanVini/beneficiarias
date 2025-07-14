@@ -14,12 +14,14 @@ class Documento(models.Model):
         ('hijo', 'Hijo'),
         ('bebe', 'Bebé'),
         ('taller', 'Taller'),
+        ('valoracion', 'Valoración'),
     ], string='Relacionado con', required=True)
 
     beneficiaria_id = fields.Many2one('beneficiarias.beneficiaria', string='Beneficiaria')
     bebe_id = fields.Many2one('beneficiarias.bebe', string='Bebé')
     hijo_id = fields.Many2one('beneficiarias.hijo', string='Hijo')
     taller_id = fields.Many2one('beneficiarias.taller', string='Taller')
+    valoracion_id = fields.Many2one('beneficiarias.valoracion', string='Valoración')
 
     url_ver = fields.Char(string='URL Visualización', compute='_compute_urls', store=False)
     url_descargar = fields.Char(string='URL Descarga', compute='_compute_urls', store=False)
@@ -46,6 +48,8 @@ class Documento(models.Model):
             vals['tipo_relacion'] = 'hijo'
         elif vals.get('bebe_id'):
             vals['tipo_relacion'] = 'bebe'
+        elif vals.get('valoracion_id'):
+            vals['tipo_relacion'] = 'valoracion'
         return super().create(vals)
 
     def action_ver_documento(self):
@@ -65,3 +69,18 @@ class Documento(models.Model):
                 'url': self.url_descargar,
                 'target': 'self',
             }
+            
+    def action_previsualizar_documento(self):
+        self.ensure_one()
+        # Busca la vista form específica (ajusta el nombre según el xml_id real)
+        view_id = self.env.ref('beneficiarias.view_beneficiarias_documento_form_popup').id
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Previsualizar Documento',
+            'res_model': 'beneficiarias.documento',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'view_id': view_id,
+            'target': 'new',  # Popup modal
+        }
+

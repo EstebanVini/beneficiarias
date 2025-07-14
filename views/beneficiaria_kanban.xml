@@ -7,13 +7,21 @@
                 <field name="stage_id" options="{'fold_field': 'fold'}"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                                <div>
-                                    <strong><field name="nombre_completo"/></strong>
-                                    <div>Edad: <field name="edad_ingreso"/></div>
-                                    <div>Fecha de Ingreso: <field name="fecha_ingreso"/></div>
-                                    <div><field name="atention_center"/></div>
-                                </div>
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click"
+                             style="display: flex !important; align-items: center; justify-content: flex-start; flex-wrap: nowrap; width: 100%;">
+                            <!-- Foto circular y pequeña a la izquierda -->
+                            <div style="margin-right: 16px; flex-shrink: 0;">
+                                <img t-att-src="kanban_image('beneficiarias.beneficiaria', 'foto_frontal', record.id.raw_value)"
+                                     alt="Foto de la beneficiaria"
+                                     style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%; border: 1px solid #ddd; background: #fafbfc;" />
+                            </div>
+                            <!-- Datos a la derecha -->
+                            <div style="min-width: 0;">
+                                <strong><field name="nombre_completo"/></strong>
+                                <div>Edad: <field name="edad_ingreso"/></div>
+                                <div>Fecha de Ingreso: <field name="fecha_ingreso"/></div>
+                                <div><field name="atention_center"/></div>
+                            </div>
                         </div>
                     </t>
                 </templates>

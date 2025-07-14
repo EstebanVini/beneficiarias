@@ -17,6 +17,7 @@
         'views/beneficiaria_search_view.xml',
         'views/stage_views.xml',
         'views/beneficiaria_kanban.xml',
+        'views/documento_views.xml',
         'data/stages.xml',
     ],
     'assets': {

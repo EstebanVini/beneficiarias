@@ -508,17 +508,6 @@ class Beneficiaria(models.Model):
     hospital_parto = fields.Char(string="Nombre del hostpital")
     parto_multiple = fields.Boolean(string="¿Tuviste un parto múltiple?")
 
-    # datos del bebé (pendiente de crear modelo bebé)
-
-    # === PESTAÑA "TALLERES" ===
-    # PENDIENTE PESTAÑA TALLERES
-
-    # === PESTAÑA "VALORACIONES" ===
-    # PENDIENTE PESTAÑA VALORACIONES
-
-    # == PESTAÑA "INFORMACIÓN ADICIONAL" ===
-    # PENDIENTE PESTAÑA INFORMACIÓN ADICIONAL
-
     # === PESTAÑA "ALTA" ===
 
     fecha_alta = fields.Date(string="Fecha de Alta", help="Fecha en que la beneficiaria fue dada de alta de VIFAC")
@@ -548,6 +537,9 @@ class Beneficiaria(models.Model):
     bebe_ids = fields.One2many('beneficiarias.bebe', 'beneficiaria_id')
     traslado_ids = fields.One2many('beneficiarias.traslados', 'beneficiaria_id', string='Traslados')
     taller_ids = fields.One2many('beneficiarias.taller', 'beneficiaria_id', string='Talleres')
+    valoracion_ids = fields.One2many(
+    'beneficiarias.valoracion', 'beneficiaria_id', string='Valoraciones'
+    )
     documentos_ids = fields.One2many(
         'beneficiarias.documento', 'beneficiaria_id', string='Documentos',
         domain=[('tipo_relacion', '=', 'beneficiaria')]

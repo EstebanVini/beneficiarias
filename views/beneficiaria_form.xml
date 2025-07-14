@@ -420,7 +420,8 @@
                                                 <field name="name"/>
                                                 <field name="descripcion"/>
                                                 <field name="nombre_archivo"/>
-                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
+                                                <button name="action_previsualizar_documento" type="object" string="Previsualizar" icon="fa-eye" class="oe_highlight"/>
+                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-external-link"/>
                                                 <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
                                             </tree>
                                             <form>
@@ -432,10 +433,9 @@
                                                     <field name="beneficiaria_id" invisible="1"/>
                                                     <field name="taller_id" invisible="1"/>
                                                     <separator string="Acciones"/>
-                                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
-                                                            class="btn-primary"/>
-                                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
-                                                            class="btn-secondary"/>
+                                                    <button name="action_previsualizar_documento" type="object" string="Previsualizar" icon="fa-eye" class="btn-primary"/>
+                                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-external-link"/>
+                                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download" class="btn-secondary"/>
                                                 </group>
                                             </form>
                                         </field>
@@ -443,6 +443,53 @@
                                 </form>
                             </field>
                         </page>
+                        <!-- === VALORACIONES === -->
+                        <page string="Valoraciones">
+                            <field name="valoracion_ids">
+                                <tree editable="bottom">
+                                    <field name="fecha_realizacion"/>
+                                    <field name="elaborado_por"/>
+                                    <field name="categoria"/>
+                                    <field name="valoracion_archivo" filename="valoracion_nombre_archivo" string="Archivo Valoración"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="fecha_realizacion" required="1"/>
+                                        <field name="elaborado_por" required="1"/>
+                                        <field name="categoria" required="1"/>
+                                        <field name="valoracion_archivo" filename="valoracion_nombre_archivo" string="Archivo Valoración"/>
+                                    </group>
+                                    <group string="Documentos de la Valoración">
+                                        <field name="documentos_ids" context="{'default_tipo_relacion': 'valoracion'}" nolabel="1">
+                                            <tree editable="bottom">
+                                                <field name="name"/>
+                                                <field name="descripcion"/>
+                                                <field name="nombre_archivo"/>
+                                                <button name="action_previsualizar_documento" type="object" string="Previsualizar" icon="fa-eye" class="oe_highlight"/>
+                                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-external-link"/>
+                                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
+                                            </tree>
+                                            <form>
+                                                <group>
+                                                    <field name="name"/>
+                                                    <field name="descripcion"/>
+                                                    <field name="archivo" filename="nombre_archivo"/>
+                                                    <field name="nombre_archivo"/>
+                                                    <field name="beneficiaria_id" invisible="1"/>
+                                                    <field name="valoracion_id" invisible="1"/>
+                                                    <separator string="Acciones"/>
+                                                    <button name="action_previsualizar_documento" type="object" string="Previsualizar" icon="fa-eye" class="btn-primary"/>
+                                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-external-link"/>
+                                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download" class="btn-secondary"/>
+                                                </group>
+                                            </form>
+                                        </field>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+
+
                         <!-- === PROYECTO DE VIDA === -->
                         <page string="Proyecto de Vida">
                             <group>
