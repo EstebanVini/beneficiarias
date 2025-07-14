@@ -1,5 +1,5 @@
-# models/stage.py
-from odoo import models, fields # type: ignore[import-untyped]
+# models/beneficiaria_stage.py
+from odoo import models, fields
 
 class BeneficiariaStage(models.Model):
     _name = 'beneficiarias.stage'
@@ -9,4 +9,3 @@ class BeneficiariaStage(models.Model):
     name = fields.Char(string='Nombre de la etapa', required=True)
     sequence = fields.Integer(default=10)
     fold = fields.Boolean(string="Colapsado por defecto")
-

@@ -4,6 +4,9 @@
         <field name="model">beneficiarias.beneficiaria</field>
         <field name="arch" type="xml">
             <form string="Beneficiaria">
+                <header>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>

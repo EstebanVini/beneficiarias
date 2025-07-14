@@ -556,11 +556,17 @@ class Beneficiaria(models.Model):
     'beneficiarias.stage',
     string="Etapa",
     tracking=True,
-    default=lambda self: self.env['beneficiarias.stage'].search([], limit=1, order='sequence')
+    default=lambda self: self.env['beneficiarias.stage'].search([], limit=1, order='sequence'),
+    group_expand='_read_group_stage_ids'
     )
 
 
     # === CÁLCULOS Y VALIDACIONES ===
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        # Hace que aparezcan todas las etapas en la vista kanban aunque no haya registros
+        return stages.search([])
 
     @api.depends('nombre', 'apellido_paterno', 'apellido_materno')
     def _compute_nombre_completo(self):

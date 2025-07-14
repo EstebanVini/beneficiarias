@@ -8,9 +8,11 @@
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
-                            <strong><field name="nombre_completo"/></strong>
-                            <div><field name="curp"/></div>
-                            <div><field name="atention_center"/></div>
+                                <div>
+                                    <strong><field name="nombre_completo"/></strong>
+                                    <div><field name="curp"/></div>
+                                    <div><field name="atention_center"/></div>
+                                </div>
                         </div>
                     </t>
                 </templates>
