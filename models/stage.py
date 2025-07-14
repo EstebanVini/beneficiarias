@@ -1,5 +1,5 @@
 # models/beneficiaria_stage.py
-from odoo import models, fields
+from odoo import models, fields # type: ignore[import-untyped]
 
 class BeneficiariaStage(models.Model):
     _name = 'beneficiarias.stage'
