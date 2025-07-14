@@ -21,6 +21,42 @@
               parent="menu_beneficiarias_root"
               action="action_beneficiarias_beneficiaria"/>
 
+    <!-- Acción y menú de Hijos -->
+    <record id="action_beneficiarias_hijo" model="ir.actions.act_window">
+        <field name="name">Hijos</field>
+        <field name="res_model">beneficiarias.hijo</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_hijos"
+              name="Hijos"
+              parent="menu_beneficiarias_root"
+              sequence="30"
+              action="action_beneficiarias_hijo"/>
+
+    <!-- Acción y menú de Bebés -->
+    <record id="action_beneficiarias_bebe" model="ir.actions.act_window">
+        <field name="name">Bebés</field>
+        <field name="res_model">beneficiarias.bebe</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_bebes"
+              name="Bebés"
+              parent="menu_beneficiarias_root"
+              sequence="40"
+              action="action_beneficiarias_bebe"/>
+
+    <!-- Acción y menú de Padres Adoptivos -->
+    <record id="action_beneficiarias_papas_adoptivos" model="ir.actions.act_window">
+        <field name="name">Padres Adoptivos</field>
+        <field name="res_model">beneficiarias.papas_adoptivos</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_papas_adoptivos"
+              name="Padres Adoptivos"
+              parent="menu_beneficiarias_root"
+              sequence="50"
+              action="action_beneficiarias_papas_adoptivos"/>
+
     <!-- Vista de etapas (tree y form) -->
     <record id="view_stage_tree" model="ir.ui.view">
         <field name="name">beneficiarias.stage.tree</field>

@@ -7,3 +7,4 @@ from . import traslados
 from . import taller
 from . import stage
 from . import valoracion
+from . import papas_adoptivos

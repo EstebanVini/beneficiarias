@@ -1,0 +1,62 @@
+<odoo>
+    <!-- Vista árbol (tree) de Hijos -->
+    <record id="view_tree_hijo" model="ir.ui.view">
+        <field name="name">beneficiarias.hijo.tree</field>
+        <field name="model">beneficiarias.hijo</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="nombre"/>
+                <field name="edad"/>
+                <field name="nivel_estudios"/>
+                <field name="vive_con_ella"/>
+                <field name="la_acompaña"/>
+                <field name="beneficiaria_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario (form) de Hijos -->
+    <record id="view_form_hijo" model="ir.ui.view">
+        <field name="name">beneficiarias.hijo.form</field>
+        <field name="model">beneficiarias.hijo</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="nombre"/>
+                        <field name="edad"/>
+                        <field name="nivel_estudios"/>
+                        <field name="escuela"/>
+                        <field name="vive_con_ella"/>
+                        <field name="la_acompaña"/>
+                        <field name="responsable"/>
+                        <field name="beneficiaria_id"/>
+                    </group>
+                    <group string="Documentos adjuntos">
+                        <field name="documento_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="descripcion"/>
+                                <field name="nombre_archivo"/>
+                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
+                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción y menú de Hijos -->
+    <record id="action_beneficiarias_hijo" model="ir.actions.act_window">
+        <field name="name">Hijos</field>
+        <field name="res_model">beneficiarias.hijo</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_hijos"
+              name="Hijos"
+              parent="menu_beneficiarias_root"
+              sequence="30"
+              action="action_beneficiarias_hijo"/>
+</odoo>

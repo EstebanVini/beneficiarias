@@ -1,0 +1,49 @@
+<odoo>
+    <!-- Vista árbol (tree) de Padres Adoptivos -->
+    <record id="view_tree_papas_adoptivos" model="ir.ui.view">
+        <field name="name">beneficiarias.papas_adoptivos.tree</field>
+        <field name="model">beneficiarias.papas_adoptivos</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="nombre_padre_adoptivo"/>
+                <field name="edad_padre_adoptivo"/>
+                <field name="telefono_padre_adoptivo"/>
+                <field name="ocupacion_padre_adoptivo"/>
+                <field name="nombre_madre_adoptiva"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario (form) de Padres Adoptivos -->
+    <record id="view_form_papas_adoptivos" model="ir.ui.view">
+        <field name="name">beneficiarias.papas_adoptivos.form</field>
+        <field name="model">beneficiarias.papas_adoptivos</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="nombre_padre_adoptivo"/>
+                        <field name="edad_padre_adoptivo"/>
+                        <field name="telefono_padre_adoptivo"/>
+                        <field name="ocupacion_padre_adoptivo"/>
+                    </group>
+                    <group>
+                        <field name="nombre_madre_adoptiva"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción y menú de Padres Adoptivos -->
+    <record id="action_beneficiarias_papas_adoptivos" model="ir.actions.act_window">
+        <field name="name">Padres Adoptivos</field>
+        <field name="res_model">beneficiarias.papas_adoptivos</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_papas_adoptivos"
+              name="Padres Adoptivos"
+              parent="menu_beneficiarias_root"
+              sequence="50"
+              action="action_beneficiarias_papas_adoptivos"/>
+</odoo>

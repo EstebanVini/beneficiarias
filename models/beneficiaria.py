@@ -555,6 +555,14 @@ class Beneficiaria(models.Model):
 
     # === CÁLCULOS Y VALIDACIONES ===
 
+    def name_get(self):
+        result = []
+        for rec in self:
+            nombre = rec.nombre_completo or rec.nombre or f'ID {rec.id}'
+            result.append((rec.id, nombre))
+        return result
+
+
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         # Hace que aparezcan todas las etapas en la vista kanban aunque no haya registros

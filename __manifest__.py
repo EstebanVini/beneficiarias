@@ -18,6 +18,9 @@
         'views/beneficiaria/stage_views.xml',
         'views/beneficiaria/beneficiaria_kanban.xml',
         'views/beneficiaria/documento_views.xml',
+        'views/hijos/hijo_views.xml',
+        'views/bebes/bebe_views.xml',
+        'views/papas_adoptivos/papas_adoptivos_views.xml',
         'data/stages.xml',
     ],
     'assets': {

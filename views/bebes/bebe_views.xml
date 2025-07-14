@@ -1,0 +1,83 @@
+<odoo>
+    <!-- Vista árbol (tree) de Bebés -->
+    <record id="view_tree_bebe" model="ir.ui.view">
+        <field name="name">beneficiarias.bebe.tree</field>
+        <field name="model">beneficiarias.bebe</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="nombre"/>
+                <field name="sexo"/>
+                <field name="fecha_y_hora_nacimiento"/>
+                <field name="beneficiaria_id"/>
+                <field name="padres_adoptivos_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario (form) de Bebés -->
+    <record id="view_form_bebe" model="ir.ui.view">
+        <field name="name">beneficiarias.bebe.form</field>
+        <field name="model">beneficiarias.bebe</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="nombre"/>
+                        <field name="sexo"/>
+                        <field name="fecha_y_hora_nacimiento"/>
+                        <field name="lugar_nacimiento"/>
+                        <field name="talla_al_nacer"/>
+                        <field name="peso_al_nacer"/>
+                        <field name="caracteristicas_especiales"/>
+                        <field name="tiene_cun"/>
+                        <field name="tiene_acta_nacimiento"/>
+                        <field name="cuidado_por"/>
+                        <field name="bebe_ingreso_cunero"/>
+                        <field name="mama_desistio_entrega"/>
+                        <field name="fecha_egreso_institucion"/>
+                        <field name="motivo_egreso"/>
+                        <field name="motivo_egreso_otro" invisible="motivo_egreso != 'otra'"/>
+                        <field name="numero_cert_nacimiento"/>
+                        <field name="municipio_registro"/>
+                        <field name="fecha_registro"/>
+                        <field name="numero_acta_nacimiento"/>
+                        <field name="nacido_muerto"/>
+                        <field name="numero_certificado_defuncion" invisible="not nacido_muerto"/>
+                        <field name="fecha_defuncion" invisible="not nacido_muerto"/>
+                        <field name="mama_en_casa_hogar"/>
+                        <field name="fecha_ingreso_cunero"/>
+                        <field name="fecha_egreso_cunero"/>
+                        <field name="curp_bebe"/>
+                        <field name="entidad_registro"/>
+                        <field name="oficialia_registro"/>
+                        <field name="beneficiaria_id"/>
+                        <field name="padres_adoptivos_id" options="{'no_create_edit': False}"/>
+                    </group>
+                    <group string="Documentos adjuntos">
+                        <field name="documento_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="descripcion"/>
+                                <field name="nombre_archivo"/>
+                                <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
+                                <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción y menú de Bebés -->
+    <record id="action_beneficiarias_bebe" model="ir.actions.act_window">
+        <field name="name">Bebés</field>
+        <field name="res_model">beneficiarias.bebe</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_beneficiarias_bebes"
+              name="Bebés"
+              parent="menu_beneficiarias_root"
+              sequence="40"
+              action="action_beneficiarias_bebe"/>
+</odoo>
