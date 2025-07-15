@@ -1,10 +1,6 @@
 # beneficiarias/models/__init__.py
-from . import beneficiaria
-from . import hijo
-from . import documento
-from . import bebe
-from . import traslados
-from . import taller
-from . import stage
-from . import valoracion
-from . import papas_adoptivos
+from . import documentos
+from . import beneficiarias
+from . import hijos
+from . import bebes
+from . import padres_adoptivos
