@@ -9,7 +9,7 @@
                 <field name="edad"/>
                 <field name="nivel_estudios"/>
                 <field name="vive_con_ella"/>
-                <field name="la_acompaña"/>
+                <field name="la_acompana"/>
                 <field name="beneficiaria_id"/>
             </tree>
         </field>
@@ -28,7 +28,7 @@
                         <field name="nivel_estudios"/>
                         <field name="escuela"/>
                         <field name="vive_con_ella"/>
-                        <field name="la_acompaña"/>
+                        <field name="la_acompana"/>
                         <field name="responsable"/>
                         <field name="beneficiaria_id"/>
                     </group>
