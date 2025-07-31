@@ -24,12 +24,14 @@ class Beneficiaria(models.Model):
     edad_ingreso = fields.Integer(string="Edad al Ingresar", compute="_compute_edad_ingreso", store=True)
     rango = fields.Selection([
         ('m12', 'Menor de 12 años'),
-        ('12a14','De 12 a 14 años'),
-        ('15a17','De 15 a 17 años'),
-        ('18a22','De 18 a 22 años'),
-        ('23a27','De 23 a 27 años'),
-        ('28a31','De 28 a 31 años'),
-        ('ma32','Mayores de 32')
+        ('m12a15', 'De 12 a 15 años'),
+        ('m16a18','De 16 a 18 años'),
+        ('m19a21','De 19 a 21 años'),
+        ('m22a25','De 22 a 25 años'),
+        ('m26a28','De 26 a 28 años'),
+        ('m29a32','De 29 a 32 años'),
+        ('m33a40','De 33 a 40 años'),
+        ('ma40','Mayor de 40 años'),
     ], string="Rango de Edad", compute="_compute_rango_edad", store=True)
 
 
@@ -605,18 +607,22 @@ class Beneficiaria(models.Model):
             edad = rec.edad_ingreso or 0
             if edad < 12:
                 rec.rango = 'm12'
-            elif 12 <= edad <= 14:
-                rec.rango = '12a14'
-            elif 15 <= edad <= 17:
-                rec.rango = '15a17'
-            elif 18 <= edad <= 22:
-                rec.rango = '18a22'
-            elif 23 <= edad <= 27:
-                rec.rango = '23a27'
-            elif 28 <= edad <= 31:
-                rec.rango = '28a31'
-            elif edad >= 32:
-                rec.rango = 'ma32'
+            elif 12 <= edad <= 15:
+                rec.rango = 'm12a15'
+            elif 16 <= edad <= 18:
+                rec.rango = 'm16a18'
+            elif 19 <= edad <= 21:
+                rec.rango = 'm19a21'
+            elif 22 <= edad <= 25:
+                rec.rango = 'm22a25'
+            elif 26 <= edad <= 28:
+                rec.rango = 'm26a28'
+            elif 29 <= edad <= 32:
+                rec.rango = 'm29a32'
+            elif 33 <= edad <= 40:
+                rec.rango = 'm33a40'
+            elif edad > 40:
+                rec.rango = 'ma40'
             else:
                 rec.rango = False
 
