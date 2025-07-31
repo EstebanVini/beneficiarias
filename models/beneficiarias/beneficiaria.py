@@ -39,7 +39,6 @@ class Beneficiaria(models.Model):
         ('aguascalientes', 'Aguascalientes'), ('brownsville', 'Brownsville'),
         ('cancun', 'Cancún'), ('cdmx', 'Ciudad de México'),
         ('chihuaha', 'Chihuaha'), ('ciudadjuarez', 'Ciudad Juárez'),
-        ('ciudadsatelite', 'Ciudad Satélite'),
         ('ciudadsateliteeducadores', 'Ciudad Satélite (Educadores)'),
         ('ciudadsatelitecasaazul', 'Ciudad Satélite (Casa Azul)'),
         ('cuernavaca', 'Cuernavaca'), ('culiacan', 'Culiacán'),
