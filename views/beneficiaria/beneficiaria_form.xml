@@ -78,6 +78,7 @@
                                 <field name="nivel_economico"/>
                                 <field name="tipo_poblacion"/>
                                 <field name="religion"/>
+                                <field name="religion_otro" invisible="religion != 'otro'"/>
                                 <field name="migrante"/>
                                 <field name="pais_de_origen" invisible="not migrante"/>
                                 <field name="motivo_migracion" invisible="not migrante"/>
@@ -194,8 +195,6 @@
                             <group>
                                 <field name="acompanante"/>
                                 <field name="acompanante_nombre" invisible="not acompanante"/>
-                                <field name="direccion_acompanante" invisible="not acompanante"/>
-                                <field name="acompanante_telefono" invisible="not acompanante"/>
                                 <field name="acompanante_parentesco" invisible="not acompanante"/>
                             </group>
                             <group>
@@ -212,12 +211,14 @@
                         <page string="Familiares">
                             <group string="Padre">
                                 <field name="padre_nombre"/>
+                                <field name="tiene_relacion_padre"/>
                                 <field name="direccion_padre"/>
                                 <field name="telefono_padre"/>
                                 <field name="esta_vivo_padre"/>
                             </group>
                             <group string="Madre">
                                 <field name="madre_nombre"/>
+                                <field name="tiene_relacion_madre"/>
                                 <field name="direccion_madre"/>
                                 <field name="telefono_madre"/>
                                 <field name="esta_vivo_madre"/>

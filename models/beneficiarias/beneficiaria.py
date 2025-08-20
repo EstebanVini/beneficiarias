@@ -59,7 +59,6 @@ class Beneficiaria(models.Model):
     estado_civil = fields.Char(string="Estado Civil")
 
     escolaridad = fields.Char(string="Escolaridad")
-    religion = fields.Char(string="Religión")
 
     # datos embarazo en formulario principal
     embarazo = fields.Boolean(string="¿Está embarazada?")
@@ -215,9 +214,10 @@ class Beneficiaria(models.Model):
         ('musulmana', 'Musulmana'),
         ('otro', 'Otro')
     ], string="Religión")
+    religion_otro = fields.Char(string="Especificar religión")
 
     migrante = fields.Boolean(string="¿Es migrante?")
-    pais_de_origen = fields.Char(string="País de Origen")
+    pais_de_origen = fields.Many2one('res.country', string="País de Origen")
     motivo_migracion = fields.Char(string="Motivo de Migración")
     deseo_de_migrar = fields.Boolean(string="¿Desea migrar?")
     pertenece_a_una_comunidad = fields.Boolean(string="¿Pertenece a una comunidad indígena?")
@@ -234,7 +234,7 @@ class Beneficiaria(models.Model):
         ('otro', 'Otro')
     ], string="Tipo de Discapacidad")
 
-    cantidad_embarazos = fields.Integer(string="Cantidad de embarazos contando este")
+    cantidad_embarazos = fields.Integer(string="Cantidad de embarazos contando este", default=1)
     cantidad_hijos_nacidos_vivos = fields.Integer(string="Cantidad de hijos nacidos vivos")
     cantidad_hijos_nacidos_muertos = fields.Integer(string="Cantidad de hijos nacidos muertos")
     cantidad_abortos = fields.Integer(string="Cantidad de abortos")
@@ -242,18 +242,16 @@ class Beneficiaria(models.Model):
     # === seccion acompañante pestaña "informacióno" ===
     acompanante = fields.Boolean(string="¿Tiene acompañante?")
     acompanante_nombre = fields.Char(string="Nombre del acompañante")
-    direccion_acompanante = fields.Char(string="Dirección del acompañante")
-    acompanante_telefono = fields.Char(string="Teléfono del acompañante")
     acompanante_parentesco = fields.Char(string="Parentesco")
 
     # ===== sección referencias y familiares pestaña "información" =====
 
-    nombre_referencia1 = fields.Char(string="Nombre Referencia 1")
-    telefono_referencia1 = fields.Char(string="Teléfono Referencia 1")
-    parentesco_referencia1 = fields.Char(string="Parentesco Referencia 1")
-    nombre_referencia2 = fields.Char(string="Nombre Referencia 2")
-    telefono_referencia2 = fields.Char(string="Teléfono Referencia 2")
-    parentesco_referencia2 = fields.Char(string="Parentesco Referencia 2")
+    nombre_referencia1 = fields.Char(string="Contacto de Emergencia 1")
+    telefono_referencia1 = fields.Char(string="Teléfono")
+    parentesco_referencia1 = fields.Char(string="Parentesco")
+    nombre_referencia2 = fields.Char(string="Contacto de Emergencia 2")
+    telefono_referencia2 = fields.Char(string="Teléfono")
+    parentesco_referencia2 = fields.Char(string="Parentesco")
 
 
     # === PESTAÑA "CANALIZACIÓN" ===
@@ -271,8 +269,8 @@ class Beneficiaria(models.Model):
 
     # ==== sección seguimiento legal pestaña "canalización" ====
     tiene_carpeta_investigacion = fields.Boolean(string="¿Tiene carpeta de investigación?")
-    NIC = fields.Char(string="Número de Investigación Criminal", help="Número de la carpeta de investigación si aplica")
-    NUC = fields.Char(string="Número Único de Caso", help="Número único de caso si aplica")
+    NIC = fields.Char(string="NIC", help="Número de la carpeta de investigación criminal si aplica")
+    NUC = fields.Char(string="NUC", help="Número único de caso si aplica")
     fecha_investigacion = fields.Date(string="Fecha de Investigación", help="Fecha de la carpeta de investigación si aplica")
     lugar = fields.Char(string="Lugar de Investigación", help="Lugar donde se realizó la investigación si aplica")
     delito = fields.Char(string="Delito", help="Delito relacionado con la investigación si aplica")
@@ -324,12 +322,15 @@ class Beneficiaria(models.Model):
     # ==== PESTAÑA "FAMILIARES" ====
     # datos del padre
     padre_nombre = fields.Char(string="Nombre completo del padre")
+    tiene_relacion_padre = fields.Boolean(string="¿Tiene relación con su padre?")
     direccion_padre = fields.Char(string="Dirección del padre")
     telefono_padre = fields.Char(string="Teléfono del padre")
     esta_vivo_padre = fields.Boolean(string="¿Está vivo el padre?")
 
+
     # datos de la madre
     madre_nombre = fields.Char(string="Nombre completo de la madre")
+    tiene_relacion_madre = fields.Boolean(string="¿Tiene relación con su madre")
     direccion_madre = fields.Char(string="Dirección de la madre")
     telefono_madre = fields.Char(string="Teléfono de la madre")
     esta_vivo_madre = fields.Boolean(string="¿Está viva la madre?")
@@ -516,6 +517,7 @@ class Beneficiaria(models.Model):
 
     sabe_que_es_adocion = fields.Boolean(string="¿Sabes qué es la adopción?")
     conoce_adopcion = fields.Boolean(string="¿Conoces el proceso de adopción?")
+    te_gustaria_conocer = fields.Boolean(string="¿Te gustaría conocer más sobre el proceso de adopción?")
     desea_dar_a_adopcion = fields.Boolean(string="¿Deseas dar a tu bebé en adopción?")
 
     # === PESTAÑA "DATOS DEL PARTO" ===
