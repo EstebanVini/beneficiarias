@@ -287,17 +287,32 @@
                         <!-- === VIOLENCIA Y EDUCACIÓN SEXUAL === -->
                         <page string="Datos de violencia">
                             <group>
-                                <field name="violacion"/>
-                                <field name="violencia_intrafamiliar"/>
-                                <field name="quien_fue_el_agresor" invisible="not violencia_intrafamiliar"/>
-                                <field name="tipo_violencia"/>
-                                <field name="educacion_sexual"/>
-                                <field name="educacion_sexual_detalle" invisible="not educacion_sexual"/>
-                                <field name="embarazo_actual_consecuencia_de_violacion"/>
-                                <field name="ha_iniciado_carpeta_investigacion"/>
-                                <field name="carpeta_investigacion_numero" invisible="not ha_iniciado_carpeta_investigacion"/>
-                                <field name="carpeta_investigacion_fecha" invisible="not ha_iniciado_carpeta_investigacion"/>
-                                <field name="carpeta_investigacion_lugar" invisible="not ha_iniciado_carpeta_investigacion"/>
+
+                                <group>
+                                    <field name="violencia_intrafamiliar"/>
+                                    <field name="quien_fue_el_agresor" invisible="not violencia_intrafamiliar"/>
+                                    <field name="ha_iniciado_carpeta_investigacion"/>
+                                    <field name="carpeta_investigacion_numero" invisible="not ha_iniciado_carpeta_investigacion"/>
+                                    <field name="carpeta_investigacion_fecha" invisible="not ha_iniciado_carpeta_investigacion"/>
+                                    <field name="carpeta_investigacion_lugar" invisible="not ha_iniciado_carpeta_investigacion"/>
+                                </group>
+
+                                <group string="Seleccionar tipo de violencia">
+                                    <field name="tipo_violencia_fisica"/>
+                                    <field name="tipo_violencia_psicologica"/>
+                                    <field name="tipo_violencia_sexual"/>
+                                    <field name="violacion" invisible="not tipo_violencia_sexual"/>
+                                    <field name="embarazo_actual_consecuencia_de_violacion" invisible="not violacion"/>
+                                    <field name="tipo_violencia_economica"/>
+                                    <field name="tipo_violencia_patrimonial"/>
+                                    <field name="tipo_violencia_otro_seleccion"/>
+                                    <field name="tipo_violencia_otro" invisible="not tipo_violencia_otro_seleccion"/>
+                                </group>
+
+                                <group string="Educación Sexual">
+                                    <field name="educacion_sexual"/>
+                                    <field name="educacion_sexual_detalle" invisible="not educacion_sexual"/>
+                                </group>
                             </group>
                         </page>
                         <!-- === ANTECEDENTES MÉDICOS === -->

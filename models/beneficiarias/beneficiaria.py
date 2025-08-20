@@ -406,18 +406,18 @@ class Beneficiaria(models.Model):
 
     # Título "Qué tipo de violencia sufriste"
     # lista para seleccionar 1 o varios tipos de violencia
-    tipo_violencia = fields.Selection([
-        ('fisica', 'Física'),
-        ('psicologica', 'Psicológica'),
-        ('sexual', 'Sexual'),
-        ('economica', 'Económica'),
-        ('patrimonial', 'Patrimonial'),
-        ('otro', 'Otro')
-    ], string="Tipo de Violencia", help="Seleccione uno o varios tipos de violencia sufrida")
+
+    tipo_violencia_fisica = fields.Boolean(string="Violencia física")
+    tipo_violencia_psicologica = fields.Boolean(string="Violencia psicológica")
+    tipo_violencia_sexual = fields.Boolean(string="Violencia sexual")
+    tipo_violencia_economica = fields.Boolean(string="Violencia económica")
+    tipo_violencia_patrimonial = fields.Boolean(string="Violencia patrimonial")
+    tipo_violencia_otro_seleccion = fields.Boolean(string="Otro")
+    tipo_violencia_otro = fields.Boolean(string="Especifique otro tipo de violencia")
 
     # educación sexual
     educacion_sexual = fields.Boolean(string="¿Has recibido educación sexual?")
-    educacion_sexual_detalle = fields.Text(string="¿Quién te la brindó y en dónde?")
+    educacion_sexual_detalle = fields.Text(string="¿Quién te la brindó y en dónde? (opcional)")
     embarazo_actual_consecuencia_de_violacion = fields.Boolean(string="¿El embarazo actual es consecuencia de una violación?")
     ha_iniciado_carpeta_investigacion = fields.Boolean(string="¿Has iniciado una carpeta de investigación por la violencia sufrida?")
     carpeta_investigacion_numero = fields.Char(string="Número de la carpeta de investigación")
@@ -543,7 +543,7 @@ class Beneficiaria(models.Model):
     fecha_conclusion_entrega_voluntaria = fields.Date(string="Fecha de conclusión de entrega voluntaria", help="Fecha en la que concluye el trámite de entrega voluntaria para adopción (fecha de audiencia en el juzgado)")
     nombre_testigo1 = fields.Char(string="Nombre del testigo 1", help="Nombre del primer testigo que firma el acta de alta")
     nombre_testigo2 = fields.Char(string="Nombre del testigo 2", help="Nombre del segundo testigo que firma el acta de alta")
-    autorizado_por = fields.Char(string="Autorizado por", help="Nombre de la persona que autoriza el alta de la beneficiaria")
+    autorizado_por = fields.Many2one('res.users', string='Autorizado por', tracking=True)
 
 
     # === RELACIONES ===
