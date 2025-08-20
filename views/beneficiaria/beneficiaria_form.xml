@@ -118,7 +118,7 @@
                         </page>
                         <!-- === RESIDENCIA === -->
                         <page string="Residencia">
-                            <group>
+                            <group string="Domicilio">
                                 <field name="pais"/>
                                 <field name="calle"/>
                                 <field name="numero_exterior"/>
@@ -197,7 +197,7 @@
                         </page>
                         <!-- === SERVICIOS RECIBIDOS === -->
                         <page string="Detalle del Servicio">
-                            <group>
+                            <group string="Servicios Recibidos">
                                 <field name="atencion_integral_embarazo"/>
                                 <field name="atencion_medica"/>
                                 <field name="atencion_psicologica"/>
@@ -212,12 +212,12 @@
                         </page>
                         <!-- === ACOMPAÑANTE Y REFERENCIAS === -->
                         <page string="Acompañante y Referencias">
-                            <group>
+                            <group string="Acompañante">
                                 <field name="acompanante"/>
                                 <field name="acompanante_nombre" invisible="not acompanante"/>
                                 <field name="acompanante_parentesco" invisible="not acompanante"/>
                             </group>
-                            <group>
+                            <group string="Contactos de emergencia">
                                 <field name="nombre_referencia1"/>
                                 <field name="telefono_referencia1"/>
                                 <field name="parentesco_referencia1"/>
@@ -279,7 +279,7 @@
                         </page>
                         <!-- === RELACIÓN CON EL PADRE === -->
                         <page string="Relación con el Padre del Bebé">
-                            <group>
+                            <group string="Relación con el Padre del Bebé">
                                 <field name="nombre_padre"/>
                                 <field name="edad_padre"/>
                                 <field name="relacion_con_padre"/>
@@ -308,7 +308,7 @@
                         <page string="Datos de violencia">
                             <group>
 
-                                <group>
+                                <group string="Datos de violencia">
                                     <field name="violencia_intrafamiliar"/>
                                     <field name="quien_fue_el_agresor" invisible="not violencia_intrafamiliar"/>
                                     <field name="ha_iniciado_carpeta_investigacion"/>
@@ -337,7 +337,7 @@
                         </page>
                         <!-- === ANTECEDENTES MÉDICOS === -->
                         <page string="A. Médicos">
-                            <group>
+                            <group string="Antecedentes Médicos">
                                 <field name="antecedentes_medicos"/>
                                 <field name="enfermedades_cronicas"/>
                                 <field name="alergias"/>
@@ -355,7 +355,7 @@
                         </page>
                         <!-- === MEDIOS DE COMUNICACIÓN === -->
                         <page string="Medios de Comunicación">
-                            <group>
+                            <group string="Selecciona los medios de comunicación por los que te enteraste de nosotros">
                                 <field name="television"/>
                                 <field name="television_canal" invisible="not television"/>
                                 <field name="radio"/>
@@ -529,7 +529,7 @@
 
                         <!-- === PROYECTO DE VIDA === -->
                         <page string="Proyecto de Vida">
-                            <group>
+                            <group string="Proyecto de Vida">
                                 <field name="reaccion_confirmacion_embarazo"/>
                                 <field name="intento_aborto"/>
                                 <field name="medio_intento_aborto" invisible="not intento_aborto"/>
@@ -542,7 +542,7 @@
                         </page>
                         <!-- === DATOS DEL PARTO === -->
                         <page string="Datos del Parto">
-                            <group>
+                            <group string="Datos del Parto">
                                 <field name="fecha_egreso_hospital"/>
                                 <field name="hospital_parto"/>
                                 <field name="parto_multiple"/>
@@ -566,7 +566,7 @@
                         </page>
                         <!-- === ALTA === -->
                         <page string="Alta">
-                            <group>
+                            <group string="Datos de Alta">
                                 <field name="fecha_alta"/>
                                 <field name="persona_recoge"/>
                                 <field name="identificacion_persona_recoge" widget="binary" filename="identificacion_persona_recoge_filename"/>
