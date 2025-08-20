@@ -78,7 +78,7 @@
                                     <field name="ciudad_nacimiento"/>
                                 </group>
 
-                                <group string=" ">
+                                <group string="Nivel Socioeconómico">
                                     <field name="grado_estudios"/>
                                     <field name="estado_civil"/>
                                     <field name="ocupacion"/>
