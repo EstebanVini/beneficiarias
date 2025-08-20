@@ -692,16 +692,53 @@ class Beneficiaria(models.Model):
                         "El RFC '%s' no es válido. Debe cumplir con el formato oficial." % rec.rfc
                     )
 
-    @api.constrains('telefono', 'telefono_celular')
-    def _check_telefono_numerico(self):
+
+
+    @api.constrains(
+        'telefono',
+        'telefono_celular',
+        'telefono_referencia1',
+        'telefono_referencia2',
+        'telefono_seguimiento_legal',
+        'telefono2_seguimiento_legal',
+        'donador_telefono',
+        'telefono_padre',
+        'telefono_madre',
+        'tutor_telefono',
+        'telefono_persona_recoge',
+    )
+    def _check_telefonos(self):
+        """Valida que todos los campos de teléfono contengan solo dígitos y máximo 10 caracteres."""
+        phone_fields = (
+            'telefono',
+            'telefono_celular',
+            'telefono_referencia1',
+            'telefono_referencia2',
+            'telefono_seguimiento_legal',
+            'telefono2_seguimiento_legal',
+            'donador_telefono',
+            'telefono_padre',
+            'telefono_madre',
+            'tutor_telefono',
+            'telefono_persona_recoge',
+        )
         for rec in self:
-            for field_name in ['telefono', 'telefono_celular']:
-                value = getattr(rec, field_name)
-                if value:
-                    if not value.isdigit():
-                        raise ValidationError("El campo %s solo debe contener números." % rec._fields[field_name].string)
-                    if len(value) > 10:
-                        raise ValidationError("El campo %s debe tener como máximo 10 dígitos." % rec._fields[field_name].string)
+            for field_name in phone_fields:
+                value = (getattr(rec, field_name) or '').strip()
+                if not value:
+                    continue
+                if not value.isdigit():
+                    raise ValidationError(
+                        _("El campo %s solo debe contener números.")
+                        % rec._fields[field_name].string
+                    )
+                if len(value) > 10:
+                    raise ValidationError(
+                        _("El campo %s debe tener como máximo 10 dígitos.")
+                        % rec._fields[field_name].string
+                )
+
+
 
     @api.onchange('atencion_integral_embarazo')
     def _onchange_atencion_integral_embarazo(self):
