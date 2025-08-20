@@ -7,6 +7,7 @@ import re
 class Beneficiaria(models.Model):
     _name = 'beneficiarias.beneficiaria'
     _description = 'Beneficiaria'
+    _rec_name = 'nombre_completo' 
 
     # === FORMULARIO PRINCIPAL ===
     nombre = fields.Char(string="Nombre(s)", required=True)
@@ -616,8 +617,17 @@ class Beneficiaria(models.Model):
     @api.depends('nombre', 'apellido_paterno', 'apellido_materno')
     def _compute_nombre_completo(self):
         for rec in self:
-            partes = filter(None, [rec.nombre, rec.apellido_paterno, rec.apellido_materno])
-            rec.nombre_completo = ' '.join(partes)
+            partes = [p for p in [rec.nombre, rec.apellido_paterno, rec.apellido_materno] if p]
+            rec.nombre_completo = ' '.join(partes) if partes else False  # si no hay partes, deja False
+
+    def name_get(self):
+        result = []
+        for rec in self:
+            # Si no hay nombre, devuelve cadena vacía en lugar de "ID X"
+            etiqueta = rec.nombre_completo or rec.nombre or ''
+            result.append((rec.id, etiqueta))
+        return result
+    
 
     @api.depends('fecha_nacimiento', 'fecha_ingreso')
     def _compute_edad_ingreso(self):
