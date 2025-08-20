@@ -676,6 +676,16 @@ class Beneficiaria(models.Model):
                     if len(value) > 10:
                         raise ValidationError("El campo %s debe tener como máximo 10 dígitos." % rec._fields[field_name].string)
 
+    @api.onchange('atencion_integral_embarazo')
+    def _onchange_atencion_integral_embarazo(self):
+        if self.atencion_integral_embarazo:
+            self.atencion_medica = True
+            self.atencion_psicologica = True
+            self.atencion_nutricional = True
+            self.apoyo_emocional = True
+            self.apoyo_especie = True
+            self.asistencia_legal_adopcion = True
+            self.centro_capacitacion_formacion = True
 
     @api.onchange('pais_nacimiento')
     def _onchange_pais_nacimiento(self):
