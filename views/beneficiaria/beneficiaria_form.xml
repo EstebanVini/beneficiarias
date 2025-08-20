@@ -252,6 +252,22 @@
                             </group>
                             <group string="Hermanos">
                                 <field name="tiene_hermanos"/>
+
+                                
+                                <field name="hermanos_ids" context="{'default_beneficiaria_id': id}" invisible="not tiene_hermanos">
+                                    <tree editable="bottom">
+                                        <field name="nombre"/>
+                                        <field name="telefono"/>
+                                        <field name="tienen_relacion"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="nombre" required="1"/>
+                                            <field name="telefono"/>
+                                            <field name="tienen_relacion"/>
+                                        </group>
+                                    </form>
+                                </field>
                             </group>
                         </page>
                         <!-- === HIJOS === -->

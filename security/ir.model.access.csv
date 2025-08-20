@@ -9,4 +9,5 @@ access_bebe,access_bebe,model_beneficiarias_bebe,,1,1,1,1
 access_valoracion,access_valoracion,model_beneficiarias_valoracion,,1,1,1,1
 access_papas_adoptivos,access_papas_adoptivos,model_beneficiarias_papas_adoptivos,,1,1,1,1
 access_geo_city,access.geo.city,model_geo_city,,1,1,1,1
+access_hermanos,access_hermanos,model_beneficiarias_hermano,,1,1,1,1
 

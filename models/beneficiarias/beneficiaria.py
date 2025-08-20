@@ -552,6 +552,7 @@ class Beneficiaria(models.Model):
 
     hijos_ids = fields.One2many('beneficiarias.hijo', 'beneficiaria_id')
     bebe_ids = fields.One2many('beneficiarias.bebe', 'beneficiaria_id')
+    hermanos_ids = fields.One2many('beneficiarias.hermano', 'beneficiaria_id', string='Hermanos')
     traslado_ids = fields.One2many('beneficiarias.traslados', 'beneficiaria_id', string='Traslados')
     taller_ids = fields.One2many('beneficiarias.taller', 'beneficiaria_id', string='Talleres')
     valoracion_ids = fields.One2many(
