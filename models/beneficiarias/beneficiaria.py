@@ -687,6 +687,17 @@ class Beneficiaria(models.Model):
             self.aistencia_legal_adopcion = True
             self.centro_capacitacion_formacion = True
 
+    @api.onchange('atencion_integral_embarazo')
+    def _onchange_atencion_integral_embarazo(self):
+        if not self.atencion_integral_embarazo:
+            self.atencion_medica = False
+            self.atencion_psicologica = False
+            self.atencion_nutricional = False
+            self.apoyo_emocional = False
+            self.apoyo_especie = False
+            self.asistencia_legal_adopcion = False
+            self.centro_capacitacion_formacion = False
+
     @api.onchange('pais_nacimiento')
     def _onchange_pais_nacimiento(self):
         self.estado_nacimiento = False
