@@ -68,8 +68,9 @@
                                 <field name="red_social2" invisible="not tiene_red_social"/>
                                 
                                 <field name="pais_nacimiento"/>
+                                <field name="estado_nacimiento"
+                                    domain="[('country_id', '=', pais_nacimiento)]"/>
                                 <field name="ciudad_nacimiento"/>
-                                <field name="lugar_de_registro"/>
 
                                 <field name="grado_estudios"/>
                                 <field name="estado_civil"/>

@@ -57,7 +57,7 @@ class Beneficiaria(models.Model):
 
     nacionalidad = fields.Char(string="Nacionalidad")
     estado_civil = fields.Char(string="Estado Civil")
-    ocupacion = fields.Char(string="Ocupación")
+
     escolaridad = fields.Char(string="Escolaridad")
     religion = fields.Char(string="Religión")
 
@@ -148,8 +148,12 @@ class Beneficiaria(models.Model):
     red_social2 = fields.Char(string="Red Social 2")
 
     nacionalidad = fields.Char(string="Nacionalidad")
-    pais_nacimiento = fields.Char(string="País de Nacimiento")
+
+    pais_nacimiento = fields.Many2one('res.country', string="País de Nacimiento")
+    estado_nacimiento = fields.Many2one('res.country.state', string="Estado de Nacimiento",
+                                        domain="[('country_id', '=', pais_nacimiento)]")
     ciudad_nacimiento = fields.Char(string="Ciudad de Nacimiento")
+
     lugar_de_registro = fields.Char(string="Lugar de Registro")
 
     # DOMICILIO
@@ -181,15 +185,26 @@ class Beneficiaria(models.Model):
         ('union_libre', 'Unión Libre')
     ], string="Estado Civil")
 
-    ocupacion = fields.Char(string="Ocupación")
+    ocupacion = fields.Selection([
+        ('comerciante', 'Comerciante'), ('desempleada', 'Desempleada'),
+        ('estudiante', 'Estudiante'), ('empleada', 'Empleada'),
+        ('hogar', 'Hogar'), ('ninguna', 'Ninguna')
+
+    ], string="Ocupación")
 
     nivel_economico = fields.Selection([
-        ('bajo', 'Bajo'),
+        ('pobreza_extrema', 'Pobreza Extrema'),
+        ('pobreza', 'Pobreza'),
         ('medio', 'Medio'),
-        ('alto', 'Alto')
+        ('alto', 'Alto'),
+        ('muy_alto', 'Muy Alto')
     ], string="Nivel Económico")
 
-    tipo_poblacion = fields.Char(string="Tipo de Población")
+    tipo_poblacion = fields.Selection([
+        ('urbana', 'Urbana'),
+        ('semi_urbana', 'Semi Urbana'),
+        ('rural', 'Rural')
+    ], string="Tipo de población")
 
     # Segunda columna de pestaña "Información Particular Detallada"
     religion = fields.Selection([
@@ -216,7 +231,6 @@ class Beneficiaria(models.Model):
         ('auditiva', 'Auditiva'),
         ('motora', 'Motora'),
         ('intelectual', 'Intelectual'),
-        ('psicosocial', 'Psicosocial'),
         ('otro', 'Otro')
     ], string="Tipo de Discapacidad")
 
@@ -506,7 +520,7 @@ class Beneficiaria(models.Model):
 
     # === PESTAÑA "DATOS DEL PARTO" ===
     fecha_egreso_hospital = fields.Date(string="Fecha de egreso del hospital", help="Fecha en que la beneficiaria fue dada de alta del hospital tras el parto")
-    hospital_parto = fields.Char(string="Nombre del hostpital")
+    hospital_parto = fields.Char(string="Nombre del hospital")
     parto_multiple = fields.Boolean(string="¿Tuviste un parto múltiple?")
 
     # === PESTAÑA "ALTA" ===
@@ -647,3 +661,9 @@ class Beneficiaria(models.Model):
                     raise ValidationError(
                         "El RFC '%s' no es válido. Debe cumplir con el formato oficial." % rec.rfc
                     )
+
+
+    @api.onchange('pais_nacimiento')
+    def _onchange_pais_nacimiento(self):
+        self.estado_nacimiento = False
+
