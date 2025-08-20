@@ -684,10 +684,9 @@ class Beneficiaria(models.Model):
             self.atencion_nutricional = True
             self.apoyo_emocional = True
             self.apoyo_especie = True
-            self.asistencia_legal_adopcion = True
+            self.aistencia_legal_adopcion = True
             self.centro_capacitacion_formacion = True
 
     @api.onchange('pais_nacimiento')
     def _onchange_pais_nacimiento(self):
         self.estado_nacimiento = False
-
