@@ -1,0 +1,22 @@
+<!-- views/preview_image_wizard_views.xml -->
+<odoo>
+  <record id="view_preview_image_wizard_form" model="ir.ui.view">
+    <field name="name">preview.image.wizard.form</field>
+    <field name="model">preview.image.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Vista previa" create="false" edit="false">
+        <sheet>
+          <group>
+            <h2><field name="name"/></h2>
+            <!-- Muestra relativamente grande; Odoo mantiene proporción -->
+            <field name="image" widget="image"
+                   options="{'size': [1024, 1024], 'preview_image': 'image'}"/>
+          </group>
+        </sheet>
+        <footer>
+          <button string="Cerrar" class="btn-primary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

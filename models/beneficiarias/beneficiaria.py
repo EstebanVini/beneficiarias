@@ -1,5 +1,6 @@
-from odoo import models, fields, api # type: ignore
+from odoo import models, fields, api, _ # type: ignore
 from odoo.exceptions import ValidationError # type: ignore
+from odoo.exceptions import UserError # type: ignore
 from datetime import date, timedelta
 import re
 
@@ -301,10 +302,36 @@ class Beneficiaria(models.Model):
     # ], string="Tipo de Documento", help="Tipo de documento relacionado con la beneficiaria")
 
     # ==== PESTAÑA "FOTOS" =====
-    foto_perfil_izquierdo = fields.Image(string="Foto Perfil Izquierdo", max_width=400, max_height=400)
-    foto_frontal = fields.Image(string="Foto Frontal", max_width=400, max_height=400)
-    foto_perfil_derecho = fields.Image(string="Foto Perfil Derecho", max_width=400, max_height=400)
-    foto_huellas = fields.Image(string="Huellas Digitales", max_width=400, max_height=400)
+    # Recomendado: guarda en alta resolución
+    foto_perfil_izquierdo = fields.Image("Foto Perfil Izquierdo", max_width=1920, max_height=1920)
+    foto_frontal          = fields.Image("Foto Frontal",          max_width=1920, max_height=1920)
+    foto_perfil_derecho   = fields.Image("Foto Perfil Derecho",   max_width=1920, max_height=1920)
+    foto_huellas          = fields.Image("Huellas Digitales",     max_width=1920, max_height=1920)
+
+    # === Acción genérica para abrir el preview en un wizard (modal) ===
+    def action_preview_image(self):
+        self.ensure_one()
+        field_name = self.env.context.get('field_name')
+        if not field_name or field_name not in self._fields:
+            raise UserError(_("No se indicó un campo de imagen válido."))
+
+        image = self[field_name]
+        if not image:
+            raise UserError(_("No hay imagen cargada en '%s'.") % (self._fields[field_name].string or field_name))
+
+        label = self.env.context.get('field_label') or self._fields[field_name].string or _("Imagen")
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Vista previa - %s") % label,
+            "res_model": "preview.image.wizard",
+            "view_mode": "form",
+            "target": "new",  # <-- abre modal
+            "context": {
+                "default_name": label,
+                "default_image": image,  # pasamos el binario directo al wizard
+            },
+        }
 
 
     # === PESTAÑA "DETALLE DEL SERVICIO" ===

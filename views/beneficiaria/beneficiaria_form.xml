@@ -158,43 +158,52 @@
                         </page>
                         <!-- === FOTOS === -->
                         <page string="Fotos">
-                            <group>
-                                <table style="width: 100%;">
-                                    <tr>
-                                        <td style="width:40%">
-                                            <div class="o_form_label">Foto Perfil Izquierdo</div>
-                                        </td>
-                                        <td>
-                                            <field name="foto_perfil_izquierdo" widget="image" options="{'size': [200,200]}"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="o_form_label">Foto Frontal</div>
-                                        </td>
-                                        <td>
-                                            <field name="foto_frontal" widget="image" options="{'size': [200,200]}"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="o_form_label">Foto Perfil Derecho</div>
-                                        </td>
-                                        <td>
-                                            <field name="foto_perfil_derecho" widget="image" options="{'size': [200,200]}"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="o_form_label">Huellas Digitales</div>
-                                        </td>
-                                        <td>
-                                            <field name="foto_huellas" widget="image" options="{'size': [200,200]}"/>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </group>
+                        <group>
+                            <table style="width: 100%;">
+                            <tr>
+                                <td style="width:40%"><div class="o_form_label">Foto Perfil Izquierdo</div></td>
+                                <td>
+                                <field name="foto_perfil_izquierdo" widget="image" options="{'size': [200, 200]}"/>
+                                <button type="object" name="action_preview_image"
+                                        context="{'field_name': 'foto_perfil_izquierdo', 'field_label': 'Foto Perfil Izquierdo'}"
+                                        class="btn btn-link fa fa-search-plus" title="Vista previa"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><div class="o_form_label">Foto Frontal</div></td>
+                                <td>
+                                <field name="foto_frontal" widget="image" options="{'size': [200, 200]}"/>
+                                <button type="object" name="action_preview_image"
+                                        context="{'field_name': 'foto_frontal', 'field_label': 'Foto Frontal'}"
+                                        class="btn btn-link fa fa-search-plus" title="Vista previa"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><div class="o_form_label">Foto Perfil Derecho</div></td>
+                                <td>
+                                <field name="foto_perfil_derecho" widget="image" options="{'size': [200, 200]}"/>
+                                <button type="object" name="action_preview_image"
+                                        context="{'field_name': 'foto_perfil_derecho', 'field_label': 'Foto Perfil Derecho'}"
+                                        class="btn btn-link fa fa-search-plus" title="Vista previa"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><div class="o_form_label">Huellas Digitales</div></td>
+                                <td>
+                                <field name="foto_huellas" widget="image" options="{'size': [200, 200]}"/>
+                                <button type="object" name="action_preview_image"
+                                        context="{'field_name': 'foto_huellas', 'field_label': 'Huellas Digitales'}"
+                                        class="btn btn-link fa fa-search-plus" title="Vista previa"/>
+                                </td>
+                            </tr>
+                            </table>
+                        </group>
                         </page>
+
+
                         <!-- === SERVICIOS RECIBIDOS === -->
                         <page string="Detalle del Servicio">
                             <group string="Servicios Recibidos">

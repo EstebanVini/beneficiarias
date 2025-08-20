@@ -5,7 +5,7 @@
     'summary': 'Gestión de Beneficiarias',
     'category': 'Custom',
     'author': 'Esteban Viniegra Pérez Olagaray | Pridecta',
-    #'website': 'https://pridecta.com',
+    'website': 'https://pridecta.es',
     'license': 'LGPL-3',
     'depends': ['base' , 'web'],
     'data': [
@@ -18,6 +18,7 @@
         'views/beneficiaria/stage_views.xml',
         'views/beneficiaria/beneficiaria_kanban.xml',
         'views/beneficiaria/documento_views.xml',
+        'views/beneficiaria/preview_image_wizard_views.xml',
         'views/hijos/hijo_views.xml',
         'views/bebes/bebe_views.xml',
         'views/papas_adoptivos/papas_adoptivos_views.xml',

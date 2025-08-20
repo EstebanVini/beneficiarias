@@ -5,3 +5,4 @@ from . import traslados
 from . import valoracion
 from . import geo_city
 from . import hermanos
+from . import preview_image_wizard
