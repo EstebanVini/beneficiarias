@@ -665,6 +665,17 @@ class Beneficiaria(models.Model):
                         "El RFC '%s' no es válido. Debe cumplir con el formato oficial." % rec.rfc
                     )
 
+    @api.constrains('telefono', 'telefono_celular')
+    def _check_telefono_numerico(self):
+        for rec in self:
+            for field_name in ['telefono', 'telefono_celular']:
+                value = getattr(rec, field_name)
+                if value:
+                    if not value.isdigit():
+                        raise ValidationError("El campo %s solo debe contener números." % rec._fields[field_name].string)
+                    if len(value) > 10:
+                        raise ValidationError("El campo %s debe tener como máximo 10 dígitos." % rec._fields[field_name].string)
+
 
     @api.onchange('pais_nacimiento')
     def _onchange_pais_nacimiento(self):
