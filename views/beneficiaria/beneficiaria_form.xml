@@ -56,44 +56,64 @@
                         <!-- === INFORMACIÓN PARTICULAR DETALLADA === -->
                         <page string="Información Particular Detallada">
                             <group>
-                                <field name="correo"/>
-                                <field name="telefono"/>
-                                <field name="telefono_celular"/>
-                                <field name="tiene_red_social"/>
-                                <field name="tipo_red_social1" invisible="not tiene_red_social"/>
-                                <!-- <field name="tipo_red_social1_otro" invisible="not tiene_red_social and tipo_red_social1 != 'otro'"/> -->
-                                <field name="red_social1" invisible="not tiene_red_social"/>
-                                <field name="tipo_red_social2" invisible="not tiene_red_social"/>
-                                <!-- <field name="tipo_red_social2_otro" invisible="not tiene_red_social and tipo_red_social2 != 'otro'"/> -->
-                                <field name="red_social2" invisible="not tiene_red_social"/>
-                                
-                                <field name="pais_nacimiento"/>
-                                <field name="estado_nacimiento"
-                                    domain="[('country_id', '=', pais_nacimiento)]"/>
-                                <field name="ciudad_nacimiento"/>
 
-                                <field name="grado_estudios"/>
-                                <field name="estado_civil"/>
-                                <field name="ocupacion"/>
-                                <field name="nivel_economico"/>
-                                <field name="tipo_poblacion"/>
-                                <field name="religion"/>
-                                <field name="religion_otro" invisible="religion != 'otro'"/>
-                                <field name="migrante"/>
-                                <field name="pais_de_origen" invisible="not migrante"/>
-                                <field name="motivo_migracion" invisible="not migrante"/>
-                                <field name="deseo_de_migrar" invisible="not migrante"/>
-                                <field name="pertenece_a_una_comunidad"/>
-                                <field name="comunidad_indigena" invisible="not pertenece_a_una_comunidad"/>
-                                <field name="dialecto" invisible="not pertenece_a_una_comunidad"/>
-                                <field name="especifique_dialecto" invisible="not dialecto"/>
-                                <field name="lengua_materna" invisible="not pertenece_a_una_comunidad"/>
-                                <field name="discapacidad"/>
-                                <field name="tipo_discapacidad" invisible="not discapacidad"/>
-                                <field name="cantidad_embarazos"/>
-                                <field name="cantidad_hijos_nacidos_vivos"/>
-                                <field name="cantidad_hijos_nacidos_muertos"/>
-                                <field name="cantidad_abortos"/>
+                                <group string="Datos de Contacto">
+                                    <field name="correo"/>
+                                    <field name="telefono"/>
+                                    <field name="telefono_celular"/>
+                                    <field name="tiene_red_social"/>
+                                    <field name="tipo_red_social1" invisible="not tiene_red_social"/>
+                                    <!-- <field name="tipo_red_social1_otro" invisible="not tiene_red_social and tipo_red_social1 != 'otro'"/> -->
+                                    <field name="red_social1" invisible="not tiene_red_social"/>
+                                    <field name="tipo_red_social2" invisible="not tiene_red_social"/>
+                                    <!-- <field name="tipo_red_social2_otro" invisible="not tiene_red_social and tipo_red_social2 != 'otro'"/> -->
+                                    <field name="red_social2" invisible="not tiene_red_social"/>
+                                </group>
+
+
+                                <group string="Datos de Nacimiento">
+                                    <field name="pais_nacimiento"/>
+                                    <field name="estado_nacimiento"
+                                        domain="[('country_id', '=', pais_nacimiento)]"/>
+                                    <field name="ciudad_nacimiento"/>
+                                </group>
+
+                                <group string=" ">
+                                    <field name="grado_estudios"/>
+                                    <field name="estado_civil"/>
+                                    <field name="ocupacion"/>
+                                    <field name="nivel_economico"/>
+                                    <field name="tipo_poblacion"/>
+                                </group>
+
+                                <group string="Religion">
+                                    <field name="religion"/>
+                                    <field name="religion_otro" invisible="religion != 'otro'"/>
+                                </group>
+
+                                <group string="Migración">
+                                    <field name="migrante"/>
+                                    <field name="pais_de_origen" invisible="not migrante"/>
+                                    <field name="motivo_migracion" invisible="not migrante"/>
+                                    <field name="deseo_de_migrar" invisible="not migrante"/>
+                                    <field name="pertenece_a_una_comunidad"/>
+                                    <field name="comunidad_indigena" invisible="not pertenece_a_una_comunidad"/>
+                                    <field name="dialecto" invisible="not pertenece_a_una_comunidad"/>
+                                    <field name="especifique_dialecto" invisible="not dialecto"/>
+                                    <field name="lengua_materna" invisible="not pertenece_a_una_comunidad"/>
+                                </group>
+
+                                <group string="Discapacidad">
+                                    <field name="discapacidad"/>
+                                    <field name="tipo_discapacidad" invisible="not discapacidad"/>
+                                </group>
+
+                                <group string="Embarazos">
+                                    <field name="cantidad_embarazos"/>
+                                    <field name="cantidad_hijos_nacidos_vivos"/>
+                                    <field name="cantidad_hijos_nacidos_muertos"/>
+                                    <field name="cantidad_abortos"/>
+                                </group>
                             </group>
                         </page>
                         <!-- === RESIDENCIA === -->
