@@ -3,6 +3,7 @@ from odoo import models, fields # type: ignore
 class PapasAdoptivos(models.Model):
     _name = "beneficiarias.papas_adoptivos"
     _description = "Papas adoptivos para el bebe"
+    _rec_name = 'nombre_padre_adoptivo'
 
     nombre_padre_adoptivo = fields.Char(string="Nombre del Padre")
     edad_padre_adoptivo = fields.Integer(string="Edad del padre adoptivo")
