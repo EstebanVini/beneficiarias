@@ -3,6 +3,7 @@ from odoo import models, fields, api  # type: ignore[import-untyped]
 class Bebe(models.Model):
     _name = 'beneficiarias.bebe'
     _description = 'Bebé'
+    _rec_name = 'nombre'
 
     # === FORMULARIO PRINCIPAL ===
 

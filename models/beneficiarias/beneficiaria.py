@@ -64,7 +64,7 @@ class Beneficiaria(models.Model):
 
     # datos embarazo en formulario principal
     embarazo = fields.Boolean(string="¿Está embarazada?")
-    fum_time = fields.Date(string="FUM")
+    fum_time = fields.Date(string="FUM", help="Fecha de última menstruación")
     meses_embarazo = fields.Integer(string="Meses de embarazo", compute='_compute_embarazo_info', store=True)
     semanas_gestacion = fields.Integer(string="Semanas de gestación", compute='_compute_embarazo_info', store=True)
     fecha_probable_de_parto = fields.Date(string="Fecha probable de parto", compute='_compute_embarazo_info', store=True)
