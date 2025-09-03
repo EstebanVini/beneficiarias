@@ -6,6 +6,10 @@
 Este módulo para **Odoo 17 Community** fue creado especialmente para **VIFAC México**, con el objetivo de **agilizar el registro y seguimiento integral** de mujeres embarazadas en situación vulnerable (“Beneficiarias”).  
 Centraliza datos personales, control por etapas, evidencia documental, valoraciones, talleres, traslados y red familiar, ofreciendo una vista 360° del expediente.
 
+demo: https://beneficiarias.eviniegra.software
+user: admin
+pswrd: admin
+
 ---
 
 ## 2. Estructura del módulo 📂
