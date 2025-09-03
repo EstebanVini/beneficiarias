@@ -1,5 +1,5 @@
 # 📦 Odoo 17 – Módulo de Registro de Beneficiarias para VIFAC México
-![Logo VIFAC](beneficiarias/static/description/logo-vifac-sin_fondo.png)
+![Logo VIFAC](/static/description/logo-vifac-sin_fondo.png)
 
 ## 1. Descripción 📋
 
