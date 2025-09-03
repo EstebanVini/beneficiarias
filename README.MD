@@ -218,8 +218,8 @@ Extras/auxiliares:
 
 ## 10. Créditos ✍️
 
-- **Autor:** Esteban Viniegra Pérez Olagaray 
-- **Compañía** Pridecta  
+- **Autor:** Esteban Viniegra Pérez Olagaray ![foto Esteban](/static/description/Esteban_Viniegra.jpeg)
+- **Compañía** Pridecta ![Logo Pridecta](/static/description/pridecta.jpeg)
 - **Sitio:** https://pridecta.es  
 - **Licencia:** LGPL-3
 
