@@ -1,4 +1,4 @@
-# 📦 Odoo 17 – Módulo de Registro de Beneficiarias para VIFAC México
+#   <img src="/static/description/favicon.png" alt="Logo Pridecta" width="40" height="40" style="border-radius:50%; vertical-align:middle; margin-left:10px;"/> Odoo 17 – Módulo de Registro de Beneficiarias para VIFAC México
 ![Logo VIFAC](/static/description/logo-vifac-sin_fondo.png)
 
 ## 1. Descripción 📋
@@ -222,7 +222,7 @@ Extras/auxiliares:
   <img src="/static/description/Esteban_Viniegra.jpeg" alt="Foto Esteban" width="40" height="40" style="border-radius:50%; vertical-align:middle; margin-left:10px;"/>
 
 - **Compañía:** Pridecta  
-  <img src="/static/description/pridecta.jpeg" alt="Logo Pridecta" width="40" height="40" style="border-radius:50%; vertical-align:middle; margin-left:10px;"/>
+  <img src="/static/description/favicon.png" alt="Logo Pridecta" width="40" height="40" style="border-radius:50%; vertical-align:middle; margin-left:10px;"/>
 
 - **Sitio:** https://pridecta.es  
 - **Licencia:** LGPL-3
