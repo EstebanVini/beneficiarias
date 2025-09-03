@@ -218,7 +218,7 @@ Extras/auxiliares:
 
 ## 10. Créditos ✍️
 
-- **Autor:** Esteban Viniegra Pérez Olagaray <img src="/static/description/Esteban_Viniegra.jpeg" alt="Foto Esteban" width="40" height="40" style="border-radius:50%; vertical-align:middle; margin-left:8px;"/>
+- **Autor:** Esteban Viniegra Pérez Olagaray <img src="/static/description/Esteban_Viniegra.jpeg" alt="Foto Esteban" width="40" height="40" style="border-radius:50%; vertical-align:center; margin-left:8px;"/>
 
 -  **Compañía:** Pridecta <img src="/static/description/favicon.png" alt="Logo Pridecta" width="40" height="40" style="vertical-align:middle; margin-left:8px;"/>
 - **Sitio:** https://pridecta.es  
