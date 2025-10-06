@@ -3,6 +3,12 @@ from odoo.exceptions import ValidationError # type: ignore
 from odoo.exceptions import UserError # type: ignore
 from datetime import date, timedelta
 import re
+from io import BytesIO
+from reportlab.lib.pagesizes import A4 # type: ignore
+from reportlab.pdfgen import canvas # type: ignore
+from reportlab.lib.units import cm # type: ignore
+from base64 import b64encode
+from ...services.beneficiarias import generar_expediente
 
 class Beneficiaria(models.Model):
     _name = 'beneficiarias.beneficiaria'
@@ -775,3 +781,25 @@ class Beneficiaria(models.Model):
     @api.onchange('pais_nacimiento')
     def _onchange_pais_nacimiento(self):
         self.estado_nacimiento = False
+
+
+    # Generador de expediente en PDF
+    def action_generar_expediente(self):
+        self.ensure_one()
+        self.env["beneficiarias.expediente.service"].generar_expediente_pdf(self)
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Expediente generado',
+                'message': 'El expediente de la beneficiaria se ha generado correctamente.',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+
+
+
+
+
