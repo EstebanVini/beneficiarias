@@ -62,6 +62,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_section_acompanante_y_referencias(p, beneficiaria, width, height)
         # === QUINTA SECCIÓN: Familiares ===
         self._add_section_familiares(p, beneficiaria, width, height)
+        # === SEXTA SECCIÓN: Hijos ===
+        self._add_section_hijos(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -1008,3 +1010,89 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         # === Footer ===
         self._add_footer(p, width, height)
         p.showPage()
+
+    def _add_section_hijos(self, p, beneficiaria, width, height):
+        """Sección: Hijos (lista enumerada similar a hermanos)"""
+
+        # === Verificar si hay datos ===
+        tiene_hijos = bool(beneficiaria.hijos_ids)
+        if not tiene_hijos:
+            return  # No generar la página si no hay hijos
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "HIJOS")
+
+        y = height - 130
+        line_height = 20
+        section_spacing = 30
+        subtitle_spacing = 20
+        left_margin = inch
+
+        # === Función auxiliar ===
+        def draw_field(label, value):
+            nonlocal y
+
+            if y < inch:
+                # salto de página
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "HIJOS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            text = f"{label}: {value or '-'}"
+            max_width = width - (2 * inch)
+            words = text.split()
+            line = ""
+
+            for word in words:
+                if stringWidth(line + " " + word, "Helvetica", 11) <= max_width:
+                    line += (" " if line else "") + word
+                else:
+                    p.drawString(left_margin, y, line.strip())
+                    y -= line_height
+                    line = word
+            if line:
+                p.drawString(left_margin, y, line.strip())
+                y -= line_height
+
+        # ======================================================
+        # SECCIÓN DE HIJOS
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Hijos")
+        y -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        # Recorremos los registros hijos_ids
+        for idx, hijo in enumerate(beneficiaria.hijos_ids, start=1):
+            if y < inch + 40:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "HIJOS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            p.setFont("Helvetica-Bold", 11)
+            p.drawString(left_margin, y, f"Hijo {idx}:")
+            y -= 15
+            p.setFont("Helvetica", 11)
+
+            draw_field("Nombre", hijo.nombre)
+            draw_field("Edad", hijo.edad)
+            draw_field("Nivel de estudios", hijo.nivel_estudios)
+            draw_field("Vive con ella", "Sí" if hijo.vive_con_ella else "No")
+            draw_field("La acompaña", "Sí" if hijo.la_acompana else "No")
+            draw_field("Responsable", hijo.responsable)
+            draw_field("Escuela", hijo.escuela)
+            y -= 10  # pequeño espacio entre hijos
+
+        # === Footer ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
