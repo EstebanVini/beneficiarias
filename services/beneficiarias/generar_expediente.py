@@ -60,6 +60,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_section_fotos(p, beneficiaria, width, height)
         # === CUARTA SECCIÓN: Acompañante y Referencias ===
         self._add_section_acompanante_y_referencias(p, beneficiaria, width, height)
+        # === QUINTA SECCIÓN: Familiares ===
+        self._add_section_familiares(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -821,6 +823,187 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             draw_field("Nombre (Referencia 2)", beneficiaria.nombre_referencia2)
             draw_field("Teléfono", beneficiaria.telefono_referencia2)
             draw_field("Parentesco", beneficiaria.parentesco_referencia2)
+
+        # === Footer ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+    def _add_section_familiares(self, p, beneficiaria, width, height):
+        """Sección: Familiares (Padre, Madre, Tutor, Hermanos)"""
+
+        # === Verificar si hay datos relevantes ===
+        tiene_padre = bool(
+            beneficiaria.padre_nombre
+            or beneficiaria.telefono_padre
+            or beneficiaria.direccion_padre
+        )
+        tiene_madre = bool(
+            beneficiaria.madre_nombre
+            or beneficiaria.telefono_madre
+            or beneficiaria.direccion_madre
+        )
+        tiene_tutor = bool(
+            beneficiaria.tutor_nombre
+            or beneficiaria.tutor_telefono
+            or beneficiaria.tutor_direccion
+        )
+        tiene_hermanos = bool(beneficiaria.hermanos_ids)
+
+        if not (tiene_padre or tiene_madre or tiene_tutor or tiene_hermanos):
+            return  # No generar la página
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "FAMILIARES")
+
+        y_left = height - 130
+        y_right = height - 130
+        line_height = 20
+        section_spacing = 30
+        subtitle_spacing = 20
+        left_margin = inch
+        col2_x = width / 2 + 0.5 * inch
+
+        # === Funciones auxiliares ===
+        def draw_field_left(label, value):
+            nonlocal y_left
+            if y_left < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y_left = height - 100
+                y_right = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "FAMILIARES (cont.)")
+                y_left -= 40
+                y_right -= 40
+                p.setFont("Helvetica", 11)
+
+            text = f"{label}: {value or '-'}"
+            max_width = (width / 2) - (1.5 * inch)
+            words = text.split()
+            line = ""
+
+            for word in words:
+                if stringWidth(line + " " + word, "Helvetica", 11) <= max_width:
+                    line += (" " if line else "") + word
+                else:
+                    p.drawString(left_margin, y_left, line.strip())
+                    y_left -= line_height
+                    line = word
+            if line:
+                p.drawString(left_margin, y_left, line.strip())
+                y_left -= line_height
+
+        def draw_field_right(label, value):
+            nonlocal y_right
+
+            if y_right < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y_left = height - 100
+                y_right = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "FAMILIARES (cont.)")
+                y_left -= 40
+                y_right -= 40
+                p.setFont("Helvetica", 11)
+
+            text = f"{label}: {value or '-'}"
+            max_width = (width / 2) - (1.5 * inch)
+            words = text.split()
+            line = ""
+
+            for word in words:
+                if stringWidth(line + " " + word, "Helvetica", 11) <= max_width:
+                    line += (" " if line else "") + word
+                else:
+                    p.drawString(col2_x, y_right, line.strip())
+                    y_right -= line_height
+                    line = word
+            if line:
+                p.drawString(col2_x, y_right, line.strip())
+                y_right -= line_height
+
+        # ======================================================
+        # COLUMNA IZQUIERDA → PADRE, TUTOR, HERMANOS
+        # ======================================================
+        if tiene_padre:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y_left, "Padre")
+            y_left -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            draw_field_left("Nombre", beneficiaria.padre_nombre)
+            draw_field_left("Tiene relación", "Sí" if beneficiaria.tiene_relacion_padre else "No")
+            draw_field_left("Dirección", beneficiaria.direccion_padre)
+            draw_field_left("Teléfono", beneficiaria.telefono_padre)
+            draw_field_left("Está vivo", "Sí" if beneficiaria.esta_vivo_padre else "No")
+
+            y_left -= section_spacing
+
+        if tiene_tutor:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y_left, "Tutor")
+            y_left -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            draw_field_left("Nombre", beneficiaria.tutor_nombre)
+            draw_field_left("Dirección", beneficiaria.tutor_direccion)
+            draw_field_left("Teléfono", beneficiaria.tutor_telefono)
+            draw_field_left("Parentesco", beneficiaria.tutor_parentesco)
+            draw_field_left("Está vivo", "Sí" if beneficiaria.tutor_esta_vivo else "No")
+
+            y_left -= section_spacing
+
+        # ======================================================
+        # COLUMNA DERECHA → MADRE
+        # ======================================================
+        if tiene_madre:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(col2_x, y_right, "Madre")
+            y_right -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            draw_field_right("Nombre", beneficiaria.madre_nombre)
+            draw_field_right("Tiene relación", "Sí" if beneficiaria.tiene_relacion_madre else "No")
+            draw_field_right("Dirección", beneficiaria.direccion_madre)
+            draw_field_right("Teléfono", beneficiaria.telefono_madre)
+            draw_field_right("Está viva", "Sí" if beneficiaria.esta_vivo_madre else "No")
+
+            y_right -= section_spacing
+
+        # ======================================================
+        # HERMANOS → lista debajo (columna izquierda)
+        # ======================================================
+        if tiene_hermanos:
+            y_left = min(y_left, y_right) - 20  # para bajar debajo de ambas columnas
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y_left, "Hermanos")
+            y_left -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            draw_field_left("¿Tiene hermanos?", "Sí" if beneficiaria.tiene_hermanos else "No")
+            y_left -= 5
+
+            for idx, hermano in enumerate(beneficiaria.hermanos_ids, start=1):
+                if y_left < inch + 40:
+                    self._add_footer(p, width, height)
+                    p.showPage()
+                    y_left = height - 100
+                    p.setFont("Helvetica-Bold", 16)
+                    p.drawCentredString(width / 2, height - 80, "FAMILIARES (cont.)")
+                    y_left -= 40
+                    p.setFont("Helvetica", 11)
+
+                p.setFont("Helvetica-Bold", 11)
+                p.drawString(left_margin, y_left, f"Hermano {idx}:")
+                y_left -= 15
+                p.setFont("Helvetica", 11)
+                draw_field_left("Nombre", hermano.nombre)
+                draw_field_left("Teléfono", hermano.telefono)
+                draw_field_left("Tienen relación", "Sí" if hermano.tienen_relacion else "No")
+                y_left -= 10
 
         # === Footer ===
         self._add_footer(p, width, height)
