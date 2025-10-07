@@ -156,7 +156,7 @@ class Beneficiaria(models.Model):
 
     nacionalidad = fields.Char(string="Nacionalidad")
 
-    pais_nacimiento = fields.Many2one('res.country', string="País de Nacimiento")
+    pais_nacimiento = fields.Many2one('res.country', string="País de Nacimiento", default=lambda self: self.env['res.country'].search([('code', '=', 'MX')], limit=1).id)
     estado_nacimiento = fields.Many2one('res.country.state', string="Estado de Nacimiento",
                                         domain="[('country_id', '=', pais_nacimiento)]")
     ciudad_nacimiento = fields.Char(string="Ciudad de Nacimiento")
@@ -164,13 +164,14 @@ class Beneficiaria(models.Model):
     lugar_de_registro = fields.Char(string="Lugar de Registro")
 
     # DOMICILIO
-    pais = fields.Char(string="País")
+    pais = fields.Many2one('res.country', string="País", default=lambda self: self.env['res.country'].search([('code', '=', 'MX')], limit=1).id)
     calle = fields.Char(string="Calle")
     numero_exterior = fields.Char(string="Número Exterior")
     numero_interior = fields.Char(string="Número Interior")
     colonia = fields.Char(string="Colonia")
     municipio = fields.Char(string="Municipio")
-    estado = fields.Char(string="Estado")
+    estado = fields.Many2one('res.country.state', string="Estado",
+                                        domain="[('country_id', '=', pais)]")
     referencia_domicilio = fields.Char(string="Referencia de Domicilio")
     codigo_postal = fields.Char(string="Código Postal")
 

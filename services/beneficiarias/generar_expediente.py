@@ -157,20 +157,22 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
 
         p.showPage()
 
+
     def _add_section_informacion_particular(self, p, beneficiaria, width, height):
-        """Primera sección: Información Particular Detallada"""
+        """Sección combinada: Información Particular Detallada + Residencia"""
         p.setFont("Helvetica-Bold", 16)
         p.drawCentredString(width / 2, height - 80, "INFORMACIÓN PARTICULAR DETALLADA")
 
-        # Configuración visual
+        # === Configuración visual ===
         y = height - 130
-        line_height = 20         # Espacio entre líneas normales
-        section_spacing = 25     # Espacio entre secciones
-        subtitle_spacing = 20    # Espacio después de cada subtítulo
+        line_height = 20
+        section_spacing = 25
+        subtitle_spacing = 20
         left_margin = inch
+        col2_x = width / 2 + 0.5 * inch  # margen para la segunda columna
 
-        # Función auxiliar para dibujar campos
-        def draw_field(label, value):
+        # Función auxiliar reutilizable
+        def draw_field(x, label, value):
             nonlocal y
             if y < inch:
                 self._add_footer(p, width, height)
@@ -180,18 +182,22 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
                 p.drawCentredString(width / 2, height - 80, "INFORMACIÓN PARTICULAR DETALLADA (cont.)")
                 y -= 40
                 p.setFont("Helvetica", 11)
-            p.drawString(left_margin, y, f"{label}: {value or '-'}")
+            p.drawString(x, y, f"{label}: {value or '-'}")
             y -= line_height
 
-        # === SECCIÓN: DATOS DE CONTACTO ===
+        # ======================================================
+        # COLUMNA IZQUIERDA → Datos personales y contexto
+        # ======================================================
+
+        # === DATOS DE CONTACTO ===
         p.setFont("Helvetica-Bold", 13)
         p.drawString(left_margin, y, "Datos de Contacto")
         y -= subtitle_spacing
         p.setFont("Helvetica", 11)
-
-        draw_field("Correo", beneficiaria.correo)
-        draw_field("Teléfono", beneficiaria.telefono)
-        draw_field("Teléfono Celular", beneficiaria.telefono_celular)
+        draw_field(left_margin, "Correo", beneficiaria.correo)
+        draw_field(left_margin, "Teléfono", beneficiaria.telefono)
+        draw_field(left_margin, "Teléfono Celular", beneficiaria.telefono_celular)
+        draw_field(left_margin, "¿Tiene red social?", "Sí" if beneficiaria.tiene_red_social else "No")
 
         if beneficiaria.tiene_red_social:
             y -= 5
@@ -199,46 +205,76 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             p.drawString(left_margin, y, "Redes Sociales")
             y -= subtitle_spacing
             p.setFont("Helvetica", 11)
-            draw_field(getattr(beneficiaria, "tipo_red_social1", "Red social 1"), beneficiaria.red_social1)
-            draw_field(getattr(beneficiaria, "tipo_red_social2", "Red social 2"), beneficiaria.red_social2)
+            draw_field(left_margin, getattr(beneficiaria, "tipo_red_social1", "Red social 1"), beneficiaria.red_social1)
+            draw_field(left_margin, getattr(beneficiaria, "tipo_red_social2", "Red social 2"), beneficiaria.red_social2)
 
-        # === SECCIÓN: DATOS DE NACIMIENTO ===
+        # === DATOS DE NACIMIENTO ===
         y -= section_spacing
         p.setFont("Helvetica-Bold", 13)
         p.drawString(left_margin, y, "Datos de Nacimiento")
         y -= subtitle_spacing
         p.setFont("Helvetica", 11)
+        draw_field(left_margin, "País de Nacimiento", getattr(beneficiaria.pais_nacimiento, "name", None))
+        draw_field(left_margin, "Estado de Nacimiento", getattr(beneficiaria.estado_nacimiento, "name", None))
+        draw_field(left_margin, "Ciudad de Nacimiento", beneficiaria.ciudad_nacimiento)
 
-        draw_field("País de Nacimiento", getattr(beneficiaria.pais_nacimiento, "name", None))
-        draw_field("Estado de Nacimiento", getattr(beneficiaria.estado_nacimiento, "name", None))
-        draw_field("Ciudad de Nacimiento", beneficiaria.ciudad_nacimiento)
-
-        # === SECCIÓN: NIVEL SOCIOECONÓMICO ===
+        # === NIVEL SOCIOECONÓMICO ===
         y -= section_spacing
         p.setFont("Helvetica-Bold", 13)
         p.drawString(left_margin, y, "Nivel Socioeconómico")
         y -= subtitle_spacing
         p.setFont("Helvetica", 11)
+        draw_field(left_margin, "Grado de estudios", beneficiaria.grado_estudios)
+        draw_field(left_margin, "Estado civil", beneficiaria.estado_civil)
+        draw_field(left_margin, "Ocupación", beneficiaria.ocupacion)
+        draw_field(left_margin, "Nivel económico", beneficiaria.nivel_economico)
+        draw_field(left_margin, "Tipo de población", beneficiaria.tipo_poblacion)
 
-        draw_field("Grado de estudios", beneficiaria.grado_estudios)
-        draw_field("Estado civil", beneficiaria.estado_civil)
-        draw_field("Ocupación", beneficiaria.ocupacion)
-        draw_field("Nivel económico", beneficiaria.nivel_economico)
-        draw_field("Tipo de población", beneficiaria.tipo_poblacion)
-
-        # === SECCIÓN: RELIGIÓN ===
+        # === RELIGIÓN ===
         y -= section_spacing
         p.setFont("Helvetica-Bold", 13)
         p.drawString(left_margin, y, "Religión")
         y -= subtitle_spacing
         p.setFont("Helvetica", 11)
-
-        draw_field("Religión", beneficiaria.religion)
+        draw_field(left_margin, "Religión", beneficiaria.religion)
         if beneficiaria.religion == "otro":
-            draw_field("Especificar religión", beneficiaria.religion_otro)
+            draw_field(left_margin, "Especificar religión", beneficiaria.religion_otro)
+
+        # ======================================================
+        # COLUMNA DERECHA → Residencia (Domicilio)
+        # ======================================================
+
+        # Reiniciar Y para la segunda columna (un poco más arriba)
+        y_col2 = height - 130
+
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Domicilio")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        def draw_field_col2(label, value):
+            nonlocal y_col2
+            if y_col2 < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y_col2 = height - 100
+                p.setFont("Helvetica-Bold", 13)
+                p.drawString(col2_x, y_col2, "Domicilio (cont.)")
+                y_col2 -= subtitle_spacing
+                p.setFont("Helvetica", 11)
+            p.drawString(col2_x, y_col2, f"{label}: {value or '-'}")
+            y_col2 -= line_height
+
+        draw_field_col2("País", getattr(beneficiaria.pais, "name", None))
+        draw_field_col2("Estado", getattr(beneficiaria.estado, "name", None))
+        draw_field_col2("Municipio", beneficiaria.municipio)
+        draw_field_col2("Colonia", beneficiaria.colonia)
+        draw_field_col2("Calle", beneficiaria.calle)
+        draw_field_col2("Número exterior", beneficiaria.numero_exterior)
+        draw_field_col2("Número interior", beneficiaria.numero_interior)
+        draw_field_col2("Referencia", beneficiaria.referencia_domicilio)
+        draw_field_col2("Código postal", beneficiaria.codigo_postal)
 
         # === Footer al final de la página ===
         self._add_footer(p, width, height)
         p.showPage()
-
-
