@@ -19,7 +19,7 @@
         <field name="name">beneficiarias.bebe.form</field>
         <field name="model">beneficiarias.bebe</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Bebé" js_class="form_autosave">
                 <sheet>
                     <group>
                         <field name="nombre"/>

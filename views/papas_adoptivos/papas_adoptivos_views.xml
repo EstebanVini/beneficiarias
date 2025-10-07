@@ -19,7 +19,7 @@
         <field name="name">beneficiarias.papas_adoptivos.form</field>
         <field name="model">beneficiarias.papas_adoptivos</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Padres Adoptivos" js_class="form_autosave">
                 <sheet>
                     <group>
                         <field name="nombre_padre_adoptivo"/>

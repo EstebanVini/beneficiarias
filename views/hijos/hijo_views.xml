@@ -20,7 +20,7 @@
         <field name="name">beneficiarias.hijo.form</field>
         <field name="model">beneficiarias.hijo</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Hijo" js_class="form_autosave">
                 <sheet>
                     <group>
                         <field name="nombre"/>
