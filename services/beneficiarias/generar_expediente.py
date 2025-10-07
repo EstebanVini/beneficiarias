@@ -272,7 +272,6 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         draw_field_col2("Calle", beneficiaria.calle)
         draw_field_col2("Número exterior", beneficiaria.numero_exterior)
         draw_field_col2("Número interior", beneficiaria.numero_interior)
-        draw_field_col2("Referencia", beneficiaria.referencia_domicilio)
         draw_field_col2("Código postal", beneficiaria.codigo_postal)
 
         # === Footer al final de la página ===
