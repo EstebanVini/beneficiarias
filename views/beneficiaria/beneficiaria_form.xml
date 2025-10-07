@@ -3,7 +3,7 @@
         <field name="name">beneficiarias.beneficiaria.form</field>
         <field name="model">beneficiarias.beneficiaria</field>
         <field name="arch" type="xml">
-            <form string="Beneficiaria">
+            <form string="Beneficiaria" js_class="form_autosave">
                 <header>
                     <button name="action_generar_expediente"
                         string="Generar Expediente PDF"

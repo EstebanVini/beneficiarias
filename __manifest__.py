@@ -27,6 +27,7 @@
     'assets': {
         'web.assets_backend': [
             'beneficiarias/static/src/css/beneficiarias_tabs.css',
+            'beneficiarias/static/src/js/autosave_form.js',
         ],
     },
     'icon': 'beneficiarias/static/description/icon.png',
