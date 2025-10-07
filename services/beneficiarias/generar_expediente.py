@@ -52,6 +52,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_section_informacion_particular(p, beneficiaria, width, height)
         # === SEGUNDA SECCIÓN: Canalización y Legal ===
         self._add_section_canalizacion_legal(p, beneficiaria, width, height)
+        # === TERCERA SECCIÓN: Fotos ===
+        self._add_section_fotos(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -383,5 +385,73 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         y_right = draw_field(right_col_x, y_right, "Estatus / Situación jurídica", beneficiaria.estatus_situacion_juridica)
 
         # Footer
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+    # ======================================================
+    # Fotos
+    # ======================================================
+
+    def _add_section_fotos(self, p, beneficiaria, width, height):
+        """Cuarta sección: Fotos de la beneficiaria"""
+
+        # === Verificar si hay al menos una foto ===
+        fotos = {
+            "Foto Frontal": beneficiaria.foto_frontal,
+            "Perfil Izquierdo": beneficiaria.foto_perfil_izquierdo,
+            "Perfil Derecho": beneficiaria.foto_perfil_derecho,
+            "Huellas Digitales": beneficiaria.foto_huellas,
+        }
+
+        if not any(fotos.values()):
+            return  # 🚫 No hay ninguna imagen → no generamos la página
+
+        # === Configuración general ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "FOTOGRAFÍAS DE LA BENEFICIARIA")
+
+        y_start = height - 160
+        image_width = 2.5 * inch
+        image_height = 2.5 * inch
+        x_margin = inch
+        x_spacing = (width - 2 * x_margin - 2 * image_width) / 1  # espacio entre las 2 columnas
+        y_spacing = 1.2 * inch  # espacio vertical entre filas
+
+        # === Dibujar imágenes ===
+        positions = [
+            (x_margin, y_start),  # 1. Foto Frontal
+            (x_margin + image_width + x_spacing, y_start),  # 2. Perfil Izquierdo
+            (x_margin, y_start - image_height - y_spacing),  # 3. Perfil Derecho
+            (x_margin + image_width + x_spacing, y_start - image_height - y_spacing),  # 4. Huellas
+        ]
+
+        p.setFont("Helvetica", 11)
+
+        for (label, img_data), (x, y) in zip(fotos.items(), positions):
+            if not img_data:
+                continue  # si no hay imagen, saltar
+
+            try:
+                image_data = base64.b64decode(img_data)
+                image_reader = ImageReader(BytesIO(image_data))
+                p.drawImage(
+                    image_reader,
+                    x,
+                    y - image_height,
+                    width=image_width,
+                    height=image_height,
+                    preserveAspectRatio=True,
+                    mask="auto",
+                )
+            except Exception as e:
+                print(f"[WARN] No se pudo procesar {label}: {e}")
+                continue
+
+            # Título centrado debajo de cada imagen
+            label_x_center = x + image_width / 2
+            p.drawCentredString(label_x_center, y - image_height - 15, label)
+
+        # Footer institucional
         self._add_footer(p, width, height)
         p.showPage()
