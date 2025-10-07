@@ -796,6 +796,10 @@ class Beneficiaria(models.Model):
                 'message': 'El expediente de la beneficiaria se ha generado correctamente.',
                 'type': 'success',
                 'sticky': False,
+                'next': {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload',
+                }
             }
         }
 
