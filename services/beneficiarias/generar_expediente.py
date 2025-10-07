@@ -8,6 +8,7 @@ from reportlab.lib.utils import ImageReader #type: ignore[import]
 import base64
 import re
 from odoo.tools import html2plaintext #type: ignore[import]
+from reportlab.pdfbase.pdfmetrics import stringWidth #type: ignore[import]
         
 
 
@@ -264,7 +265,6 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         # Función auxiliar para texto largo con salto automático
         def draw_wrapped_text(x, y_start, text, max_width):
             """Dibuja texto multilínea (ajuste automático al ancho disponible)."""
-            from reportlab.pdfbase.pdfmetrics import stringWidth
 
             p.setFont("Helvetica", 11)
             lines = []
