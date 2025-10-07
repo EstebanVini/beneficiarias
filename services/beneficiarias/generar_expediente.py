@@ -49,7 +49,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             "Alta",
         ]
         self._add_indice(p, sections, width, height)
-
+        # === PRIMERA SECCIÓN: Datos Generales + Embarazo/Egreso ===
+        self._add_section_datos_generales(p, beneficiaria, width, height)
         # === PRIMERA SECCIÓN: Información Particular Detallada ===
         self._add_section_informacion_particular(p, beneficiaria, width, height)
         # === SEGUNDA SECCIÓN: Canalización y Legal ===
@@ -122,7 +123,7 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         descripcion_texto = ""
         if beneficiaria.descripcion:
             try:
-                from odoo.tools import html2plaintext
+                from odoo.tools import html2plaintext #type: ignore[import]
                 descripcion_texto = html2plaintext(beneficiaria.descripcion).strip()
             except Exception:
                 descripcion_texto = str(beneficiaria.descripcion or "").strip()
@@ -213,9 +214,193 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
 
         p.showPage()
 
+    # ----------------------------------------------------------
+    # Secciones de Datos
+    # ----------------------------------------------------------
+    def _add_section_datos_generales(self, p, beneficiaria, width, height):
+        """Primera sección después de la portada: Datos Generales + Embarazo + Motivo de Egreso + Servicios"""
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "DATOS GENERALES DE LA BENEFICIARIA")
+
+        # === Configuración visual ===
+        y = height - 130
+        line_height = 20
+        section_spacing = 25
+        subtitle_spacing = 20
+        left_margin = inch
+        col2_x = width / 2 + 0.5 * inch
+        usable_width = (width / 2) - (1.5 * inch)  # ancho utilizable en cada columna
+
+        # ---------------------------------------------------------------------
+        # Funciones auxiliares
+        # ---------------------------------------------------------------------
+        def draw_field(x, label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "DATOS GENERALES DE LA BENEFICIARIA (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(x, y, f"{label}: {value or '-'}")
+            y -= line_height
+
+        def draw_field_col2(label, value):
+            nonlocal y_col2
+            if y_col2 < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y_col2 = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "DATOS GENERALES DE LA BENEFICIARIA (cont.)")
+                y_col2 -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(col2_x, y_col2, f"{label}: {value or '-'}")
+            y_col2 -= line_height
+
+        # Función auxiliar para texto largo con salto automático
+        def draw_wrapped_text(x, y_start, text, max_width):
+            """Dibuja texto multilínea (ajuste automático al ancho disponible)."""
+            from reportlab.pdfbase.pdfmetrics import stringWidth
+
+            p.setFont("Helvetica", 11)
+            lines = []
+            current_line = ""
+            for word in text.split():
+                if stringWidth(current_line + " " + word, "Helvetica", 11) <= max_width:
+                    current_line += (" " if current_line else "") + word
+                else:
+                    lines.append(current_line)
+                    current_line = word
+            if current_line:
+                lines.append(current_line)
+
+            for line in lines:
+                p.drawString(x, y_start, line.strip())
+                y_start -= 15
+            return y_start
+
+        # ======================================================
+        # COLUMNA IZQUIERDA → Datos Generales + Servicios
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Datos Generales")
+        y -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        draw_field(left_margin, "Nombre", beneficiaria.nombre)
+        draw_field(left_margin, "Apellido paterno", beneficiaria.apellido_paterno)
+        draw_field(left_margin, "Apellido materno", beneficiaria.apellido_materno)
+        draw_field(left_margin, "CURP", beneficiaria.curp)
+        draw_field(left_margin, "RFC", beneficiaria.rfc)
+        draw_field(left_margin, "Fecha de nacimiento", str(beneficiaria.fecha_nacimiento or "-"))
+        draw_field(left_margin, "Fecha de ingreso", str(beneficiaria.fecha_ingreso or "-"))
+        draw_field(left_margin, "Edad al ingreso", beneficiaria.edad_ingreso)
+        draw_field(left_margin, "Rango", beneficiaria.rango)
+        draw_field(left_margin, "Centro de atención", getattr(beneficiaria.atention_center, "name", None))
+        draw_field(left_margin, "Número de hijos", beneficiaria.numero_hijos)
+        draw_field(left_margin, "Asignado a", getattr(beneficiaria.asignado_a_id, "name", None))
+        draw_field(left_margin, "Referencia automática", beneficiaria.ref_auto)
+        draw_field(left_margin, "Tipo de ayuda", beneficiaria.tipo_de_ayuda)
+        if beneficiaria.tipo_de_ayuda == "otro":
+            draw_field(left_margin, "Especificar otro", beneficiaria.tipo_de_ayuda_otro)
+
+        # === SERVICIOS RECIBIDOS ===
+        y -= section_spacing
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Servicios Recibidos")
+        y -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        servicios = []
+        if beneficiaria.atencion_integral_embarazo:
+            servicios.append("Atención integral embarazo")
+        if beneficiaria.atencion_medica:
+            servicios.append("Atención médica")
+        if beneficiaria.atencion_psicologica:
+            servicios.append("Atención psicológica")
+        if beneficiaria.atencion_nutricional:
+            servicios.append("Atención nutricional")
+        if beneficiaria.apoyo_emocional:
+            servicios.append("Apoyo emocional")
+        if beneficiaria.apoyo_especie:
+            servicios.append("Apoyo en especie")
+        if beneficiaria.aistencia_legal_adopcion:
+            servicios.append("Asistencia legal/adopción")
+        if beneficiaria.centro_capacitacion_formacion:
+            servicios.append("Centro de capacitación/formación")
+        if beneficiaria.otro:
+            detalle_otro = (
+                f"Otro ({beneficiaria.otro_detalle_servicio})"
+                if beneficiaria.otro_detalle_servicio
+                else "Otro"
+            )
+            servicios.append(detalle_otro)
+
+        if servicios:
+            texto_servicios = ", ".join(servicios)
+            y = draw_wrapped_text(left_margin, y, texto_servicios, usable_width)
+            y -= 10
+        else:
+            p.setFont("Helvetica-Oblique", 10)
+            p.drawString(left_margin, y, "No se registraron servicios recibidos.")
+            y -= line_height
+
+        # ======================================================
+        # COLUMNA DERECHA → Datos de Embarazo, Egreso
+        # ======================================================
+        y_col2 = height - 130
+
+        # === DATOS DE EMBARAZO ===
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Datos de Embarazo")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        draw_field_col2("FUM", str(beneficiaria.fum_time or "-"))
+        draw_field_col2("Meses de embarazo", beneficiaria.meses_embarazo)
+        draw_field_col2("Semanas de gestación", beneficiaria.semanas_gestacion)
+        draw_field_col2("Fecha probable de parto", str(beneficiaria.fecha_probable_de_parto or "-"))
+
+        # === HISTORIAL DE EMBARAZOS ===
+        y_col2 -= section_spacing
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(col2_x, y_col2, "Historial de Embarazos")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        draw_field_col2("Cantidad de embarazos", beneficiaria.cantidad_embarazos)
+        draw_field_col2("Hijos nacidos vivos", beneficiaria.cantidad_hijos_nacidos_vivos)
+        draw_field_col2("Hijos nacidos muertos", beneficiaria.cantidad_hijos_nacidos_muertos)
+        draw_field_col2("Abortos", beneficiaria.cantidad_abortos)
+
+        # === MOTIVO DE EGRESO ===
+        y_col2 -= section_spacing
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Motivo de Egreso")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+        draw_field_col2("Motivo de egreso", getattr(beneficiaria, "motivo_de_egreso", None))
+        if beneficiaria.motivo_de_egreso == "09":
+            draw_field_col2("Otro motivo", beneficiaria.motivo_de_egreso_otro)
+        draw_field_col2("Motivo de egreso post-parto", getattr(beneficiaria, "motivo_de_egreso_parto", None))
+        if beneficiaria.motivo_de_egreso_parto == "07":
+            draw_field_col2("Otro post-parto", beneficiaria.motivo_de_egreso_otro_post_parto)
+
+        # === Footer ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+
+
 
     def _add_section_informacion_particular(self, p, beneficiaria, width, height):
-        """Sección combinada: Información Particular Detallada + Residencia"""
+        """Sección combinada: Información Particular Detallada + Residencia + Datos de Embarazo + Migración + Discapacidad + Servicios Recibidos"""
+
         p.setFont("Helvetica-Bold", 16)
         p.drawCentredString(width / 2, height - 80, "INFORMACIÓN PARTICULAR DETALLADA")
 
@@ -225,9 +410,11 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         section_spacing = 25
         subtitle_spacing = 20
         left_margin = inch
-        col2_x = width / 2 + 0.5 * inch  # margen para la segunda columna
+        col2_x = width / 2 + 0.5 * inch  # margen para segunda columna
 
-        # Función auxiliar reutilizable
+        # ---------------------------------------------------------------------
+        # Función auxiliar genérica para ambas columnas
+        # ---------------------------------------------------------------------
         def draw_field(x, label, value):
             nonlocal y
             if y < inch:
@@ -242,7 +429,7 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             y -= line_height
 
         # ======================================================
-        # COLUMNA IZQUIERDA → Datos personales y contexto
+        # COLUMNA IZQUIERDA → Datos personales y básicos
         # ======================================================
 
         # === DATOS DE CONTACTO ===
@@ -297,16 +484,10 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             draw_field(left_margin, "Especificar religión", beneficiaria.religion_otro)
 
         # ======================================================
-        # COLUMNA DERECHA → Residencia (Domicilio)
+        # COLUMNA DERECHA → Domicilio + Embarazo + Migración + Discapacidad + Servicios
         # ======================================================
 
-        # Reiniciar Y para la segunda columna (un poco más arriba)
         y_col2 = height - 130
-
-        p.setFont("Helvetica-Bold", 13)
-        p.drawString(col2_x, y_col2, "Domicilio")
-        y_col2 -= subtitle_spacing
-        p.setFont("Helvetica", 11)
 
         def draw_field_col2(label, value):
             nonlocal y_col2
@@ -314,12 +495,18 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
                 self._add_footer(p, width, height)
                 p.showPage()
                 y_col2 = height - 100
-                p.setFont("Helvetica-Bold", 13)
-                p.drawString(col2_x, y_col2, "Domicilio (cont.)")
-                y_col2 -= subtitle_spacing
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "INFORMACIÓN PARTICULAR DETALLADA (cont.)")
+                y_col2 -= 40
                 p.setFont("Helvetica", 11)
             p.drawString(col2_x, y_col2, f"{label}: {value or '-'}")
             y_col2 -= line_height
+
+        # === DOMICILIO ===
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Domicilio")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
 
         draw_field_col2("País", getattr(beneficiaria.pais, "name", None))
         draw_field_col2("Estado", getattr(beneficiaria.estado, "name", None))
@@ -329,12 +516,40 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         draw_field_col2("Número exterior", beneficiaria.numero_exterior)
         draw_field_col2("Número interior", beneficiaria.numero_interior)
         draw_field_col2("Código postal", beneficiaria.codigo_postal)
+        draw_field_col2("Referencia", beneficiaria.referencia_domicilio)
 
-        # === Footer al final de la página ===
+        # === MIGRACIÓN ===
+        y_col2 -= section_spacing
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Migración")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+        draw_field_col2("¿Migrante?", "Sí" if beneficiaria.migrante else "No")
+        if beneficiaria.migrante:
+            draw_field_col2("País de origen", beneficiaria.pais_de_origen)
+            draw_field_col2("Motivo de migración", beneficiaria.motivo_migracion)
+            draw_field_col2("Deseo de migrar nuevamente", beneficiaria.deseo_de_migrar)
+        draw_field_col2("¿Pertenece a comunidad indígena?", "Sí" if beneficiaria.pertenece_a_una_comunidad else "No")
+        if beneficiaria.pertenece_a_una_comunidad:
+            draw_field_col2("Comunidad", beneficiaria.comunidad_indigena)
+            draw_field_col2("Dialecto", beneficiaria.dialecto)
+            draw_field_col2("Lengua materna", beneficiaria.lengua_materna)
+
+        # === DISCAPACIDAD ===
+        y_col2 -= section_spacing
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(col2_x, y_col2, "Discapacidad")
+        y_col2 -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+        draw_field_col2("¿Tiene discapacidad?", "Sí" if beneficiaria.discapacidad else "No")
+        if beneficiaria.discapacidad:
+            draw_field_col2("Tipo de discapacidad", beneficiaria.tipo_discapacidad)
+
+
+        # === Footer ===
         self._add_footer(p, width, height)
         p.showPage()
-
-    
+        
     # ----------------------------------------------------------
     # Sección Canalización y Legal
     # ----------------------------------------------------------
