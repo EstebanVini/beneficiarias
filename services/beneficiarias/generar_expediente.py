@@ -7,6 +7,8 @@ from reportlab.lib.units import inch #type: ignore[import]
 from reportlab.lib.utils import ImageReader #type: ignore[import]
 import base64
 import re
+from odoo.tools import html2plaintext #type: ignore[import]
+        
 
 
 class GenerarExpedienteBeneficiariaService(models.AbstractModel):
@@ -75,61 +77,111 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
     # 🔹 MÉTODOS DE SECCIONES
     # ----------------------------------------------------------
     def _add_portada(self, p, beneficiaria, width, height):
-        """Dibuja la portada con el logo, nombre, descripción y marca de agua."""
-        margin_top = height - 2.5 * inch  # margen superior más grande
-        center_y = height / 2 + inch      # punto de inicio visual centrado
+        """Genera la portada del expediente de beneficiaria"""
 
-        # === LOGO DE LA COMPAÑÍA ===
         company = self.env.company
+        y = height - inch  # margen superior inicial
+
+        # === LOGO EMPRESA CENTRADO ===
         if company.logo:
             try:
                 logo_data = base64.b64decode(company.logo)
                 logo_image = ImageReader(BytesIO(logo_data))
+
+                logo_width = 2.5 * inch
+                logo_height = 2.5 * inch
+                logo_x = (width - logo_width) / 2
+                logo_y = height - 2.5 * inch
+
                 p.drawImage(
                     logo_image,
-                    width / 2 - inch,  # centrado horizontalmente
-                    margin_top,
-                    width=2 * inch,
+                    logo_x,
+                    logo_y,
+                    width=logo_width,
+                    height=logo_height,
                     preserveAspectRatio=True,
                     mask="auto",
                 )
+                y = logo_y - 0.8 * inch  # dejar espacio debajo del logo
             except Exception as e:
                 print(f"[WARN] No se pudo agregar el logo: {e}")
+                y = height - 2 * inch
+        else:
+            y = height - 2 * inch
 
-        # === TÍTULO ===
-        p.setFont("Helvetica-Bold", 20)
-        p.drawCentredString(width / 2, center_y + 120, "EXPEDIENTE DE BENEFICIARIA")
+        # === TÍTULO Y NOMBRE ===
+        p.setFont("Helvetica-Bold", 18)
+        p.drawCentredString(width / 2, y, "Expediente de Beneficiaria")
+        y -= 40
 
-        # === NOMBRE ===
-        p.setFont("Helvetica-Bold", 16)
-        p.drawCentredString(width / 2, center_y + 70, beneficiaria.nombre_completo or "")
+        p.setFont("Helvetica", 14)
+        p.drawCentredString(width / 2, y, beneficiaria.nombre_completo or "")
+        y -= 60
 
-        # === CENTRO VIFAC ===
-        p.setFont("Helvetica", 13)
-        p.drawCentredString(width / 2, center_y + 40, f"Centro VIFAC: {beneficiaria.atention_center or '-'}")
-
-        # === FECHAS ===
-        p.setFont("Helvetica", 12)
-        p.drawCentredString(width / 2, center_y + 10, f"Fecha de ingreso: {str(beneficiaria.fecha_ingreso or '-')}")
-
-        # === DESCRIPCIÓN (limpia el HTML) ===
+        # === DESCRIPCIÓN (HTML → texto plano, centrada) ===
+        descripcion_texto = ""
         if beneficiaria.descripcion:
-            p.setFont("Helvetica-Oblique", 11)
-            clean_desc = re.sub(r"<[^>]*>", "", beneficiaria.descripcion or "")  # quitar etiquetas HTML
-            clean_desc = clean_desc.replace("&nbsp;", " ").strip()
-            if len(clean_desc) > 200:
-                clean_desc = clean_desc[:197] + "..."
-            p.drawCentredString(width / 2, center_y - 30, clean_desc)
+            try:
+                from odoo.tools import html2plaintext
+                descripcion_texto = html2plaintext(beneficiaria.descripcion).strip()
+            except Exception:
+                descripcion_texto = str(beneficiaria.descripcion or "").strip()
 
-        # === MARCA DE AGUA (footer) ===
-        footer_text = "Expediente generado automáticamente por el módulo de beneficiarias VIFAC en Odoo 17 Community"
-        p.setFont("Helvetica-Oblique", 9)
-        p.setFillGray(0.5, 0.5)
-        p.drawCentredString(width / 2, 0.5 * inch, footer_text)
-        p.setFillGray(0, 1)
+        if descripcion_texto:
+            p.setFont("Helvetica", 11)
 
-        # === Finalizar portada ===
+            # Convertir saltos de línea y limitar longitud para evitar desbordes
+            lineas = descripcion_texto.split("\n")
+            max_lineas = 8  # evita textos demasiado largos en portada
+
+            for i, linea in enumerate(lineas[:max_lineas]):
+                p.drawCentredString(width / 2, y, linea.strip())
+                y -= 15  # espacio entre líneas
+
+            y -= 30  # espacio después de la descripción
+        else:
+            y -= 40  # deja aire si no hay descripción
+
+
+        # === FOTO FRONTAL ===
+        if beneficiaria.foto_frontal:
+            try:
+                image_data = base64.b64decode(beneficiaria.foto_frontal)
+                image = ImageReader(BytesIO(image_data))
+
+                image_width = 2.8 * inch
+                image_height = 2.8 * inch
+                image_x = (width - image_width) / 2
+                image_y = y - image_height - 20
+
+                p.drawImage(
+                    image,
+                    image_x,
+                    image_y,
+                    width=image_width,
+                    height=image_height,
+                    preserveAspectRatio=True,
+                    mask="auto",
+                )
+
+                # Marco gris suave
+                p.setStrokeColorRGB(0.75, 0.75, 0.75)
+                p.rect(image_x, image_y, image_width, image_height)
+
+                # Leyenda bajo la foto
+                p.setFont("Helvetica", 11)
+
+                y = image_y - 60
+            except Exception as e:
+                print(f"[WARN] No se pudo agregar la foto frontal: {e}")
+                y -= 80
+        else:
+            y -= 80  # deja espacio si no hay foto
+
+        # === FOOTER INSTITUCIONAL ===
+        self._add_footer(p, width, height)
         p.showPage()
+
 
     
     def _add_footer(self, p, width, height):
