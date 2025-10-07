@@ -58,6 +58,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_section_canalizacion_legal(p, beneficiaria, width, height)
         # === TERCERA SECCIÓN: Fotos ===
         self._add_section_fotos(p, beneficiaria, width, height)
+        # === CUARTA SECCIÓN: Acompañante y Referencias ===
+        self._add_section_acompanante_y_referencias(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -720,5 +722,106 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             p.drawCentredString(label_x_center, y - image_height - 15, label)
 
         # Footer institucional
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+    def _add_section_acompanante_y_referencias(self, p, beneficiaria, width, height):
+        """Sección: Acompañante y Referencias (todo en una sola columna)"""
+
+        # Verificar si hay información relevante
+        tiene_acompanante = bool(
+            beneficiaria.acompanante or beneficiaria.acompanante_nombre or beneficiaria.acompanante_parentesco
+        )
+        tiene_referencias = bool(
+            beneficiaria.nombre_referencia1
+            or beneficiaria.telefono_referencia1
+            or beneficiaria.parentesco_referencia1
+            or beneficiaria.nombre_referencia2
+            or beneficiaria.telefono_referencia2
+            or beneficiaria.parentesco_referencia2
+        )
+
+        # Si no hay nada que mostrar, omitir la página
+        if not (tiene_acompanante or tiene_referencias):
+            return
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "ACOMPAÑANTE Y REFERENCIAS")
+
+        y = height - 130
+        line_height = 20
+        section_spacing = 30
+        subtitle_spacing = 20
+        left_margin = inch
+
+        # === Función auxiliar ===
+        def draw_field(label, value):
+            """Dibuja un campo simple con salto de línea automático si es necesario"""
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "ACOMPAÑANTE Y REFERENCIAS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            text = f"{label}: {value or '-'}"
+            max_width = width - (2 * inch)
+            words = text.split()
+            line = ""
+
+            for word in words:
+                if stringWidth(line + " " + word, "Helvetica", 11) <= max_width:
+                    line += (" " if line else "") + word
+                else:
+                    p.drawString(left_margin, y, line.strip())
+                    y -= line_height
+                    line = word
+            if line:
+                p.drawString(left_margin, y, line.strip())
+                y -= line_height
+
+        # ======================================================
+        # SECCIÓN: ACOMPAÑANTE
+        # ======================================================
+        if tiene_acompanante:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Acompañante")
+            y -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            draw_field("¿Tiene acompañante?", "Sí" if beneficiaria.acompanante else "No")
+            if beneficiaria.acompanante:
+                draw_field("Nombre", beneficiaria.acompanante_nombre)
+                draw_field("Parentesco", beneficiaria.acompanante_parentesco)
+
+            y -= section_spacing
+
+        # ======================================================
+        # SECCIÓN: CONTACTOS DE EMERGENCIA
+        # ======================================================
+        if tiene_referencias:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Contactos de Emergencia")
+            y -= subtitle_spacing
+            p.setFont("Helvetica", 11)
+
+            # Primer contacto
+            draw_field("Nombre (Referencia 1)", beneficiaria.nombre_referencia1)
+            draw_field("Teléfono", beneficiaria.telefono_referencia1)
+            draw_field("Parentesco", beneficiaria.parentesco_referencia1)
+
+            y -= section_spacing
+
+            # Segundo contacto
+            draw_field("Nombre (Referencia 2)", beneficiaria.nombre_referencia2)
+            draw_field("Teléfono", beneficiaria.telefono_referencia2)
+            draw_field("Parentesco", beneficiaria.parentesco_referencia2)
+
+        # === Footer ===
         self._add_footer(p, width, height)
         p.showPage()
