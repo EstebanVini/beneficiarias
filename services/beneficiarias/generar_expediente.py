@@ -50,6 +50,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
 
         # === PRIMERA SECCIÓN: Información Particular Detallada ===
         self._add_section_informacion_particular(p, beneficiaria, width, height)
+        # === SEGUNDA SECCIÓN: Canalización y Legal ===
+        self._add_section_canalizacion_legal(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -275,5 +277,111 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         draw_field_col2("Código postal", beneficiaria.codigo_postal)
 
         # === Footer al final de la página ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    
+    # ----------------------------------------------------------
+    # Sección Canalización y Legal
+    # ----------------------------------------------------------
+    def _add_section_canalizacion_legal(self, p, beneficiaria, width, height):
+        """Tercera sección: Canalización y Seguimiento Legal"""
+
+        # === Verificar si hay datos ===
+        campos_canalizacion = [
+            beneficiaria.ingreso_por,
+            beneficiaria.canalizacion,
+            beneficiaria.canalizacion_otro,
+            beneficiaria.nombre_canalizador,
+            beneficiaria.cargo_canalizador,
+            beneficiaria.numero_oficio_canalizacion,
+        ]
+
+        campos_legal = [
+            beneficiaria.tiene_carpeta_investigacion,
+            beneficiaria.NIC,
+            beneficiaria.NUC,
+            beneficiaria.fecha_investigacion,
+            beneficiaria.lugar,
+            beneficiaria.delito,
+            beneficiaria.numero_oficio,
+            beneficiaria.estatus_situacion_juridica,
+            beneficiaria.persona_seguimiento_legal,
+            beneficiaria.telefono_seguimiento_legal,
+            beneficiaria.telefono2_seguimiento_legal,
+            beneficiaria.correo_seguimiento_legal,
+            beneficiaria.notas_seguimiento_legal,
+        ]
+
+        # Si no hay ningún dato en ninguna de las dos secciones, no generar página
+        if not any(campos_canalizacion) and not any(campos_legal):
+            return  # 🚫 Salimos sin generar la página
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "CANALIZACIÓN Y SEGUIMIENTO LEGAL")
+
+        y_left = height - 130
+        y_right = height - 130
+        line_height = 20
+        subtitle_spacing = 20
+        left_margin = inch
+        right_col_x = width / 2 + 0.5 * inch
+
+        # Función auxiliar genérica
+        def draw_field(x, y, label, value):
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "CANALIZACIÓN Y SEGUIMIENTO LEGAL (cont.)")
+                y = height - 100
+                p.setFont("Helvetica", 11)
+            p.drawString(x, y, f"{label}: {value or '-'}")
+            return y - line_height
+
+        # ======================================================
+        # COLUMNA IZQUIERDA — CANALIZACIÓN
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y_left, "Canalización")
+        y_left -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        y_left = draw_field(left_margin, y_left, "Ingreso por", beneficiaria.ingreso_por)
+        y_left = draw_field(left_margin, y_left, "Canalización", beneficiaria.canalizacion)
+        if beneficiaria.canalizacion == "otro":
+            y_left = draw_field(left_margin, y_left, "Especificar canalización", beneficiaria.canalizacion_otro)
+        y_left = draw_field(left_margin, y_left, "Nombre del canalizador", beneficiaria.nombre_canalizador)
+        y_left = draw_field(left_margin, y_left, "Cargo del canalizador", beneficiaria.cargo_canalizador)
+        y_left = draw_field(left_margin, y_left, "Número de oficio", beneficiaria.numero_oficio_canalizacion)
+
+        # ======================================================
+        # COLUMNA DERECHA — SEGUIMIENTO LEGAL
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(right_col_x, y_right, "Seguimiento Legal")
+        y_right -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        y_right = draw_field(right_col_x, y_right, "¿Tiene carpeta de investigación?",
+                            "Sí" if beneficiaria.tiene_carpeta_investigacion else "No")
+
+        if beneficiaria.tiene_carpeta_investigacion:
+            y_right = draw_field(right_col_x, y_right, "NIC", beneficiaria.NIC)
+            y_right = draw_field(right_col_x, y_right, "NUC", beneficiaria.NUC)
+            y_right = draw_field(right_col_x, y_right, "Fecha de investigación", beneficiaria.fecha_investigacion)
+            y_right = draw_field(right_col_x, y_right, "Lugar", beneficiaria.lugar)
+            y_right = draw_field(right_col_x, y_right, "Delito", beneficiaria.delito)
+            y_right = draw_field(right_col_x, y_right, "Número de oficio", beneficiaria.numero_oficio)
+            y_right = draw_field(right_col_x, y_right, "Persona seguimiento legal", beneficiaria.persona_seguimiento_legal)
+            y_right = draw_field(right_col_x, y_right, "Teléfono 1", beneficiaria.telefono_seguimiento_legal)
+            y_right = draw_field(right_col_x, y_right, "Teléfono 2", beneficiaria.telefono2_seguimiento_legal)
+            y_right = draw_field(right_col_x, y_right, "Correo", beneficiaria.correo_seguimiento_legal)
+            y_right = draw_field(right_col_x, y_right, "Notas", beneficiaria.notas_seguimiento_legal)
+
+        y_right = draw_field(right_col_x, y_right, "Estatus / Situación jurídica", beneficiaria.estatus_situacion_juridica)
+
+        # Footer
         self._add_footer(p, width, height)
         p.showPage()
