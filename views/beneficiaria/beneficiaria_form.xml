@@ -126,13 +126,12 @@
                         <page string="Residencia">
                             <group string="Domicilio">
                                 <field name="pais"/>
+                                <field name="estado"/>
                                 <field name="calle"/>
                                 <field name="numero_exterior"/>
                                 <field name="numero_interior"/>
                                 <field name="colonia"/>
                                 <field name="municipio"/>
-                                <field name="estado"/>
-                                <field name="referencia_domicilio"/>
                                 <field name="codigo_postal"/>
                             </group>
                         </page>
