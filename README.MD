@@ -7,8 +7,9 @@ Este módulo para **Odoo 17 Community** fue creado especialmente para **VIFAC M�
 Centraliza datos personales, control por etapas, evidencia documental, valoraciones, talleres, traslados y red familiar, ofreciendo una vista 360° del expediente.
 
 demo: https://beneficiarias.eviniegra.software
-user: admin
-pswrd: admin
+
+user: demo
+pswrd: demo
 
 ---
 
