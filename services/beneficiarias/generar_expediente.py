@@ -9,7 +9,7 @@ import base64
 import re
 from odoo.tools import html2plaintext #type: ignore[import]
 from reportlab.pdfbase.pdfmetrics import stringWidth #type: ignore[import]
-from reportlab.lib.colors import blue #type: ignore[import]
+from reportlab.lib.colors import blue, black #type: ignore[import]
 from reportlab.pdfbase.pdfmetrics import stringWidth #type: ignore[import]
         
 
@@ -109,43 +109,66 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
 
 
     # ==========================================================
-    # 3️⃣ ÍNDICE DINÁMICO CON HIPERVÍNCULOS
+    # 3️⃣ ÍNDICE DINÁMICO
     # ==========================================================
+
     def _add_indice(self, p, sections_info, width, height):
-        """Genera el índice dinámico con vínculos internos."""
+        """
+        Genera un índice con hipervínculos que saltan a las secciones del PDF.
+        Cada entrada del índice usa el bookmark correspondiente.
+        """
         p.setFont("Helvetica-Bold", 16)
         p.drawCentredString(width / 2, height - 80, "ÍNDICE")
 
         y = height - 130
-        line_height = 20
+        line_height = 22
         left_margin = inch
+        p.setFont("Helvetica", 12)
 
-        for i, sec in enumerate(sections_info, start=1):
-            text = f"{i}. {sec['title']}"
-            p.setFillColor(blue)
+        for i, section in enumerate(sections_info, start=1):
+            try:
+                title = section.get("title", "").strip()
+                bookmark = section.get("bookmark", None)
+            except Exception:
+                title, bookmark = "Título desconocido", None
+
+            clean_title = str(title).strip()
+            text = f"{i}. {clean_title}"
+
+            # Dibujar el texto
             p.drawString(left_margin, y, text)
 
-            link_width = stringWidth(text, "Helvetica", 12)
-            p.linkRect(
-                "", sec["bookmark"],
-                (left_margin, y - 2, left_margin + link_width, y + 10),
-                relative=1, thickness=0,
-            )
+            # Medir el ancho del texto para definir el área clicable
+            text_width = stringWidth(text, "Helvetica", 12)
+            x1 = left_margin
+            y1 = y - 2
+            x2 = left_margin + text_width
+            y2 = y + 12
 
-            p.setFillColorRGB(0, 0, 0)
+            # Si hay un bookmark válido, agregar linkRect
+            if bookmark:
+                p.linkRect(
+                    "",
+                    bookmark,
+                    (x1, y1, x2, y2),
+                    relative=0,
+                    thickness=0,  # sin borde visible
+                )
+
             y -= line_height
 
+            # Control de salto de página
             if y < inch + 40:
+                self._add_footer(p, width, height)
                 p.showPage()
-                y = height - 100
                 p.setFont("Helvetica-Bold", 16)
                 p.drawCentredString(width / 2, height - 80, "ÍNDICE (cont.)")
-                y -= 40
+                y = height - 130
                 p.setFont("Helvetica", 12)
 
         self._add_footer(p, width, height)
         p.showPage()
-    
+
     #----------------------------------------------------------
     # Función para valores diferentes
     #----------------------------------------------------------
@@ -277,26 +300,6 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         p.drawCentredString(width / 2, 0.5 * inch, footer_text)
         p.setFillGray(0, 1)  # restaurar color normal
 
-
-
-    def _add_indice(self, p, sections, width, height):
-        """Genera el índice del expediente."""
-        p.setFont("Helvetica-Bold", 16)
-        p.drawCentredString(width / 2, height - 80, "ÍNDICE")
-
-        y = height - 120
-        p.setFont("Helvetica", 12)
-        line_height = 18
-
-        for i, section in enumerate(sections, start=1):
-            p.drawString(inch, y, f"{i}. {section}")
-            y -= line_height
-
-            if y < inch:  # Si se llena la página, pasar a la siguiente
-                p.showPage()
-                y = height - inch
-
-        p.showPage()
 
     # ----------------------------------------------------------
     # Secciones de Datos
