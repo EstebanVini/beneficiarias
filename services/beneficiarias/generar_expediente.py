@@ -9,6 +9,8 @@ import base64
 import re
 from odoo.tools import html2plaintext #type: ignore[import]
 from reportlab.pdfbase.pdfmetrics import stringWidth #type: ignore[import]
+from reportlab.lib.colors import blue #type: ignore[import]
+from reportlab.pdfbase.pdfmetrics import stringWidth #type: ignore[import]
         
 
 
@@ -17,9 +19,16 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
     _description = "Servicio para generar el expediente completo de una beneficiaria"
     _table = False
 
+    # ==========================================================
+    # 1️⃣ MÉTODO PRINCIPAL (doble pasada)
+    # ==========================================================
     @api.model
     def generar_expediente_pdf(self, beneficiaria):
-        """Genera el PDF completo del expediente y lo guarda como documento adjunto."""
+        """Genera el PDF completo con índice dinámico y vínculos internos."""
+        # Primera pasada: solo para obtener páginas y secciones
+        sections_info = self._scan_sections(beneficiaria)
+
+        # Segunda pasada: generar PDF final con índice
         buffer = BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         width, height = letter
@@ -27,68 +36,23 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         # === PORTADA ===
         self._add_portada(p, beneficiaria, width, height)
 
-        # === ÍNDICE ===
-        sections = [
-            "Información Particular Detallada",
-            "Residencia",
-            "Canalización y Legal",
-            "Fotos",
-            "Detalle del Servicio",
-            "Acompañante y Referencias",
-            "Familiares",
-            "Hijos",
-            "Relación con el Padre del Bebé",
-            "Datos de Violencia",
-            "Antecedentes Médicos",
-            "Medios de Comunicación",
-            "Documentos",
-            "Traslados",
-            "Talleres",
-            "Valoraciones",
-            "Proyecto de Vida",
-            "Datos del Parto",
-            "Alta",
-        ]
-        self._add_indice(p, sections, width, height)
-        # === PRIMERA SECCIÓN: Datos Generales + Embarazo/Egreso ===
-        self._add_section_datos_generales(p, beneficiaria, width, height)
-        # === PRIMERA SECCIÓN: Información Particular Detallada ===
-        self._add_section_informacion_particular(p, beneficiaria, width, height)
-        # === SEGUNDA SECCIÓN: Canalización y Legal ===
-        self._add_section_canalizacion_legal(p, beneficiaria, width, height)
-        # === TERCERA SECCIÓN: Fotos ===
-        self._add_section_fotos(p, beneficiaria, width, height)
-        # === CUARTA SECCIÓN: Acompañante y Referencias ===
-        self._add_section_acompanante_y_referencias(p, beneficiaria, width, height)
-        # === QUINTA SECCIÓN: Familiares ===
-        self._add_section_familiares(p, beneficiaria, width, height)
-        # === SEXTA SECCIÓN: Hijos ===
-        self._add_section_hijos(p, beneficiaria, width, height)
-        # === SÉPTIMA SECCIÓN: Relación con el Padre del Bebé ===
-        self._add_section_relacion_padre(p, beneficiaria, width, height)
-        # === OCTAVA SECCIÓN: Datos de Violencia ===
-        self._add_section_datos_violencia(p, beneficiaria, width, height)
-        # === NOVENA SECCIÓN: Antecedentes Médicos ===
-        self._add_section_antecedentes_medicos(p, beneficiaria, width, height)
-        # === DUODÉCIMA SECCIÓN: Valoraciones ===
-        self._add_section_valoraciones(p, beneficiaria, width, height)
-        # === DÉCIMA SECCIÓN: Traslados ===
-        self._add_section_traslados(p, beneficiaria, width, height)
-        # === UNDÉCIMA SECCIÓN: Talleres ===
-        self._add_section_talleres(p, beneficiaria, width, height)
-        # === DECIMOCUARTA SECCIÓN: Proyecto de Vida ===
-        self._add_section_proyecto_de_vida(p, beneficiaria, width, height)
-        # === DECIMOTERCERA SECCIÓN: Datos del Parto y del Bebé ===
-        self._add_section_parto_y_bebe(p, beneficiaria, width, height)
-        # === DECIMOQUINTA SECCIÓN: Alta ===
-        self._add_section_alta(p, beneficiaria, width, height)
+        # === ÍNDICE DINÁMICO ===
+        self._add_indice(p, sections_info, width, height)
 
-        # Finalizar PDF
+        # === SECCIONES ===
+        for sec in sections_info:
+            if not sec["generated"]:
+                continue
+            p.bookmarkPage(sec["bookmark"])
+            p.addOutlineEntry(sec["title"], sec["bookmark"], level=0)
+            sec["method"](p, beneficiaria, width, height)
+
+        # === FINALIZAR PDF ===
         p.save()
         pdf_data = buffer.getvalue()
         buffer.close()
 
-        # Guardar PDF como documento adjunto
+        # === GUARDAR EN ODOO ===
         self.env["beneficiarias.documento"].create({
             "name": f"Expediente - {beneficiaria.nombre_completo}",
             "descripcion": "Expediente completo generado automáticamente.",
@@ -98,6 +62,89 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             "beneficiaria_id": beneficiaria.id,
         })
         return True
+
+
+    # ==========================================================
+    # 2️⃣ PRIMERA PASADA (solo para detectar qué secciones hay)
+    # ==========================================================
+    def _scan_sections(self, beneficiaria):
+        """Escanea qué secciones se generarán realmente."""
+        width, height = letter
+        dummy = canvas.Canvas(BytesIO(), pagesize=letter)
+
+        # Definir las secciones con sus métodos y títulos
+        sections = [
+            ("DATOS GENERALES DE LA BENEFICIARIA", self._add_section_datos_generales),
+            ("INFORMACIÓN PARTICULAR DETALLADA", self._add_section_informacion_particular),
+            ("CANALIZACIÓN Y SEGUIMIENTO LEGAL", self._add_section_canalizacion_legal),
+            ("FOTOGRAFÍAS DE LA BENEFICIARIA", self._add_section_fotos),
+            ("ACOMPAÑANTE Y REFERENCIAS", self._add_section_acompanante_y_referencias),
+            ("FAMILIARES", self._add_section_familiares),
+            ("HIJOS", self._add_section_hijos),
+            ("RELACIÓN CON EL PADRE DEL BEBÉ", self._add_section_relacion_padre),
+            ("DATOS DE VIOLENCIA", self._add_section_datos_violencia),
+            ("ANTECEDENTES MÉDICOS", self._add_section_antecedentes_medicos),
+            ("VALORACIONES", self._add_section_valoraciones),
+            ("TRASLADOS", self._add_section_traslados),
+            ("TALLERES", self._add_section_talleres),
+            ("PROYECTO DE VIDA", self._add_section_proyecto_de_vida),
+            ("DATOS DEL PARTO Y DEL BEBÉ", self._add_section_parto_y_bebe),
+            ("DATOS DE ALTA", self._add_section_alta),
+        ]
+
+        sections_info = []
+        for title, method in sections:
+            before = dummy.getPageNumber()
+            method(dummy, beneficiaria, width, height)
+            after = dummy.getPageNumber()
+            generated = after > before
+            bookmark = re.sub(r"\W+", "_", title.lower())
+            sections_info.append({
+                "title": title,
+                "method": method,
+                "bookmark": bookmark,
+                "generated": generated,
+            })
+        return [s for s in sections_info if s["generated"]]
+
+
+    # ==========================================================
+    # 3️⃣ ÍNDICE DINÁMICO CON HIPERVÍNCULOS
+    # ==========================================================
+    def _add_indice(self, p, sections_info, width, height):
+        """Genera el índice dinámico con vínculos internos."""
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "ÍNDICE")
+
+        y = height - 130
+        line_height = 20
+        left_margin = inch
+
+        for i, sec in enumerate(sections_info, start=1):
+            text = f"{i}. {sec['title']}"
+            p.setFillColor(blue)
+            p.drawString(left_margin, y, text)
+
+            link_width = stringWidth(text, "Helvetica", 12)
+            p.linkRect(
+                "", sec["bookmark"],
+                (left_margin, y - 2, left_margin + link_width, y + 10),
+                relative=1, thickness=0,
+            )
+
+            p.setFillColorRGB(0, 0, 0)
+            y -= line_height
+
+            if y < inch + 40:
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "ÍNDICE (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 12)
+
+        self._add_footer(p, width, height)
+        p.showPage()
     
     #----------------------------------------------------------
     # Función para valores diferentes
