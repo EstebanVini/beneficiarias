@@ -430,7 +430,7 @@ class Beneficiaria(models.Model):
     origen_padre = fields.Char(string="De dónde es originacio el padre")
     antecendentes_medicos_padre = fields.Text(string="Antecedentes médicos de importancia del padre")
     en_caso_de_haber_migrado_padre = fields.Boolean(string="¿El padre ha migrado?")
-    padre_pais_migracion = fields.Char(string="País al que migró el padre")
+    padre_pais_migracion = fields.Many2one('res.country', string="País de Nacimiento")
     lugar_residencia_padre = fields.Char(string="Lugar de residencia actual del padre")
  
 
@@ -448,7 +448,7 @@ class Beneficiaria(models.Model):
     tipo_violencia_economica = fields.Boolean(string="Violencia económica")
     tipo_violencia_patrimonial = fields.Boolean(string="Violencia patrimonial")
     tipo_violencia_otro_seleccion = fields.Boolean(string="Otro")
-    tipo_violencia_otro = fields.Boolean(string="Especifique otro tipo de violencia")
+    tipo_violencia_otro = fields.Char(string="Especifique otro tipo de violencia")
 
     # educación sexual
     educacion_sexual = fields.Boolean(string="¿Has recibido educación sexual?")
@@ -558,7 +558,7 @@ class Beneficiaria(models.Model):
     # === PESTAÑA "DATOS DEL PARTO" ===
     fecha_egreso_hospital = fields.Date(string="Fecha de egreso del hospital", help="Fecha en que la beneficiaria fue dada de alta del hospital tras el parto")
     hospital_parto = fields.Char(string="Nombre del hospital")
-    parto_multiple = fields.Boolean(string="¿Tuviste un parto múltiple?")
+    parto_multiple = fields.Boolean(string="¿Parto múltiple?")
 
     # === PESTAÑA "ALTA" ===
 

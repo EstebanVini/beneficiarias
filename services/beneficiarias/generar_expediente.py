@@ -64,6 +64,24 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_section_familiares(p, beneficiaria, width, height)
         # === SEXTA SECCIÓN: Hijos ===
         self._add_section_hijos(p, beneficiaria, width, height)
+        # === SÉPTIMA SECCIÓN: Relación con el Padre del Bebé ===
+        self._add_section_relacion_padre(p, beneficiaria, width, height)
+        # === OCTAVA SECCIÓN: Datos de Violencia ===
+        self._add_section_datos_violencia(p, beneficiaria, width, height)
+        # === NOVENA SECCIÓN: Antecedentes Médicos ===
+        self._add_section_antecedentes_medicos(p, beneficiaria, width, height)
+        # === DUODÉCIMA SECCIÓN: Valoraciones ===
+        self._add_section_valoraciones(p, beneficiaria, width, height)
+        # === DÉCIMA SECCIÓN: Traslados ===
+        self._add_section_traslados(p, beneficiaria, width, height)
+        # === UNDÉCIMA SECCIÓN: Talleres ===
+        self._add_section_talleres(p, beneficiaria, width, height)
+        # === DECIMOCUARTA SECCIÓN: Proyecto de Vida ===
+        self._add_section_proyecto_de_vida(p, beneficiaria, width, height)
+        # === DECIMOTERCERA SECCIÓN: Datos del Parto y del Bebé ===
+        self._add_section_parto_y_bebe(p, beneficiaria, width, height)
+        # === DECIMOQUINTA SECCIÓN: Alta ===
+        self._add_section_alta(p, beneficiaria, width, height)
 
         # Finalizar PDF
         p.save()
@@ -80,6 +98,18 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             "beneficiaria_id": beneficiaria.id,
         })
         return True
+    
+    #----------------------------------------------------------
+    # Función para valores diferentes
+    #----------------------------------------------------------
+
+    def _safe_value(self, value):
+        """Devuelve un valor limpio para texto o campos Many2one"""
+        if not value:
+            return "-"
+        if hasattr(value, "name"):
+            return value.name
+        return str(value)
 
     # ----------------------------------------------------------
     # 🔹 MÉTODOS DE SECCIONES
@@ -1011,12 +1041,12 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         self._add_footer(p, width, height)
         p.showPage()
 
+
     def _add_section_hijos(self, p, beneficiaria, width, height):
-        """Sección: Hijos (lista enumerada similar a hermanos)"""
+        """Sección: Hijos (lista enumerada + documentos asociados)"""
 
         # === Verificar si hay datos ===
-        tiene_hijos = bool(beneficiaria.hijos_ids)
-        if not tiene_hijos:
+        if not beneficiaria.hijos_ids:
             return  # No generar la página si no hay hijos
 
         # === Configuración visual ===
@@ -1029,10 +1059,9 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         subtitle_spacing = 20
         left_margin = inch
 
-        # === Función auxiliar ===
+        # === Función auxiliar para escribir texto largo ===
         def draw_field(label, value):
             nonlocal y
-
             if y < inch:
                 # salto de página
                 self._add_footer(p, width, height)
@@ -1067,7 +1096,6 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
         y -= subtitle_spacing
         p.setFont("Helvetica", 11)
 
-        # Recorremos los registros hijos_ids
         for idx, hijo in enumerate(beneficiaria.hijos_ids, start=1):
             if y < inch + 40:
                 self._add_footer(p, width, height)
@@ -1078,6 +1106,7 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
                 y -= 40
                 p.setFont("Helvetica", 11)
 
+            # === Datos del hijo ===
             p.setFont("Helvetica-Bold", 11)
             p.drawString(left_margin, y, f"Hijo {idx}:")
             y -= 15
@@ -1090,9 +1119,899 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
             draw_field("La acompaña", "Sí" if hijo.la_acompana else "No")
             draw_field("Responsable", hijo.responsable)
             draw_field("Escuela", hijo.escuela)
-            y -= 10  # pequeño espacio entre hijos
+
+            # === Documentos asociados ===
+            documentos = self.env["beneficiarias.documento"].search([
+                ("hijo_id", "=", hijo.id),
+                ("tipo_relacion", "=", "hijo")
+            ])
+
+            if documentos:
+                p.setFont("Helvetica-Bold", 11)
+                p.drawString(left_margin + 10, y, "Documentos asociados:")
+                y -= line_height
+
+                p.setFont("Helvetica", 11)
+                for doc in documentos:
+                    doc_name = doc.name or doc.nombre_archivo or "(Sin nombre)"
+                    draw_field("-", doc_name)
+            else:
+                p.setFont("Helvetica-Oblique", 11)
+                p.drawString(left_margin + 10, y, "No hay documentos asociados.")
+                y -= line_height
+
+            y -= section_spacing  # espacio entre hijos
+
+        # === Footer final ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_relacion_padre(self, p, beneficiaria, width, height):
+        """Sección: Relación con el Padre del Bebé"""
+
+        # === Verificar si hay información relevante ===
+        campos = [
+            beneficiaria.nombre_padre,
+            beneficiaria.edad_padre,
+            beneficiaria.relacion_con_padre,
+            beneficiaria.padre_sabe_de_su_embarazo,
+            beneficiaria.padre_sera_notificado,
+            beneficiaria.padre_ha_dado_apoyo,
+            beneficiaria.estado_civil_padre,
+            beneficiaria.padre_ocupacion,
+            beneficiaria.padre_grado_maximo_estudios,
+            beneficiaria.padre_tiene_adiccion,
+            beneficiaria.estatura_padre,
+            beneficiaria.complexion_padre,
+            beneficiaria.numero_hijos_padre,
+            beneficiaria.numero_hijos_padre_con_beneficiaria,
+            beneficiaria.padre_vive_con_beneficiaria,
+            beneficiaria.origen_padre,
+            beneficiaria.antecendentes_medicos_padre,
+            beneficiaria.en_caso_de_haber_migrado_padre,
+            beneficiaria.padre_pais_migracion,
+            beneficiaria.lugar_residencia_padre,
+        ]
+        if not any(campos):
+            return  # No generar página si no hay datos
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "RELACIÓN CON EL PADRE DEL BEBÉ")
+
+        y = height - 130
+        line_height = 20
+        subtitle_spacing = 20
+        left_margin = inch
+
+        # === Función auxiliar ===
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "RELACIÓN CON EL PADRE DEL BEBÉ (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {value or '-'}")
+            y -= line_height
+
+        # ======================================================
+        # SECCIÓN PRINCIPAL
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Datos del Padre")
+        y -= subtitle_spacing
+        p.setFont("Helvetica", 11)
+
+        draw_field("Nombre", self._safe_value(beneficiaria.nombre_padre))
+        draw_field("Edad", self._safe_value(beneficiaria.edad_padre))
+        draw_field("Relación con el padre", self._safe_value(beneficiaria.relacion_con_padre))
+        if beneficiaria.relacion_con_padre == "otro":
+            draw_field("Especificar relación", self._safe_value(beneficiaria.relacion_con_padre_otro))
+
+        draw_field("¿El padre sabe del embarazo?", "Sí" if beneficiaria.padre_sabe_de_su_embarazo else "No")
+        draw_field("¿Será notificado?", "Sí" if beneficiaria.padre_sera_notificado else "No")
+        draw_field("¿Ha dado apoyo?", "Sí" if beneficiaria.padre_ha_dado_apoyo else "No")
+        draw_field("Estado civil", self._safe_value(beneficiaria.estado_civil_padre))
+        draw_field("Ocupación", self._safe_value(beneficiaria.padre_ocupacion))
+        draw_field("Grado máximo de estudios", self._safe_value(beneficiaria.padre_grado_maximo_estudios))
+
+        draw_field("¿Tiene alguna adicción?", "Sí" if beneficiaria.padre_tiene_adiccion else "No")
+        if beneficiaria.padre_tiene_adiccion:
+            draw_field("Detalles de la adicción", self._safe_value(beneficiaria.padre_tiene_adiccion_detalle))
+
+        draw_field("Estatura", self._safe_value(beneficiaria.estatura_padre))
+        draw_field("Complexión", self._safe_value(beneficiaria.complexion_padre))
+        draw_field("Número de hijos (totales)", self._safe_value(beneficiaria.numero_hijos_padre))
+        draw_field("Hijos con la beneficiaria", self._safe_value(beneficiaria.numero_hijos_padre_con_beneficiaria))
+        draw_field("¿Vive con la beneficiaria?", "Sí" if beneficiaria.padre_vive_con_beneficiaria else "No")
+        draw_field("Origen del padre", self._safe_value(beneficiaria.origen_padre))
+        draw_field("Antecedentes médicos", self._safe_value(beneficiaria.antecendentes_medicos_padre))
+        draw_field("¿Ha migrado?", "Sí" if beneficiaria.en_caso_de_haber_migrado_padre else "No")
+        if beneficiaria.en_caso_de_haber_migrado_padre:
+            draw_field("País de migración", self._safe_value(beneficiaria.padre_pais_migracion))
+        draw_field("Lugar de residencia", self._safe_value(beneficiaria.lugar_residencia_padre))
 
         # === Footer ===
         self._add_footer(p, width, height)
         p.showPage()
 
+
+    def _add_section_datos_violencia(self, p, beneficiaria, width, height):
+        """Sección: Datos de Violencia"""
+
+        # === Verificar si hay datos relevantes ===
+        campos = [
+            beneficiaria.violacion,
+            beneficiaria.violencia_intrafamiliar,
+            beneficiaria.quien_fue_el_agresor,
+            beneficiaria.tipo_violencia_fisica,
+            beneficiaria.tipo_violencia_psicologica,
+            beneficiaria.tipo_violencia_sexual,
+            beneficiaria.tipo_violencia_economica,
+            beneficiaria.tipo_violencia_patrimonial,
+            beneficiaria.tipo_violencia_otro_seleccion,
+            beneficiaria.tipo_violencia_otro,
+            beneficiaria.educacion_sexual,
+            beneficiaria.educacion_sexual_detalle,
+            beneficiaria.embarazo_actual_consecuencia_de_violacion,
+            beneficiaria.ha_iniciado_carpeta_investigacion,
+            beneficiaria.carpeta_investigacion_numero,
+            beneficiaria.carpeta_investigacion_fecha,
+            beneficiaria.carpeta_investigacion_lugar,
+        ]
+        if not any(campos):
+            return  # No generar sección si no hay datos
+
+        # === Configuración visual ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "DATOS DE VIOLENCIA")
+
+        y = height - 130
+        line_height = 20
+        section_spacing = 30
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "DATOS DE VIOLENCIA (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        # ======================================================
+        # SECCIÓN 1: Tipos de violencia
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Tipo de Violencia Sufrida")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("¿Ha sido víctima de violación?", "Sí" if beneficiaria.violacion else "No")
+        draw_field("¿Ha sufrido violencia intrafamiliar?", "Sí" if beneficiaria.violencia_intrafamiliar else "No")
+
+        if beneficiaria.quien_fue_el_agresor:
+            draw_field("¿Quién fue el agresor?", beneficiaria.quien_fue_el_agresor)
+
+        tipos = []
+        if beneficiaria.tipo_violencia_fisica:
+            tipos.append("Física")
+        if beneficiaria.tipo_violencia_psicologica:
+            tipos.append("Psicológica")
+        if beneficiaria.tipo_violencia_sexual:
+            tipos.append("Sexual")
+        if beneficiaria.tipo_violencia_economica:
+            tipos.append("Económica")
+        if beneficiaria.tipo_violencia_patrimonial:
+            tipos.append("Patrimonial")
+        if beneficiaria.tipo_violencia_otro_seleccion:
+            tipos.append("Otro")
+
+        draw_field("Tipos de violencia", ", ".join(tipos) if tipos else "Ninguno especificado")
+        if beneficiaria.tipo_violencia_otro:
+            draw_field("Otro tipo de violencia", beneficiaria.tipo_violencia_otro)
+        draw_field("¿El embarazo actual es consecuencia de una violación?", 
+            "Sí" if beneficiaria.embarazo_actual_consecuencia_de_violacion else "No")
+
+        y -= section_spacing
+
+        # ======================================================
+        # SECCIÓN 2: Educación sexual y consecuencias
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Educación Sexual y Consecuencias")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("¿Ha recibido educación sexual?", "Sí" if beneficiaria.educacion_sexual else "No")
+        if beneficiaria.educacion_sexual_detalle:
+            draw_field("¿Quién la brindó y dónde?", beneficiaria.educacion_sexual_detalle)
+
+        y -= section_spacing
+
+        # ======================================================
+        # SECCIÓN 3: Carpeta de investigación
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Carpeta de Investigación")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("¿Ha iniciado carpeta de investigación?", "Sí" if beneficiaria.ha_iniciado_carpeta_investigacion else "No")
+
+        if beneficiaria.ha_iniciado_carpeta_investigacion:
+            draw_field("Número de carpeta", beneficiaria.carpeta_investigacion_numero)
+            draw_field("Fecha", str(beneficiaria.carpeta_investigacion_fecha or "-"))
+            draw_field("Lugar", beneficiaria.carpeta_investigacion_lugar)
+
+        # === Footer ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_antecedentes_medicos(self, p, beneficiaria, width, height):
+        """Sección: Antecedentes Médicos"""
+
+        campos = [
+            beneficiaria.antecedentes_medicos,
+            beneficiaria.enfermedades_cronicas,
+            beneficiaria.alergias,
+            beneficiaria.medicamentos_actuales,
+            beneficiaria.cirugias_previas,
+            beneficiaria.vacunas,
+            beneficiaria.tipo_sangre,
+            beneficiaria.enfermedades_familiares,
+            beneficiaria.antecedentes_quirurgicos,
+            beneficiaria.tiene_donador,
+            beneficiaria.donador_nombre,
+            beneficiaria.donador_telefono,
+            beneficiaria.donador_relacion,
+        ]
+
+        if not any(campos):
+            return  # no hay nada que mostrar
+
+        # === Encabezado principal ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "ANTECEDENTES MÉDICOS")
+
+        y = height - 130
+        line_height = 20
+        section_spacing = 30
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "ANTECEDENTES MÉDICOS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        # ======================================================
+        # SECCIÓN 1: Historial médico general
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Historial Médico General")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("Antecedentes médicos", beneficiaria.antecedentes_medicos)
+        draw_field("Enfermedades crónicas", beneficiaria.enfermedades_cronicas)
+        draw_field("Alergias", beneficiaria.alergias)
+        draw_field("Medicamentos actuales", beneficiaria.medicamentos_actuales)
+        draw_field("Cirugías previas", beneficiaria.cirugias_previas)
+        draw_field("Vacunas", beneficiaria.vacunas)
+        draw_field("Tipo de sangre", dict(beneficiaria._fields["tipo_sangre"].selection).get(beneficiaria.tipo_sangre, "-"))
+
+        y -= section_spacing
+
+        # ======================================================
+        # SECCIÓN 2: Antecedentes familiares y quirúrgicos
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Antecedentes Familiares y Quirúrgicos")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("Enfermedades familiares", beneficiaria.enfermedades_familiares)
+        draw_field("Antecedentes quirúrgicos", beneficiaria.antecedentes_quirurgicos)
+
+        y -= section_spacing
+
+        # ======================================================
+        # SECCIÓN 3: Donador de sangre
+        # ======================================================
+        p.setFont("Helvetica-Bold", 13)
+        p.drawString(left_margin, y, "Donador de Sangre")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("¿Tiene donador?", "Sí" if beneficiaria.tiene_donador else "No")
+
+        if beneficiaria.tiene_donador:
+            draw_field("Nombre del donador", beneficiaria.donador_nombre)
+            draw_field("Teléfono del donador", beneficiaria.donador_telefono)
+            draw_field("Relación con el donador", beneficiaria.donador_relacion)
+
+        # === Footer ===
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_traslados(self, p, beneficiaria, width, height):
+        """Sección: Traslados de la Beneficiaria"""
+        if not beneficiaria.traslado_ids:
+            return
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "TRASLADOS")
+
+        y = height - 130
+        line_height = 20
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "TRASLADOS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        for idx, traslado in enumerate(beneficiaria.traslado_ids, start=1):
+            if y < inch + 40:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "TRASLADOS (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(left_margin, y, f"Traslado {idx}:")
+            y -= 15
+            p.setFont("Helvetica", 11)
+
+            draw_field("Fecha", traslado.fecha_traslado)
+            draw_field("Destino", traslado.ubicacion_destino)
+            draw_field("Motivo", traslado.motivo_traslado)
+            draw_field("Estado", traslado.estado)
+            y -= 10
+
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+    def _add_section_talleres(self, p, beneficiaria, width, height):
+        """Sección: Talleres a los que asistió la beneficiaria"""
+        if not beneficiaria.taller_ids:
+            return
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "TALLERES")
+
+        y = height - 130
+        line_height = 20
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "TALLERES (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        for idx, taller in enumerate(beneficiaria.taller_ids, start=1):
+            if y < inch + 40:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "TALLERES (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(left_margin, y, f"Taller {idx}:")
+            y -= 15
+            p.setFont("Helvetica", 11)
+
+            draw_field("Nombre del taller", taller.name_taller)
+            draw_field("Instructor", taller.instructor)
+            draw_field("Fecha", taller.fecha)
+            draw_field("Duración (horas)", taller.num_horas)
+            draw_field("Comentarios", taller.comentarios)
+            y -= 10
+
+        self._add_footer(p, width, height)
+        p.showPage()
+
+
+    def _add_section_valoraciones(self, p, beneficiaria, width, height):
+        """Sección: Valoraciones realizadas a la beneficiaria"""
+        if not beneficiaria.valoracion_ids:
+            return
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "VALORACIONES")
+
+        y = height - 130
+        line_height = 20
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "VALORACIONES (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        for idx, valoracion in enumerate(beneficiaria.valoracion_ids, start=1):
+            if y < inch + 60:
+                self._add_footer(p, width, height)
+                p.showPage()
+                y = height - 100
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "VALORACIONES (cont.)")
+                y -= 40
+                p.setFont("Helvetica", 11)
+
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(left_margin, y, f"Valoración {idx}:")
+            y -= 15
+            p.setFont("Helvetica", 11)
+
+            # Campos principales
+            draw_field("Categoría", dict(valoracion._fields["categoria"].selection).get(valoracion.categoria, "-"))
+            draw_field("Fecha de realización", valoracion.fecha_realizacion)
+            draw_field("Elaborado por", valoracion.elaborado_por)
+
+            # Archivo principal
+            archivo = "Sí (adjunto)" if valoracion.valoracion_archivo else "No"
+            draw_field("Archivo de valoración", archivo)
+
+            # Documentos adicionales asociados
+            if valoracion.documentos_ids:
+                y -= 5
+                p.setFont("Helvetica-Bold", 11)
+                p.drawString(left_margin, y, "Documentos vinculados:")
+                y -= 15
+                p.setFont("Helvetica", 10)
+                for doc in valoracion.documentos_ids:
+                    if y < inch + 40:
+                        self._add_footer(p, width, height)
+                        p.showPage()
+                        y = height - 100
+                        p.setFont("Helvetica-Bold", 16)
+                        p.drawCentredString(width / 2, height - 80, "VALORACIONES (cont.)")
+                        y -= 40
+                        p.setFont("Helvetica", 10)
+                    p.drawString(left_margin + 15, y, f"- {self._safe_value(doc.name)}")
+                    y -= line_height
+                y -= 10
+
+            y -= 10
+
+        # Al final, imprime total de valoraciones
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(left_margin, y - 10, f"Total de valoraciones: {len(beneficiaria.valoracion_ids)}")
+
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_parto_y_bebe(self, p, beneficiaria, width, height):
+        """Sección combinada: Datos del parto (de la beneficiaria) + Datos del bebé (en 2 columnas)."""
+        tiene_parto = any([
+            beneficiaria.fecha_egreso_hospital,
+            beneficiaria.hospital_parto,
+            beneficiaria.parto_multiple,
+        ])
+        tiene_bebes = bool(beneficiaria.bebe_ids)
+        if not tiene_parto and not tiene_bebes:
+            return  # Nada que mostrar
+
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "DATOS DEL PARTO Y DEL BEBÉ")
+
+        y = height - 130
+        line_height = 18
+        left_margin = inch
+
+        # === Función auxiliar simple ===
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch + 40:
+                self._add_footer(p, width, height)
+                p.showPage()
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "DATOS DEL PARTO Y DEL BEBÉ (cont.)")
+                y = height - 130
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        # ======================================================
+        # SECCIÓN DE DATOS DEL PARTO
+        # ======================================================
+        if tiene_parto:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Datos del Parto")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("Fecha de egreso del hospital", beneficiaria.fecha_egreso_hospital)
+            draw_field("Nombre del hospital", beneficiaria.hospital_parto)
+            draw_field("¿Parto múltiple?", "Sí" if beneficiaria.parto_multiple else "No")
+
+            # Línea separadora
+            y -= 10
+            p.line(left_margin, y, width - inch, y)
+            y -= 30
+
+        # ======================================================
+        # SECCIÓN DE DATOS DEL BEBÉ
+        # ======================================================
+        if tiene_bebes:
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Datos del Bebé")
+            y -= 25
+            p.setFont("Helvetica", 10)
+
+            y_start = y
+            line_height = 18
+            col_gap = 1.5 * inch
+            col_width = (width - 2 * inch - col_gap) / 2
+            left_margin = inch
+            right_col_x = left_margin + col_width + col_gap
+
+            def draw_field_col(label, value, x_pos, y_pos):
+                text = f"{label}: {self._safe_value(value)}"
+                p.drawString(x_pos, y_pos, text)
+
+            for idx, bebe in enumerate(beneficiaria.bebe_ids, start=1):
+                # Encabezado
+                p.setFont("Helvetica-Bold", 11)
+                p.drawString(left_margin, y, f"Bebé {idx}: {bebe.nombre or '-'}")
+                y -= 20
+                p.setFont("Helvetica", 10)
+
+                # Columna izquierda
+                x = left_margin
+                col_y = y
+
+                draw_field_col("Sexo", dict(bebe._fields["sexo"].selection).get(bebe.sexo, "-"), x, col_y)
+                col_y -= line_height
+                draw_field_col("Fecha y hora de nacimiento", bebe.fecha_y_hora_nacimiento, x, col_y)
+                col_y -= line_height
+                draw_field_col("Lugar de nacimiento", bebe.lugar_nacimiento, x, col_y)
+                col_y -= line_height
+                draw_field_col("Talla (cm)", bebe.talla_al_nacer, x, col_y)
+                col_y -= line_height
+                draw_field_col("Peso (kg)", bebe.peso_al_nacer, x, col_y)
+                col_y -= line_height
+                draw_field_col("Cuidado por", bebe.cuidado_por, x, col_y)
+                col_y -= line_height
+                draw_field_col("¿Tiene CUN?", "Sí" if bebe.tiene_cun else "No", x, col_y)
+                col_y -= line_height
+                draw_field_col("¿Tiene acta de nacimiento?", "Sí" if bebe.tiene_acta_nacimiento else "No", x, col_y)
+                col_y -= line_height
+                draw_field_col("¿Ingresó al cunero?", "Sí" if bebe.bebe_ingreso_cunero else "No", x, col_y)
+                col_y -= line_height
+                draw_field_col("¿Mamá desistió de entrega?", "Sí" if bebe.mama_desistio_entrega else "No", x, col_y)
+                col_y -= line_height
+
+                # Columna derecha
+                x = right_col_x
+                col_y = y
+
+                draw_field_col("Fecha egreso institución", bebe.fecha_egreso_institucion, x, col_y)
+                col_y -= line_height
+                draw_field_col("Motivo egreso", dict(bebe._fields["motivo_egreso"].selection).get(bebe.motivo_egreso, "-"), x, col_y)
+                col_y -= line_height
+                draw_field_col("Otro motivo egreso", bebe.motivo_egreso_otro, x, col_y)
+                col_y -= line_height
+                draw_field_col("Núm. certificado nacimiento", bebe.numero_cert_nacimiento, x, col_y)
+                col_y -= line_height
+                draw_field_col("Municipio registro", bebe.municipio_registro, x, col_y)
+                col_y -= line_height
+                draw_field_col("Fecha registro", bebe.fecha_registro, x, col_y)
+                col_y -= line_height
+                draw_field_col("CURP bebé", bebe.curp_bebe, x, col_y)
+                col_y -= line_height
+                draw_field_col("Entidad registro", bebe.entidad_registro, x, col_y)
+                col_y -= line_height
+                draw_field_col("Oficialía registro", bebe.oficialia_registro, x, col_y)
+                col_y -= line_height
+
+                # === Nacido muerto (si aplica) ===
+                if bebe.nacido_muerto:
+                    col_y -= 10
+                    p.setFont("Helvetica-Bold", 10)
+                    p.drawString(x, col_y, "Defunción:")
+                    col_y -= line_height
+                    p.setFont("Helvetica", 10)
+                    draw_field_col("Certificado defunción", bebe.numero_certificado_defuncion, x, col_y)
+                    col_y -= line_height
+                    draw_field_col("Fecha defunción", bebe.fecha_defuncion, x, col_y)
+
+                # === Documentos relacionados ===
+                y_docs = min(y, col_y) - 25
+                p.setFont("Helvetica-Bold", 10)
+                p.drawString(left_margin, y_docs, "Documentos adjuntos:")
+                y_docs -= line_height
+                p.setFont("Helvetica", 10)
+                if bebe.documento_ids:
+                    for doc in bebe.documento_ids:
+                        if y_docs < inch + 40:
+                            self._add_footer(p, width, height)
+                            p.showPage()
+                            p.setFont("Helvetica-Bold", 16)
+                            p.drawCentredString(width / 2, height - 80, "DATOS DEL PARTO Y DEL BEBÉ (cont.)")
+                            y_docs = height - 120
+                            p.setFont("Helvetica", 10)
+                        p.drawString(left_margin + 20, y_docs, f"- {self._safe_value(doc.name)}")
+                        y_docs -= line_height
+                else:
+                    p.drawString(left_margin + 20, y_docs, "No hay documentos adjuntos.")
+                    y_docs -= line_height
+
+                # === Separador entre bebés ===
+                y = y_docs - 25
+                p.line(left_margin, y, width - inch, y)
+                y -= 30
+
+                if y < inch + 100:
+                    self._add_footer(p, width, height)
+                    p.showPage()
+                    p.setFont("Helvetica-Bold", 16)
+                    p.drawCentredString(width / 2, height - 80, "DATOS DEL PARTO Y DEL BEBÉ (cont.)")
+                    y = height - 130
+
+            # Total bebés
+            p.setFont("Helvetica-Bold", 10)
+            p.drawString(left_margin, y, f"Total de bebés registrados: {len(beneficiaria.bebe_ids)}")
+
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_proyecto_de_vida(self, p, beneficiaria, width, height):
+        """Sección: Proyecto de Vida de la beneficiaria (solo si hay datos relevantes)."""
+
+        # === Validar si hay información que mostrar ===
+        if not any([
+            beneficiaria.reaccion_confirmacion_embarazo,
+            beneficiaria.intento_aborto,
+            beneficiaria.medio_intento_aborto,
+            beneficiaria.recibe_apoyo,
+            beneficiaria.especifique_apoyo,
+            beneficiaria.sabe_que_es_adocion,
+            beneficiaria.conoce_adopcion,
+            beneficiaria.te_gustaria_conocer,
+            beneficiaria.desea_dar_a_adopcion,
+        ]):
+            return  # No generar página si está vacío
+
+        # === Encabezado ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "PROYECTO DE VIDA")
+
+        y = height - 130
+        line_height = 18
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch + 40:
+                self._add_footer(p, width, height)
+                p.showPage()
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "PROYECTO DE VIDA (cont.)")
+                y = height - 130
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        # === Reacción al embarazo ===
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(left_margin, y, "Reacción ante el embarazo")
+        y -= 25
+        p.setFont("Helvetica", 11)
+
+        draw_field("Reacción al confirmar el embarazo",
+                   dict(beneficiaria._fields["reaccion_confirmacion_embarazo"].selection).get(beneficiaria.reaccion_confirmacion_embarazo, "-"))
+        draw_field("¿Intentó abortar?", "Sí" if beneficiaria.intento_aborto else "No")
+        draw_field("Medio del intento de aborto", beneficiaria.medio_intento_aborto)
+
+        # === Apoyo recibido ===
+        if beneficiaria.recibe_apoyo or beneficiaria.especifique_apoyo:
+            y -= 10
+            p.line(left_margin, y, width - inch, y)
+            y -= 30
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(left_margin, y, "Apoyo recibido")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("¿Recibió apoyo de algún familiar, amigo o conocido?",
+                       "Sí" if beneficiaria.recibe_apoyo else "No")
+            draw_field("Especifique el apoyo recibido", beneficiaria.especifique_apoyo)
+
+        # === Adopción ===
+        if any([
+            beneficiaria.sabe_que_es_adocion,
+            beneficiaria.conoce_adopcion,
+            beneficiaria.te_gustaria_conocer,
+            beneficiaria.desea_dar_a_adopcion
+        ]):
+            y -= 10
+            p.line(left_margin, y, width - inch, y)
+            y -= 30
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(left_margin, y, "Conocimiento sobre adopción")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("¿Sabe qué es la adopción?", "Sí" if beneficiaria.sabe_que_es_adocion else "No")
+            draw_field("¿Conoce el proceso de adopción?", "Sí" if beneficiaria.conoce_adopcion else "No")
+            draw_field("¿Le gustaría conocer más sobre la adopción?", "Sí" if beneficiaria.te_gustaria_conocer else "No")
+            draw_field("¿Desea dar a su bebé en adopción?", "Sí" if beneficiaria.desea_dar_a_adopcion else "No")
+
+        self._add_footer(p, width, height)
+        p.showPage()
+
+    def _add_section_alta(self, p, beneficiaria, width, height):
+        """Sección final: Datos de Alta de la beneficiaria, incluyendo la fotografía de la identificación."""
+
+        # === Validar si hay información de alta ===
+        if not any([
+            beneficiaria.fecha_alta,
+            beneficiaria.se_retiro_despues_de_dar_a_luz,
+            beneficiaria.se_retiro_con_bebe,
+            beneficiaria.se_retira_con_permiso_regreso_entrega_voluntaria,
+            beneficiaria.fecha_conclusion_entrega_voluntaria,
+            beneficiaria.persona_recoge,
+            beneficiaria.relacion_persona_recoge,
+            beneficiaria.telefono_persona_recoge,
+            beneficiaria.domicilio_persona_recoge,
+            beneficiaria.identificacion_persona_recoge,
+            beneficiaria.nombre_testigo1,
+            beneficiaria.nombre_testigo2,
+            beneficiaria.autorizado_por,
+        ]):
+            return  # No generar página si está vacío
+
+        # === Encabezado ===
+        p.setFont("Helvetica-Bold", 16)
+        p.drawCentredString(width / 2, height - 80, "DATOS DE ALTA")
+
+        y = height - 130
+        line_height = 18
+        left_margin = inch
+
+        def draw_field(label, value):
+            nonlocal y
+            if y < inch + 60:
+                self._add_footer(p, width, height)
+                p.showPage()
+                p.setFont("Helvetica-Bold", 16)
+                p.drawCentredString(width / 2, height - 80, "DATOS DE ALTA (cont.)")
+                y = height - 130
+                p.setFont("Helvetica", 11)
+            p.drawString(left_margin, y, f"{label}: {self._safe_value(value)}")
+            y -= line_height
+
+        # === Datos generales ===
+        if any([
+            beneficiaria.fecha_alta,
+            beneficiaria.se_retiro_despues_de_dar_a_luz,
+            beneficiaria.se_retiro_con_bebe,
+            beneficiaria.se_retira_con_permiso_regreso_entrega_voluntaria,
+            beneficiaria.fecha_conclusion_entrega_voluntaria
+        ]):
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Información general de alta")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("Fecha de alta", beneficiaria.fecha_alta)
+            draw_field("¿Se retiró después de dar a luz?", "Sí" if beneficiaria.se_retiro_despues_de_dar_a_luz else "No")
+            draw_field("¿Se retiró con el bebé?", "Sí" if beneficiaria.se_retiro_con_bebe else "No")
+            draw_field("¿Se retira con permiso para regresar y concluir entrega voluntaria?",
+                       "Sí" if beneficiaria.se_retira_con_permiso_regreso_entrega_voluntaria else "No")
+            draw_field("Fecha de conclusión de entrega voluntaria", beneficiaria.fecha_conclusion_entrega_voluntaria)
+
+            y -= 10
+            p.line(left_margin, y, width - inch, y)
+            y -= 30
+
+        # === Persona que recoge ===
+        if any([
+            beneficiaria.persona_recoge,
+            beneficiaria.relacion_persona_recoge,
+            beneficiaria.telefono_persona_recoge,
+            beneficiaria.domicilio_persona_recoge,
+            beneficiaria.identificacion_persona_recoge
+        ]):
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Persona que recoge a la beneficiaria")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("Nombre de la persona", beneficiaria.persona_recoge)
+            draw_field("Relación con la beneficiaria", beneficiaria.relacion_persona_recoge)
+            draw_field("Teléfono", beneficiaria.telefono_persona_recoge)
+            draw_field("Domicilio", beneficiaria.domicilio_persona_recoge)
+
+            # Imagen (identificación)
+            if beneficiaria.identificacion_persona_recoge:
+                try:
+                    img_data = base64.b64decode(beneficiaria.identificacion_persona_recoge)
+                    img = ImageReader(BytesIO(img_data))
+
+                    img_width = 2.5 * inch
+                    img_height = 2 * inch
+                    x_img = width - inch - img_width
+                    y_img = y - img_height + 20
+
+                    p.setFont("Helvetica-Bold", 11)
+                    p.drawString(x_img, y_img + img_height + 10, "Identificación:")
+                    p.drawImage(img, x_img, y_img, width=img_width, height=img_height, preserveAspectRatio=True)
+                    y = y_img - 40
+
+                except Exception as e:
+                    p.setFont("Helvetica", 10)
+                    p.drawString(width - 3.5 * inch, y, f"[Error al cargar la imagen: {str(e)}]")
+                    y -= 20
+
+            y -= 10
+            p.line(left_margin, y, width - inch, y)
+            y -= 30
+
+        # === Testigos ===
+        if any([beneficiaria.nombre_testigo1, beneficiaria.nombre_testigo2, beneficiaria.autorizado_por]):
+            p.setFont("Helvetica-Bold", 13)
+            p.drawString(left_margin, y, "Testigos y autorización")
+            y -= 25
+            p.setFont("Helvetica", 11)
+
+            draw_field("Testigo 1", beneficiaria.nombre_testigo1)
+            draw_field("Testigo 2", beneficiaria.nombre_testigo2)
+            draw_field("Autorizado por", beneficiaria.autorizado_por.name if beneficiaria.autorizado_por else "-")
+
+            y -= 40
+            p.line(left_margin + 50, y, left_margin + 200, y)
+            p.drawString(left_margin + 80, y - 15, "Firma de la beneficiaria")
+
+        self._add_footer(p, width, height)
+        p.showPage()
