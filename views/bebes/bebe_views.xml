@@ -54,7 +54,7 @@
                         <field name="padres_adoptivos_id" options="{'no_create_edit': False}"/>
                     </group>
                     <group string="Documentos adjuntos">
-                        <field name="documento_ids">
+                        <field name="documentos_ids">
                             <tree>
                                 <field name="name"/>
                                 <field name="descripcion"/>
@@ -62,6 +62,19 @@
                                 <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"/>
                                 <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"/>
                             </tree>
+                            <form>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="descripcion"/>
+                                    <field name="archivo" filename="nombre_archivo"/>
+                                    <field name="nombre_archivo"/>
+                                    <separator string="Acciones"/>
+                                    <button name="action_ver_documento" type="object" string="Ver" icon="fa-eye"
+                                            class="btn-primary"/>
+                                    <button name="action_descargar_documento" type="object" string="Descargar" icon="fa-download"
+                                            class="btn-secondary"/>
+                                </group>
+                            </form>
                         </field>
                     </group>
                 </sheet>

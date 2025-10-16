@@ -3,6 +3,7 @@ from odoo import models, fields # type: ignore
 class Hijo(models.Model):
     _name = 'beneficiarias.hijo'
     _description = 'Hijo'
+    _rec_name = 'nombre'
 
     # === FORMULARIO PRINCIPAL ===
     nombre = fields.Char(required=True)
@@ -145,7 +146,7 @@ class Hijo(models.Model):
 
     # === RELACIONES ===
     beneficiaria_id = fields.Many2one('beneficiarias.beneficiaria', string="Beneficiaria", required=False)
-    documento_ids = fields.One2many(
+    documentos_ids = fields.One2many(
         'beneficiarias.documento',
         'hijo_id',
         string='Documentos adjuntos',
