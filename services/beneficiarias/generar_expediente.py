@@ -1821,8 +1821,8 @@ class GenerarExpedienteBeneficiariaService(models.AbstractModel):
                 p.drawString(left_margin, y_docs, "Documentos adjuntos:")
                 y_docs -= line_height
                 p.setFont("Helvetica", 10)
-                if bebe.documento_ids:
-                    for doc in bebe.documento_ids:
+                if bebe.documentos_ids:
+                    for doc in bebe.documentos_ids:
                         if y_docs < inch + 40:
                             self._add_footer(p, width, height)
                             p.showPage()
